@@ -13,22 +13,57 @@ class Tabs extends StatefulWidget {
 class _TabsState extends State<Tabs> {
   int _currentIndex = 0;
 
+  // 用于跟踪已访问的页面
+  final List<bool> _visited = [false, false, false];
+
   // 页面标题列表（用于底部导航标签）
   final List<String> _pageTitles = ["首页", "时间表", "个人中心"];
 
   void _navigateTo(int index) {
     setState(() {
       _currentIndex = index;
+
+      // 标记页面为已访问
+      if (!_visited[index]) {
+        _visited[index] = true;
+      }
     });
+  }
+
+  // 懒加载页面组件
+  Widget _buildPage(int index) {
+    // 如果页面已被访问或当前正在显示，则构建页面
+    if (_visited[index] || _currentIndex == index) {
+      switch (index) {
+        case 0:
+          return HomePage();
+        case 1:
+          return TimePage();
+        case 2:
+          return ProfilePage();
+        default:
+          return Container();
+      }
+    }
+    // 否则返回空容器
+    return Container();
   }
 
   @override
   Widget build(BuildContext context) {
+    // 确保当前页面被标记为已访问
+    if (!_visited[_currentIndex]) {
+      _visited[_currentIndex] = true;
+    }
+
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
       body: IndexedStack(
         index: _currentIndex,
-        children: const [HomePage(), TimePage(), ProfilePage()],
+        children: [
+          _buildPage(0),
+          _buildPage(1),
+          _buildPage(2),
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
