@@ -4,10 +4,11 @@
  */
 import 'package:AnimeFlow/modules/bangumi/user_info.dart';
 import 'package:AnimeFlow/request/request.dart';
-import 'package:AnimeFlow/request/api/bangumi/p1_api.dart';
 import 'package:dio/dio.dart';
 import 'package:AnimeFlow/modules/bangumi/token.dart';
 import 'package:AnimeFlow/modules/bangumi/user_collection.dart';
+import '../api/bangumi/p1_api.dart';
+import '../api/bangumi/v0_api.dart';
 import '../api/common_api.dart';
 
 class BangumiUser {
@@ -29,7 +30,7 @@ class BangumiUser {
     int offset = 0,
   }) async {
     final response = await httpRequest.get(
-      BangumiP1Api.bangumiUserCollection.replaceAll(
+      BangumiV0Api.bangumiUserCollection.replaceAll(
         '{username}',
         token.userId.toString(),
       ),

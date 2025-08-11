@@ -17,8 +17,4 @@ class BangumiP1Api {
   ///用户信息
   static const String bangumiUserInfo =
       'https://next.bgm.tv/p1/users/{username}';
-
-  ///用户收藏
-  static const String bangumiUserCollection =
-      'https://api.bgm.tv/v0/users/{username}/collections';
-}
+ }
