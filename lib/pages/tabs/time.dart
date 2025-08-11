@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:AnimeFlow/request/bangumi/bangumi.dart';
-import 'package:AnimeFlow/pages/routes.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../utils/fullscreen_utils.dart';
 
@@ -332,11 +332,13 @@ class AnimeGrid extends StatelessWidget {
                 key: ValueKey('anime_$id'), // 添加唯一key
                 animeData: animeData,
                 onTap: (id) {
-                  Routes.goToAnimeData(
-                    context,
-                    animeId: id,
-                    animeName: animeName,
-                    imageUrl: imageUrl,
+                  context.pushNamed(
+                    'anime_data',
+                    pathParameters: {'animeId': '$id'},
+                    extra: {
+                      'animeName': animeName,
+                      'imageUrl': imageUrl,
+                    },
                   );
                 },
               );

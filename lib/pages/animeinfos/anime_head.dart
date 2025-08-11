@@ -1,10 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import '../../utils/theme_extensions.dart';
 import 'package:AnimeFlow/modules/bangumi/data.dart';
 import 'skeleton/head_skeleton.dart';
-import '../routes.dart';
 
 /// 自定义AppBar组件
 class AnimeDetailAppBar extends StatelessWidget {
@@ -45,9 +45,7 @@ class AnimeDetailAppBar extends StatelessWidget {
 
       // 添加滚动时的不透明背景
       leading: IconButton(
-        onPressed: () {
-          Navigator.maybePop(context);
-        },
+        onPressed: () => context.pop(),
         icon: const Icon(Icons.arrow_back_ios),
       ),
       actions: [
@@ -485,10 +483,15 @@ class AnimePlayButton extends StatelessWidget {
             child: ElevatedButton.icon(
               onPressed: () {
                 // 跳转到播放信息页面
-                Routes.goToPlayInfo(
-                  context,
-                  title: animeName ?? '动漫播放',
-                  videoInfo: {'animeId': animeId, 'animeName': animeName},
+                context.pushNamed(
+                  'play_info',
+                  extra: {
+                    'title': animeName,
+                    'videoInfo': {'animeId': animeId}
+                  }
+
+                  // title: animeName ?? '动漫播放',
+                  // videoInfo: {'animeId': animeId, 'animeName': animeName},
                 );
               },
               style: ElevatedButton.styleFrom(
