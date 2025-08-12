@@ -1,9 +1,11 @@
 import 'package:AnimeFlow/pages/routes.dart';
+import 'package:AnimeFlow/router/router_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:AnimeFlow/utils/theme_extensions.dart';
 import 'package:AnimeFlow/request/bangumi/bangumi.dart';
 import 'package:AnimeFlow/modules/bangumi/search_data.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -696,11 +698,9 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
   // 搜索结果跳转
   void _onAnimeTap(SearchAnimeItem anime) {
-    Routes.goToAnimeData(
-      context,
-      animeId: anime.id,
-      animeName: anime.nameCn,
-      imageUrl: anime.image,
+    context.pushNamed(
+      AppRouter.animeData,
+      pathParameters: { 'animeId': anime.id.toString()},
     );
   }
 }

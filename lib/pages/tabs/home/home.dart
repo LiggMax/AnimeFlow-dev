@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../../router/router_config.dart';
 import '../../routes.dart';
 import 'recommend.dart';
 import 'ranking.dart';
@@ -32,7 +34,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         actions: [
           IconButton(
             tooltip: '搜索',
-            onPressed: () => Navigator.pushNamed(context, Routes.search),
+            onPressed: () => context.pushNamed(AppRouter.search),
             icon: const Icon(Icons.search),
           ),
           IconButton(

@@ -281,7 +281,7 @@ class _RankingPageState extends State<RankingPage> {
       child: InkWell(
         onTap: () {
           // 跳转到详情页面
-          context.pushNamed('anime_data', pathParameters: {'animeId': '$link'});
+          context.pushNamed(AppRouter.animeData, pathParameters: {'animeId': '$link'});
         },
         child: Stack(
           fit: StackFit.expand,

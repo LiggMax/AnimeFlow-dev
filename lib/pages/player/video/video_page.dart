@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import '../../../utils/fullscreen_utils.dart';
@@ -111,7 +112,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
                         if (widget.onBackPressed != null) {
                           widget.onBackPressed!();
                         } else {
-                          Routes.goBack(state.context);
+                          context.pop();
                         }
                       }
                     },

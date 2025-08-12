@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:AnimeFlow/router/router_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -484,7 +485,7 @@ class AnimePlayButton extends StatelessWidget {
               onPressed: () {
                 // 跳转到播放信息页面
                 context.pushNamed(
-                  'play_info',
+                  AppRouter.playInfo,
                   extra: {'animeName': animeName, 'animeId': animeId},
                 );
               },

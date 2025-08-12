@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:AnimeFlow/router/router_config.dart';
 import 'package:flutter/material.dart';
 import 'package:AnimeFlow/request/bangumi/bangumi.dart';
 import 'package:go_router/go_router.dart';
@@ -333,7 +334,7 @@ class AnimeGrid extends StatelessWidget {
                 animeData: animeData,
                 onTap: (id) {
                   context.pushNamed(
-                    'anime_data',
+                    AppRouter.animeData,
                     pathParameters: {'animeId': '$id'},
                     extra: {
                       'animeName': animeName,
