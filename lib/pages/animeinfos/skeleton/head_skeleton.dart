@@ -54,9 +54,9 @@ class _SkeletonLoaderState extends State<SkeletonLoader>
               begin: Alignment(-1.0 + _animation.value, 0.0),
               end: Alignment(1.0 + _animation.value, 0.0),
               colors: const [
-                Color(0xFF939393),
-                Color(0xFF979797),
-                Color(0xFF868686),
+                Color(0x73E0E0E0),
+                Color(0xA4E0E0E0),
+                Color(0xCEE0E0E0),
               ],
               stops: const [0.0, 0.5, 1.0],
             ),

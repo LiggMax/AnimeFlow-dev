@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:AnimeFlow/modules/bangumi/related.dart';
 import 'package:AnimeFlow/request/bangumi/bangumi.dart';
+import 'package:go_router/go_router.dart';
 import 'detail_info.dart';
 import 'package:AnimeFlow/utils/fullscreen_utils.dart';
 
@@ -73,6 +74,10 @@ class RelatedItemCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         // TODO: 导航到条目详情页面
+        context.pushNamed(
+          'anime_data',
+          pathParameters: {'animeId': item.id.toString()},
+        );
       },
       child: Container(
         decoration: BoxDecoration(
