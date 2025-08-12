@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../router/router_config.dart';
-import '../../routes.dart';
 import 'recommend.dart';
 import 'ranking.dart';
 import 'package:provider/provider.dart';

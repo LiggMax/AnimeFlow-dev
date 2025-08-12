@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import '../../../utils/fullscreen_utils.dart';
-import '../../routes.dart';
+import 'package:AnimeFlow/utils/fullscreen_utils.dart';
 
 /// 视频播放器核心组件
 class VideoPlayer extends StatefulWidget {
