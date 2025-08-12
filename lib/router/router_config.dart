@@ -37,9 +37,10 @@ class AppRouter {
         path: playInfo,
         name: 'play_info',
         builder: (context, state) {
-          final title = state.pathParameters['title']!;
-          final videoInfo = state.extra as Map<String, dynamic>?;
-          return PlayInfo(title: title, videoInfo: videoInfo);
+          final extra = state.extra as Map<String,dynamic>;
+          final animeName = extra['animeName'];
+          final animeId = extra['animeId'];
+          return PlayInfo(animeName: animeName, animeId: animeId);
         },
       ),
     ],

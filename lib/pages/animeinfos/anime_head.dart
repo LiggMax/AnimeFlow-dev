@@ -485,13 +485,7 @@ class AnimePlayButton extends StatelessWidget {
                 // 跳转到播放信息页面
                 context.pushNamed(
                   'play_info',
-                  extra: {
-                    'title': animeName,
-                    'videoInfo': {'animeId': animeId}
-                  }
-
-                  // title: animeName ?? '动漫播放',
-                  // videoInfo: {'animeId': animeId, 'animeName': animeName},
+                  extra: {'animeName': animeName, 'animeId': animeId},
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -502,7 +496,6 @@ class AnimePlayButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 elevation: 3,
-                shadowColor: const Color(0xFF8B5CF6).withAlpha(53),
               ),
               icon: const Icon(Icons.play_arrow_rounded, size: 24),
               label: const Text(

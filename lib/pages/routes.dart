@@ -78,8 +78,6 @@ class Routes {
         if (args != null) {
           return MaterialPageRoute(
             builder: (_) => PlayInfo(
-              title: args['title'] as String?,
-              videoInfo: args['videoInfo'] as Map<String, dynamic>?,
             ),
             settings: settings,
           );
