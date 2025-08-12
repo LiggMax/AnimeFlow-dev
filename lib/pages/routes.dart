@@ -62,7 +62,6 @@ class Routes {
             builder: (_) => AnimeDataPage(
               animeId: args['animeId'] as int,
               animeName: args['animeName'] as String?,
-              imageUrl: args['imageUrl'] as String?,
             ),
             settings: settings,
           );

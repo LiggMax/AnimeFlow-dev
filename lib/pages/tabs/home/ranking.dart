@@ -1,7 +1,8 @@
 import 'package:AnimeFlow/request/bangumi/bangumi_tv.dart';
-import 'package:AnimeFlow/pages/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:AnimeFlow/utils/fullscreen_utils.dart';
+import 'package:go_router/go_router.dart';
+import 'package:AnimeFlow/router/router_config.dart';
 
 class RankingPage extends StatefulWidget {
   const RankingPage({super.key});
@@ -280,14 +281,7 @@ class _RankingPageState extends State<RankingPage> {
       child: InkWell(
         onTap: () {
           // 跳转到详情页面
-          Navigator.of(context).pushNamed(
-            Routes.animeData,
-            arguments: {
-              'animeId': link,
-              'animeName': title,
-              'imageUrl': coverUrl,
-            },
-          );
+          context.pushNamed('anime_data', pathParameters: {'animeId': '$link'});
         },
         child: Stack(
           fit: StackFit.expand,

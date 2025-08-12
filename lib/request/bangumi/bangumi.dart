@@ -1,6 +1,7 @@
 import 'package:AnimeFlow/modules/bangumi/character_data.dart';
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
+import 'package:AnimeFlow/modules/bangumi/data.dart';
 import '../../modules/bangumi/search_data.dart';
 import '../request.dart';
 import '../api/bangumi/v0_api.dart';
@@ -24,12 +25,12 @@ class BangumiService {
   }
 
   /// 获取条目详情
-  static Future<Map<String, dynamic>?> getInfoByID(int id) async {
+  static Future<BangumiDetailData?> getInfoByID(int id) async {
     try {
       final response = await httpRequest.get(
         '${BangumiV0Api.bangumiInfoByID}/$id',
       );
-      return response.data;
+      return BangumiDetailData.fromJson(response.data);
     } catch (e) {
       _log.severe('获取条目详情失败: $e');
       return null;

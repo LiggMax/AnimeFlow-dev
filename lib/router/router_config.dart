@@ -4,40 +4,37 @@
  */
 
 import 'package:AnimeFlow/pages/player/play_info.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 import '../pages/animeinfos/anime_info.dart';
 import '../pages/tabs.dart';
 
 class AppRouter {
+
+  static const String home = '/';
+  static const String animeData = '/anime_data';
+  static const String playInfo = '/play_info';
+
   final GoRouter routes = GoRouter(
     routes: [
       //主页
       GoRoute(
-        path: '/',
+        path: home,
         name: 'home',
         builder: (context, state) => const Tabs(),
       ),
       //详情页
       GoRoute(
-        path: '/anime_data/:animeId',
+        path: '$animeData/:animeId',
         name: 'anime_data',
         builder: (context, state) {
           final animeId = int.parse(state.pathParameters['animeId']!);
-          final animeName = state.pathParameters['animeName']!;
-          final imageUrl = state.pathParameters['imageUrl']!;
-          return AnimeDataPage(
-            animeId: animeId,
-            animeName: animeName,
-            imageUrl: imageUrl,
-          );
+          return AnimeDataPage(animeId: animeId);
         },
       ),
       //播放页
       GoRoute(
-        path: '/play_info',
+        path: playInfo,
         name: 'play_info',
         builder: (context, state) {
           final title = state.pathParameters['title']!;

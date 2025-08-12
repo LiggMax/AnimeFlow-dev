@@ -8,14 +8,8 @@ import 'anime_comments.dart';
 class AnimeDataPage extends StatefulWidget {
   final int animeId;
   final String? animeName;
-  final String? imageUrl;
 
-  const AnimeDataPage({
-    super.key,
-    required this.animeId,
-    this.animeName,
-    this.imageUrl,
-  });
+  const AnimeDataPage({super.key, required this.animeId, this.animeName});
 
   @override
   State<AnimeDataPage> createState() => _AnimeDataPageState();
@@ -42,11 +36,11 @@ class _AnimeDataPageState extends State<AnimeDataPage>
       date: '',
       platform: '',
       images: BangumiImages(
-        small: widget.imageUrl ?? '',
-        grid: widget.imageUrl ?? '',
-        large: widget.imageUrl ?? '',
-        medium: widget.imageUrl ?? '',
-        common: widget.imageUrl ?? '',
+        small: '',
+        grid: '',
+        large: '',
+        medium: '',
+        common: '',
       ),
       rating: null,
       collection: null,
@@ -144,11 +138,7 @@ class InfoController {
     try {
       final data = await BangumiService.getInfoByID(id);
       if (data != null) {
-        final parsedData = BangumiDataParser.parseDetailData(data);
-        if (parsedData != null) {
-          // 直接替换整个对象，因为字段是final的
-          bangumiItem = parsedData;
-        }
+        bangumiItem = data;
       }
     } finally {
       isLoading = false;

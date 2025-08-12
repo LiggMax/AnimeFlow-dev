@@ -159,7 +159,7 @@ class AnimeDetailBackground extends StatelessWidget {
     }
 
     return Positioned.fill(
-      bottom: kTextTabBarHeight + 60, // 增加60px为播放按钮留空间
+      bottom: kTextTabBarHeight + 60,
       child: IgnorePointer(
         child: Opacity(
           opacity: 0.4,
