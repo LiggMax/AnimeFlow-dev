@@ -44,8 +44,13 @@ dependencies:
   hive_flutter: ^1.1.0
   go_router: ^16.1.0
   cached_network_image: ^3.3.0
+  fluro: ^2.0.5
 
   ##播放器
+  chewie: ^1.12.1
+  video_player: ^2.10.0
+
+
   media_kit: ^1.1.11 # 主要包装.
   media_kit_video: ^1.2.5 # 用于视频渲染.
   media_kit_libs_video: ^1.0.5 # 原生视频依赖项.
@@ -76,9 +81,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  assets:
-    - lib/assets/images/
-    - lib/assets/describes/
+#  assets:
+#    - lib/assets/images/
+#    - lib/assets/describes/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
