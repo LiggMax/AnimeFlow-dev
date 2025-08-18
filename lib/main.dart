@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:AnimeFlow/router/router_config.dart';
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import './controllers/theme_controller.dart';
+import 'package:AnimeFlow/request/bangumi/bangumi_oauth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,12 +28,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late ThemeController themeController;
   bool _isInitialized = false;
+  final AppLinks _appLinks = AppLinks();
+  StreamSubscription<Uri?>? _sub;
 
   @override
   void initState() {
     super.initState();
     themeController = ThemeController();
     _initializeTheme();
+    _initDeepLinkListener();
   }
 
   Future<void> _initializeTheme() async {
@@ -41,8 +48,61 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  // 路由
-  final _router = AppRouter().routes;
+  void _initDeepLinkListener() async {
+    // 处理 app 启动时的回调 URI
+    try {
+      final initialUri = await _appLinks.getInitialAppLink();
+      if (initialUri != null) {
+        _handleIncomingUri(initialUri);
+      }
+    } catch (e) {
+      debugPrint('获取初始 URI 失败：$e');
+    }
+
+    // 监听 app 运行中收到的 URI（热启动或后台唤起）
+    _sub = _appLinks.uriLinkStream.listen(
+      (uri) {
+        _handleIncomingUri(uri);
+      },
+      onError: (err) {
+        debugPrint('URI 监听错误：$err');
+      },
+    );
+  }
+
+  void _handleIncomingUri(Uri uri) {
+    debugPrint('收到回调 URI：$uri');
+    if (uri.scheme == 'animeflow' &&
+        uri.host == 'auth' &&
+        uri.path == '/callback') {
+      final code = uri.queryParameters['code'];
+      if (code != null) {
+        debugPrint('授权成功，Code = $code');
+        // TODO: 使用 code 换取 access_token，更新登录状态
+        _handleTokenExchange(code);
+        // 阻止系统处理这个URI，保持用户在当前页面
+        return;
+      }
+    }
+    // 对于非OAuth回调的URI，可以在这里添加其他处理逻辑
+  }
+
+  Future<void> _handleTokenExchange(String code) async {
+    try {
+      final token = await OAuthCallbackHandler.getToken(code);
+      if (token != null) {
+        await OAuthCallbackHandler.persistToken(token);
+      }
+    } catch (e) {
+      debugPrint('Token 获取或持久化失败: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +125,7 @@ class _MyAppState extends State<MyApp> {
               themeMode: themeController.isDarkMode
                   ? ThemeMode.dark
                   : ThemeMode.light,
-              routerConfig: _router,
+              routerConfig: AppRouter().routes,
             ),
           );
         },

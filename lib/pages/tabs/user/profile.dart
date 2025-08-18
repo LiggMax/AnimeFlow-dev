@@ -192,7 +192,39 @@ class _ProfilePageState extends State<ProfilePage>
                 ],
               )
             : null,
-        actions: [IconButton(icon: const Icon(Icons.logout), onPressed: () {})],
+        actions: [
+          if (_persistedToken != null)
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('注销登录'),
+                      content: Text('确定要注销登录吗？'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('取消'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            OAuthCallbackHandler.clearPersistedToken();
+                            Navigator.of(context).pop();
+                            _loadPersistedToken();
+                          },
+                          child: Text('确定'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+        ],
       ),
       body: Stack(
         children: [

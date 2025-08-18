@@ -10,7 +10,6 @@ import 'package:AnimeFlow/pages/search/search_page.dart';
 import 'package:AnimeFlow/pages/tabs.dart';
 
 class AppRouter {
-
   static const String home = '/';
   static const String animeData = 'anime_data';
   static const String playInfo = 'play_info';
@@ -38,7 +37,7 @@ class AppRouter {
         path: '/play_info',
         name: 'play_info',
         builder: (context, state) {
-          final extra = state.extra as Map<String,dynamic>;
+          final extra = state.extra as Map<String, dynamic>;
           final animeName = extra['animeName'];
           final animeId = extra['animeId'];
           return PlayInfo(animeName: animeName, animeId: animeId);
@@ -49,9 +48,18 @@ class AppRouter {
         path: '/search',
         name: 'search',
         builder: (context, state) => const SearchPage(),
-      )
+      ),
     ],
-    errorBuilder: (context, state) =>
-        Scaffold(body: Center(child: Text('页面不存在：${state.uri.path}'))),
+    errorBuilder: (context, state) => Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.pop();
+          },
+        ),
+      ),
+      body: Center(child: Text('页面不存在：${state.uri.path}')),
+    ),
   );
 }
