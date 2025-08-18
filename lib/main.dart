@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:AnimeFlow/router/router_config.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -80,11 +81,9 @@ class _MyAppState extends State<MyApp> {
         debugPrint('授权成功，Code = $code');
         // TODO: 使用 code 换取 access_token，更新登录状态
         _handleTokenExchange(code);
-        // 阻止系统处理这个URI，保持用户在当前页面
-        return;
+        context.pushNamed(AppRouter.home);
       }
     }
-    // 对于非OAuth回调的URI，可以在这里添加其他处理逻辑
   }
 
   Future<void> _handleTokenExchange(String code) async {
