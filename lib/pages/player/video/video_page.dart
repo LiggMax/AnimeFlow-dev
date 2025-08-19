@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 
+import 'controls/custom_seek_bar.dart';
+
 class VideoPage extends StatefulWidget {
   const VideoPage({Key? key}) : super(key: key);
 
@@ -50,8 +52,8 @@ class VideoPageState extends State<VideoPage> {
             children: [
               // 顶部自定义控件
               Positioned(
-                left: 20,
-                right: 20,
+                left: 0,
+                right: 0,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -87,16 +89,16 @@ class VideoPageState extends State<VideoPage> {
               ),
               // 底部控件栏
               Positioned(
-                bottom: 30,
-                left: 20,
-                right: 20,
+                bottom: 0,
+                left: 0,
+                right: 0,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     MaterialPlayOrPauseButton(),
                     const SizedBox(width: 8),
                     // 进度条
-                    Expanded(child: MaterialSeekBar()),
+                    Expanded(child: CustomSeekBar(player: player,)),
                     const SizedBox(width: 8),
                     MaterialFullscreenButton(),
                   ],

@@ -1,0 +1,167 @@
+///进度条组件
+library;
+import 'package:flutter/material.dart';
+import 'package:media_kit/media_kit.dart';
+
+class CustomSeekBar extends StatefulWidget {
+  final Player player;
+
+  const CustomSeekBar({Key? key, required this.player}) : super(key: key);
+
+  @override
+  State<CustomSeekBar> createState() => _CustomSeekBarState();
+}
+
+class _CustomSeekBarState extends State<CustomSeekBar> {
+  bool _isDragging = false;
+  Duration _dragPosition = Duration.zero;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<Duration>(
+      stream: widget.player.stream.position,
+      builder: (context, positionSnapshot) {
+        return StreamBuilder<Duration>(
+          stream: widget.player.stream.duration,
+          builder: (context, durationSnapshot) {
+            return StreamBuilder<Duration>(
+              stream: widget.player.stream.buffer,
+              builder: (context, bufferSnapshot) {
+                return StreamBuilder<bool>(
+                  stream: widget.player.stream.buffering,
+                  builder: (context, bufferingSnapshot) {
+                    final position = positionSnapshot.data ?? Duration.zero;
+                    final duration = durationSnapshot.data ?? Duration.zero;
+                    final buffer = bufferSnapshot.data ?? Duration.zero;
+                    final isBuffering = bufferingSnapshot.data ?? false;
+
+                    final progress = duration.inMilliseconds > 0
+                        ? (position.inMilliseconds / duration.inMilliseconds)
+                        .clamp(0.0, 1.0)
+                        : 0.0;
+
+                    final bufferProgress = duration.inMilliseconds > 0
+                        ? (buffer.inMilliseconds / duration.inMilliseconds)
+                        .clamp(0.0, 1.0)
+                        : 0.0;
+
+                    return GestureDetector(
+                      onHorizontalDragStart: (details) {
+                        setState(() {
+                          _isDragging = true;
+                        });
+                      },
+                      onHorizontalDragUpdate: (details) {
+                        final RenderBox renderBox =
+                        context.findRenderObject() as RenderBox;
+                        final tapPosition = details.localPosition.dx;
+                        final width = renderBox.size.width;
+                        final dragProgress = (tapPosition / width).clamp(
+                          0.0,
+                          1.0,
+                        );
+
+                        setState(() {
+                          _dragPosition = Duration(
+                            milliseconds:
+                            (duration.inMilliseconds * dragProgress)
+                                .toInt(),
+                          );
+                        });
+                      },
+                      onHorizontalDragEnd: (details) {
+                        widget.player.seek(_dragPosition);
+                        setState(() {
+                          _isDragging = false;
+                        });
+                      },
+                      onTapDown: (details) {
+                        final RenderBox renderBox =
+                        context.findRenderObject() as RenderBox;
+                        final tapPosition = details.localPosition.dx;
+                        final width = renderBox.size.width;
+                        final tapProgress = (tapPosition / width).clamp(
+                          0.0,
+                          1.0,
+                        );
+
+                        final seekPosition = Duration(
+                          milliseconds: (duration.inMilliseconds * tapProgress)
+                              .toInt(),
+                        );
+
+                        widget.player.seek(seekPosition);
+                      },
+                      child: Container(
+                        height: 40,
+                        alignment: Alignment.center,
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final currentPosition = _isDragging ? _dragPosition : position;
+                            final currentProgress = duration.inMilliseconds > 0
+                                ? (currentPosition.inMilliseconds / duration.inMilliseconds).clamp(0.0, 1.0)
+                                : 0.0;
+
+                            return Stack(
+                              children: [
+                                // 背景轨道
+                                Container(
+                                  height: 4,
+                                  width: constraints.maxWidth,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(
+                                      alpha: 0.3,
+                                    ),
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                                // 缓冲部分
+                                Container(
+                                  height: 4,
+                                  width: constraints.maxWidth * bufferProgress,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                                // 播放进度部分
+                                Container(
+                                  height: 4,
+                                  width: constraints.maxWidth * currentProgress,
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                                // 拖拽时的指示器或当前位置指示器
+                                Positioned(
+                                  left: (constraints.maxWidth * currentProgress) - 8,
+                                  child: Container(
+                                    width: 16,
+                                    height: 16,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.blue,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+// ... existing code ...
+
+}
