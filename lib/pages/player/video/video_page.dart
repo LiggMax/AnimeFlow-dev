@@ -4,12 +4,8 @@ library;
 
 import 'package:flutter/material.dart';
 
-// Make sure to add following packages to pubspec.yaml:
-// * media_kit
-// * media_kit_video
-// * media_kit_libs_video
-import 'package:media_kit/media_kit.dart'; // Provides [Player], [Media], [Playlist] etc.
-import 'package:media_kit_video/media_kit_video.dart'; // Provides [VideoController] & [Video] etc.
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 
 class VideoPage extends StatefulWidget {
   const VideoPage({Key? key}) : super(key: key);
@@ -46,7 +42,70 @@ class VideoPageState extends State<VideoPage> {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.width * 9.0 / 16.0,
       // Use [Video] widget to display video output.
-      child: Video(controller: controller),
+      child: Video(
+        controller: controller,
+        controls: (state) {
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              // 顶部自定义控件
+              Positioned(
+                left: 20,
+                right: 20,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        const Text(
+                          '自定义标题',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.info_outline,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                      onPressed: () => ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(const SnackBar(content: Text('信息按钮点击'))),
+                    ),
+                  ],
+                ),
+              ),
+              // 底部控件栏
+              Positioned(
+                bottom: 30,
+                left: 20,
+                right: 20,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MaterialPlayOrPauseButton(),
+                    const SizedBox(width: 8),
+                    // 进度条
+                    Expanded(child: MaterialSeekBar()),
+                    const SizedBox(width: 8),
+                    MaterialFullscreenButton(),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
