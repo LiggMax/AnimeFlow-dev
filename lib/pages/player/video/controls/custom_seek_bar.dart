@@ -106,7 +106,7 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                               children: [
                                 // 背景轨道
                                 Container(
-                                  height: 4,
+                                  height: 6,
                                   width: constraints.maxWidth,
                                   decoration: BoxDecoration(
                                     color: Colors.white.withValues(
@@ -117,7 +117,7 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                                 ),
                                 // 缓冲部分
                                 Container(
-                                  height: 4,
+                                  height: 6,
                                   width: constraints.maxWidth * bufferProgress,
                                   decoration: BoxDecoration(
                                     color: Colors.white.withValues(
@@ -128,7 +128,7 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                                 ),
                                 // 播放进度部分
                                 Container(
-                                  height: 4,
+                                  height: 6,
                                   width: constraints.maxWidth * currentProgress,
                                   decoration: BoxDecoration(
                                     color: Colors.blue,
@@ -144,6 +144,25 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                                     decoration: const BoxDecoration(
                                       color: Colors.blue,
                                       shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ),
+                                // 添加一个更明显的拖动指示器（圆球）
+                                Positioned(
+                                  left: (constraints.maxWidth * currentProgress) - 8,
+                                  child: Container(
+                                    width: 16,
+                                    height: 16,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.3),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),

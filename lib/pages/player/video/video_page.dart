@@ -23,6 +23,14 @@ class VideoPageState extends State<VideoPage> {
   // Create a [VideoController] to handle video output from [Player].
   late final controller = VideoController(player);
 
+  // 时间格式化方法
+  String _formatTime(Duration duration) {
+    final minutes = duration.inMinutes;
+    final seconds = duration.inSeconds % 60;
+    return '$minutes:$seconds';
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -87,20 +95,53 @@ class VideoPageState extends State<VideoPage> {
                   ],
                 ),
               ),
+
+              //时间信息
+              Positioned(
+                bottom: 40,
+                left: 10,
+                right: 0,
+                child: StreamBuilder<Duration>(
+                  stream: player.stream.position,
+                  builder: (context, positionSnapshot) {
+                    return StreamBuilder<Duration>(
+                      stream: player.stream.duration,
+                      builder: (context, durationSnapshot) {
+                        final position = positionSnapshot.data ?? Duration.zero;
+                        final duration = durationSnapshot.data ?? Duration.zero;
+
+                        return Text(
+                          '${_formatTime(position)}/${_formatTime(duration)}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+
               // 底部控件栏
               Positioned(
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
                   children: [
-                    MaterialPlayOrPauseButton(),
-                    const SizedBox(width: 8),
-                    // 进度条
-                    Expanded(child: CustomSeekBar(player: player,)),
-                    const SizedBox(width: 8),
-                    MaterialFullscreenButton(),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          MaterialPlayOrPauseButton(),
+                          const SizedBox(width: 8),
+                          // 进度条
+                          Expanded(child: CustomSeekBar(player: player)),
+                          const SizedBox(width: 8),
+                          MaterialFullscreenButton(),
+                        ]
+                    ),
                   ],
                 ),
               ),
