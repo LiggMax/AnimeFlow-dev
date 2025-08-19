@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 
 import '../comments.dart';
+import 'Introduction.dart';
 
 class DetailPage extends StatefulWidget {
   final String? animeName;
@@ -49,22 +50,11 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
             child: TabBarView(
               controller: _tabController,
               children: [
-                // 简介内容
-                ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    Text(
-                      widget.animeName ?? '',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+                /// 简介内容
+                Introduction(animeName: widget.animeName),
 
                 /// 评论内容
-                CommentsPage(animeId: widget.animeId)
+                CommentsPage(animeId: widget.animeId),
               ],
             ),
           ),
