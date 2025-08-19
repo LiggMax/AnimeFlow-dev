@@ -11,14 +11,14 @@ import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart'; // Provides [Player], [Media], [Playlist] etc.
 import 'package:media_kit_video/media_kit_video.dart'; // Provides [VideoController] & [Video] etc.
 
-class MyScreen extends StatefulWidget {
-  const MyScreen({Key? key}) : super(key: key);
+class VideoPage extends StatefulWidget {
+  const VideoPage({Key? key}) : super(key: key);
 
   @override
-  State<MyScreen> createState() => MyScreenState();
+  State<VideoPage> createState() => VideoPageState();
 }
 
-class MyScreenState extends State<MyScreen> {
+class VideoPageState extends State<VideoPage> {
   // Create a [Player] to control playback.
   late final player = Player();
 
