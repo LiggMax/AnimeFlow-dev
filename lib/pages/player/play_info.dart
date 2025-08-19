@@ -1,4 +1,4 @@
-import 'package:AnimeFlow/pages/player/details_info.dart';
+import 'package:AnimeFlow/pages/player/detail/details_info.dart';
 import 'package:AnimeFlow/pages/player/video/video_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -46,7 +46,7 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
             const VideoPage(),
 
             ///底部页面
-            DetailPage()
+            DetailPage(animeName: widget.animeName, animeId: widget.animeId)
           ],
         ),
       ),

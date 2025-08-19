@@ -83,7 +83,7 @@ class _AnimeDataPageState extends State<AnimeDataPage>
   @override
   Widget build(BuildContext context) {
     // 标签页配置
-    final List<String> tabs = <String>['详情', '评论'];
+    final List<String> tabs = <String>['详情', '讨论'];
 
     return PopScope(
       canPop: true,
