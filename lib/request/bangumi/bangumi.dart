@@ -2,13 +2,14 @@ import 'package:AnimeFlow/modules/bangumi/character_data.dart';
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
 import 'package:AnimeFlow/modules/bangumi/data.dart';
-import '../../modules/bangumi/search_data.dart';
-import '../request.dart';
-import '../api/bangumi/v0_api.dart';
-import '../../modules/bangumi/comments.dart';
-import '../../modules/bangumi/related.dart';
-import '../api/common_api.dart';
-import '../api/bangumi/p1_api.dart';
+import 'package:AnimeFlow/modules/bangumi/episodes.dart';
+import 'package:AnimeFlow/modules/bangumi/search_data.dart';
+import 'package:AnimeFlow/request/request.dart';
+import 'package:AnimeFlow/request/api/bangumi/v0_api.dart';
+import 'package:AnimeFlow/modules/bangumi/comments.dart';
+import 'package:AnimeFlow/modules/bangumi/related.dart';
+import 'package:AnimeFlow/request/api/common_api.dart';
+import 'package:AnimeFlow/request/api/bangumi/p1_api.dart';
 
 class BangumiService {
   static final Logger _log = Logger('BangumiService');
@@ -38,13 +39,13 @@ class BangumiService {
   }
 
   ///获取剧集详情
-  static Future<Map<String, dynamic>?> getEpisodesByID(int id) async {
+  static Future<Episodes?> getEpisodesByID(int id) async {
     try {
       final response = await httpRequest.get(
         BangumiV0Api.bangumiEpisodeByID,
         queryParameters: {'subject_id': id, 'limit': 100, 'offset': 0},
       );
-      return response.data;
+      return Episodes.fromJson(response.data);
     } catch (e) {
       _log.severe('获取剧集详情失败: $e');
       return null;

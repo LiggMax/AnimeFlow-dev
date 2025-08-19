@@ -5,6 +5,8 @@ library;
 
 import 'package:flutter/material.dart';
 
+import 'detail_episode.dart';
+
 class Introduction extends StatelessWidget {
   final String? animeName;
 
@@ -95,6 +97,8 @@ class Introduction extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 16),
+        // EpisodeItem(episode: null,)
       ],
     );
   }
