@@ -136,7 +136,7 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                                   height: 6,
                                   width: constraints.maxWidth * currentProgress,
                                   decoration: BoxDecoration(
-                                    color: Colors.blue,
+                                    color: Theme.of(context).colorScheme.primary,
                                     borderRadius: BorderRadius.circular(2),
                                   ),
                                 ),
