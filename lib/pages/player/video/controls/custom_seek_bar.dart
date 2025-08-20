@@ -131,15 +131,18 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                                     borderRadius: BorderRadius.circular(2),
                                   ),
                                 ),
-                                // 播放进度部分
+                                // 播放进度条
                                 Container(
                                   height: 6,
                                   width: constraints.maxWidth * currentProgress,
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
                                     borderRadius: BorderRadius.circular(2),
                                   ),
                                 ),
+                                //指示器
                                 Positioned(
                                   left:
                                       ((constraints.maxWidth *
@@ -149,13 +152,13 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                                             0.0,
                                             constraints.maxWidth - 20,
                                           ),
-                                  top: -5,
+                                  top: -7,
                                   child: Material(
                                     elevation: 4, // 提升层级
                                     color: Colors.transparent,
                                     child: Container(
-                                      width: 16,
-                                      height: 16,
+                                      width: 18,
+                                      height: 18,
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         shape: BoxShape.circle,
