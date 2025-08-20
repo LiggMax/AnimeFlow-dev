@@ -9,9 +9,10 @@ import 'package:media_kit_video/media_kit_video_controls/src/controls/material.d
 import 'custom_seek_bar.dart';
 
 class ControlsPage extends StatefulWidget {
+  final String? animeName;
   final Player player;
 
-  const ControlsPage({super.key, required this.player});
+  const ControlsPage({super.key, required this.player, this.animeName});
 
   @override
   State<ControlsPage> createState() => _ControlsPageState();
@@ -37,7 +38,7 @@ class _ControlsPageState extends State<ControlsPage> {
     // 取消之前的定时器
     _hideTimer?.cancel();
 
-    // 5秒后自动隐藏
+    // 自动隐藏时间
     _hideTimer = Timer(const Duration(seconds: 5), () {
       if (mounted) {
         setState(() {
@@ -73,7 +74,7 @@ class _ControlsPageState extends State<ControlsPage> {
   void dispose() {
     _hideTimer?.cancel();
     super.dispose();
-  }
+ }
 
   @override
   Widget build(BuildContext context) {
@@ -135,8 +136,8 @@ class _ControlsPageState extends State<ControlsPage> {
                           ),
                           onPressed: () => Navigator.pop(context),
                         ),
-                        const Text(
-                          '自定义标题',
+                        Text(
+                          widget.animeName ?? '',
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ],

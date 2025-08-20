@@ -43,7 +43,7 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
         child: Column(
           children: [
             /// 视频播放器
-            const VideoPage(),
+            VideoPage(animeName: widget.animeName,),
 
             ///底部页面
             DetailPage(animeName: widget.animeName, animeId: widget.animeId)

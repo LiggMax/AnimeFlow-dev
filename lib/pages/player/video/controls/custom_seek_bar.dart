@@ -152,7 +152,7 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                                             0.0,
                                             constraints.maxWidth - 20,
                                           ),
-                                  top: -7,
+                                  top: -6,
                                   child: Material(
                                     elevation: 4, // 提升层级
                                     color: Colors.transparent,

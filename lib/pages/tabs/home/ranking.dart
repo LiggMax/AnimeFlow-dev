@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:AnimeFlow/utils/fullscreen_utils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:AnimeFlow/router/router_config.dart';
+import 'package:lottie/lottie.dart';
 
 class RankingPage extends StatefulWidget {
   const RankingPage({super.key});
@@ -169,13 +170,14 @@ class _RankingPageState extends State<RankingPage> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('正在加载排行榜...'),
+            Lottie.asset(
+              'assets/animations/loadAnime.json',
+              fit: BoxFit.contain,
+            ),
           ],
         ),
       );
@@ -281,7 +283,10 @@ class _RankingPageState extends State<RankingPage> {
       child: InkWell(
         onTap: () {
           // 跳转到详情页面
-          context.pushNamed(AppRouter.animeData, pathParameters: {'animeId': '$link'});
+          context.pushNamed(
+            AppRouter.animeData,
+            pathParameters: {'animeId': '$link'},
+          );
         },
         child: Stack(
           fit: StackFit.expand,

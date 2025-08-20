@@ -8,7 +8,8 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'controls/controls.dart';
 
 class VideoPage extends StatefulWidget {
-  const VideoPage({Key? key}) : super(key: key);
+  final String? animeName;
+  const VideoPage({Key? key, this.animeName}) : super(key: key);
 
   @override
   State<VideoPage> createState() => VideoPageState();
@@ -45,7 +46,7 @@ class VideoPageState extends State<VideoPage> {
       child: Video(
         controller: controller,
         controls: (state) {
-          return ControlsPage(player: player);
+          return ControlsPage(player: player,animeName: widget.animeName,);
         },
       ),
     );

@@ -32,7 +32,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            onPressed: () => context.pushNamed(AppRouter.playInfo,extra: {'animeName': 'name', 'animeId': 123},),
+            onPressed: () => context.pushNamed(
+              AppRouter.playInfo,
+              extra: {'animeName': 'name', 'animeId': 123},
+            ),
             icon: const Icon(Icons.video_collection),
           ),
           IconButton(

@@ -54,25 +54,25 @@ AnimeFlow 是一款基于 Flutter 开发的现代化动漫播放器，专注于�
 
 ### 搜索功能
 <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
-  <img src="lib/assets/describes/SearchList.png" width="45%" alt="搜索列表">
-  <img src="lib/assets/describes/SearchGrid.png" width="45%" alt="搜索网格">
+  <img src="assets/describes/SearchList.png" width="45%" alt="搜索列表">
+  <img src="assets/describes/SearchGrid.png" width="45%" alt="搜索网格">
 </div>
 
 ### 排行榜、时间表
 <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
-  <img src="lib/assets/describes/ranking.png" width="45%" alt="排行榜">
-  <img src="lib/assets/describes/date.png" width="45%" alt="时间表">
+  <img src="assets/describes/ranking.png" width="45%" alt="排行榜">
+  <img src="assets/describes/date.png" width="45%" alt="时间表">
 </div>
 
 ### 详情页面、角色
 <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
-  <img src="lib/assets/describes/particulars.png" width="45%" alt="详情页面">
-  <img src="lib/assets/describes/person.png" width="45%" alt="角色">
+  <img src="assets/describes/particulars.png" width="45%" alt="详情页面">
+  <img src="assets/describes/person.png" width="45%" alt="角色">
 </div>
 
 ### 评论系统
 <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
-  <img src="lib/assets/describes/comments.png" width="45%" alt="评论系统">
+  <img src="assets/describes/comments.png" width="45%" alt="评论系统">
 </div>
 
 </div>

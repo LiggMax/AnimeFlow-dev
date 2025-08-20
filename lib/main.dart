@@ -79,7 +79,6 @@ class _MyAppState extends State<MyApp> {
       final code = uri.queryParameters['code'];
       if (code != null) {
         debugPrint('授权成功，Code = $code');
-        // TODO: 使用 code 换取 access_token，更新登录状态
         _handleTokenExchange(code);
         context.pushNamed(AppRouter.home);
       }
