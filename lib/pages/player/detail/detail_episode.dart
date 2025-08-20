@@ -1,12 +1,11 @@
-/*
-  @Author Ligg
-  @Time 2025/7/26
- */
+///  @Author Ligg
+///  @Time 2025/7/26
+library;
 import 'package:flutter/material.dart';
-import 'package:AnimeFlow/modules/bangumi/episodes_data.dart';
+import 'package:AnimeFlow/modules/bangumi/episodes.dart';
 
 class EpisodeItem extends StatelessWidget {
-  final Episode episode;
+  final Data episode;
   final VoidCallback? onTap;
 
   const EpisodeItem({super.key, required this.episode, this.onTap});
@@ -16,10 +15,10 @@ class EpisodeItem extends StatelessWidget {
     return Card(
       child: ListTile(
         title: Text(
-          episode.nameCn.isNotEmpty
-              ? episode.nameCn
-              : episode.name.isNotEmpty
-              ? episode.name
+          episode.nameCn!.isNotEmpty
+              ? episode.nameCn!
+              : episode.name!.isNotEmpty
+              ? episode.name!
               : '待播出',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -27,8 +26,8 @@ class EpisodeItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('第${episode.ep}集'),
-            if (episode.airdate.isNotEmpty) Text('播出日期: ${episode.airdate}'),
-            if (episode.duration.isNotEmpty) Text('时长: ${episode.duration}'),
+            if (episode.airdate!.isNotEmpty) Text('播出日期: ${episode.airdate}'),
+            if (episode.duration!.isNotEmpty) Text('时长: ${episode.duration}'),
           ],
         ),
         trailing: Column(
@@ -51,10 +50,10 @@ class EpisodeItem extends StatelessWidget {
 }
 
 class EpisodeList extends StatelessWidget {
-  final List<Episode> episodes;
+  final List<Data> episodes; // 修改为Data类型
   final ScrollController? scrollController;
   final bool closeOnTap;
-  final Function(Episode)? onEpisodeSelected;
+  final Function(Data)? onEpisodeSelected; // 修改为Data类型
 
   const EpisodeList({
     super.key,
@@ -100,8 +99,8 @@ class EpisodeList extends StatelessWidget {
 class EpisodeCountRow extends StatelessWidget {
   final int episodeCount;
   final VoidCallback onRefresh;
-  final List<Episode> episodes;
-  final Function(Episode)? onEpisodeSelected;
+  final List<Data> episodes; // 修改为Data类型
+  final Function(Data)? onEpisodeSelected; // 修改为Data类型
 
   const EpisodeCountRow({
     super.key,
@@ -138,8 +137,8 @@ class EpisodeCountRow extends StatelessWidget {
 }
 
 class EpisodeDrawer extends StatelessWidget {
-  final List<Episode> episodes;
-  final Function(Episode)? onEpisodeSelected;
+  final List<Data> episodes; // 修改为Data类型
+  final Function(Data)? onEpisodeSelected; // 修改为Data类型
 
   const EpisodeDrawer({
     super.key,
