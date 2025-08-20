@@ -5,13 +5,17 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'detail_episode.dart';
-
-class Introduction extends StatelessWidget {
+class Introduction extends StatefulWidget {
   final String? animeName;
+  final int? animeId;
 
-  const Introduction({super.key, this.animeName});
+  const Introduction({super.key, this.animeName, this.animeId});
 
+  @override
+  State<Introduction> createState() => _IntroductionState();
+}
+
+class _IntroductionState extends State<Introduction> {
   //抽屉弹窗
   void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -19,9 +23,12 @@ class Introduction extends StatelessWidget {
       isScrollControlled: true, //允许全屏显示
       builder: (BuildContext context) {
         return DraggableScrollableSheet(
-          initialChildSize: 0.8, // 初始显示
-          minChildSize: 0.4, // 最小
-          maxChildSize: 0.95, // 最大
+          initialChildSize: 0.8,
+          // 初始显示
+          minChildSize: 0.4,
+          // 最小
+          maxChildSize: 0.95,
+          // 最大
           expand: false,
           builder: (BuildContext context, ScrollController scrollController) {
             return Container(
@@ -53,9 +60,11 @@ class Introduction extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Image.network('https://lain.bgm.tv/r/400/pic/cover/l/b8/0d/513345_jv4wM.jpg'),
-                              ]
-                            )
+                                Image.network(
+                                  'https://lain.bgm.tv/r/400/pic/cover/l/b8/0d/513345_jv4wM.jpg',
+                                ),
+                              ],
+                            ),
                           ],
                         );
                       },
@@ -80,7 +89,7 @@ class Introduction extends StatelessWidget {
             Expanded(
               flex: 9,
               child: Text(
-                animeName ?? '',
+                widget.animeName ?? '',
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
