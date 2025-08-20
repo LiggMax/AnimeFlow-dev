@@ -29,6 +29,27 @@ class _ControlsPageState extends State<ControlsPage> {
     return Stack(
       fit: StackFit.expand,
       children: [
+        //顶部控件模板
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 50,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black.withValues(alpha: 0.4),
+                  Colors.black.withValues(alpha: 0.3),
+                  Colors.black.withValues(alpha: 0.0),
+                ],
+              ),
+            ),
+          ),
+        ),
+
         // 顶部自定义控件
         Positioned(
           left: 5,
@@ -67,6 +88,26 @@ class _ControlsPageState extends State<ControlsPage> {
           ),
         ),
 
+        //底部模板
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 65,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black.withValues(alpha: 0.0),
+                  Colors.black.withValues(alpha: 0.2),
+                  Colors.black.withValues(alpha: 0.3),
+                ],
+              ),
+            ),
+          ),
+        ),
         //时间信息
         Positioned(
           bottom: 40,
