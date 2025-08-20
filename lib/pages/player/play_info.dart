@@ -15,14 +15,10 @@ class PlayInfo extends StatefulWidget {
 
 class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
 
+
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -43,10 +39,10 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
         child: Column(
           children: [
             /// 视频播放器
-            VideoPage(animeName: widget.animeName,),
+            VideoPage(animeName: widget.animeName),
 
             ///底部页面
-            DetailPage(animeName: widget.animeName, animeId: widget.animeId)
+            DetailPage(animeName: widget.animeName, animeId: widget.animeId),
           ],
         ),
       ),
