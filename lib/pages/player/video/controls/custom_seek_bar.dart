@@ -1,5 +1,6 @@
 ///进度条组件
 library;
+
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 
@@ -20,29 +21,30 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
   Widget build(BuildContext context) {
     return StreamBuilder<Duration>(
       stream: widget.player.stream.position,
+      initialData: widget.player.state.position,
       builder: (context, positionSnapshot) {
         return StreamBuilder<Duration>(
           stream: widget.player.stream.duration,
+          initialData: widget.player.state.duration,
           builder: (context, durationSnapshot) {
             return StreamBuilder<Duration>(
               stream: widget.player.stream.buffer,
+              initialData: widget.player.state.buffer,
               builder: (context, bufferSnapshot) {
                 return StreamBuilder<bool>(
                   stream: widget.player.stream.buffering,
+                  initialData: widget.player.state.buffering,
                   builder: (context, bufferingSnapshot) {
                     final position = positionSnapshot.data ?? Duration.zero;
                     final duration = durationSnapshot.data ?? Duration.zero;
                     final buffer = bufferSnapshot.data ?? Duration.zero;
-                    final isBuffering = bufferingSnapshot.data ?? false;
 
-                    final progress = duration.inMilliseconds > 0
-                        ? (position.inMilliseconds / duration.inMilliseconds)
-                        .clamp(0.0, 1.0)
-                        : 0.0;
+                    Duration actualDuration = duration;
 
-                    final bufferProgress = duration.inMilliseconds > 0
-                        ? (buffer.inMilliseconds / duration.inMilliseconds)
-                        .clamp(0.0, 1.0)
+                    final bufferProgress = actualDuration.inMilliseconds > 0
+                        ? (buffer.inMilliseconds /
+                                  actualDuration.inMilliseconds)
+                              .clamp(0.0, 1.0)
                         : 0.0;
 
                     return GestureDetector(
@@ -53,7 +55,7 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                       },
                       onHorizontalDragUpdate: (details) {
                         final RenderBox renderBox =
-                        context.findRenderObject() as RenderBox;
+                            context.findRenderObject() as RenderBox;
                         final tapPosition = details.localPosition.dx;
                         final width = renderBox.size.width;
                         final dragProgress = (tapPosition / width).clamp(
@@ -64,8 +66,8 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                         setState(() {
                           _dragPosition = Duration(
                             milliseconds:
-                            (duration.inMilliseconds * dragProgress)
-                                .toInt(),
+                                (actualDuration.inMilliseconds * dragProgress)
+                                    .toInt(),
                           );
                         });
                       },
@@ -77,7 +79,7 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                       },
                       onTapDown: (details) {
                         final RenderBox renderBox =
-                        context.findRenderObject() as RenderBox;
+                            context.findRenderObject() as RenderBox;
                         final tapPosition = details.localPosition.dx;
                         final width = renderBox.size.width;
                         final tapProgress = (tapPosition / width).clamp(
@@ -86,8 +88,9 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                         );
 
                         final seekPosition = Duration(
-                          milliseconds: (duration.inMilliseconds * tapProgress)
-                              .toInt(),
+                          milliseconds:
+                              (actualDuration.inMilliseconds * tapProgress)
+                                  .toInt(),
                         );
 
                         widget.player.seek(seekPosition);
@@ -97,9 +100,14 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                         alignment: Alignment.center,
                         child: LayoutBuilder(
                           builder: (context, constraints) {
-                            final currentPosition = _isDragging ? _dragPosition : position;
-                            final currentProgress = duration.inMilliseconds > 0
-                                ? (currentPosition.inMilliseconds / duration.inMilliseconds).clamp(0.0, 1.0)
+                            final currentPosition = _isDragging
+                                ? _dragPosition
+                                : position;
+                            final currentProgress =
+                                actualDuration.inMilliseconds > 0
+                                ? (currentPosition.inMilliseconds /
+                                          actualDuration.inMilliseconds)
+                                      .clamp(0.0, 1.0)
                                 : 0.0;
 
                             return Stack(
@@ -109,9 +117,7 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                                   height: 6,
                                   width: constraints.maxWidth,
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(
-                                      alpha: 0.3,
-                                    ),
+                                    color: Colors.white.withValues(alpha: 0.3),
                                     borderRadius: BorderRadius.circular(2),
                                   ),
                                 ),
@@ -120,9 +126,7 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                                   height: 6,
                                   width: constraints.maxWidth * bufferProgress,
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(
-                                      alpha: 0.5,
-                                    ),
+                                    color: Colors.white.withValues(alpha: 0.5),
                                     borderRadius: BorderRadius.circular(2),
                                   ),
                                 ),
@@ -137,7 +141,14 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                                 ),
                                 // 拖拽时的指示器或当前位置指示器
                                 Positioned(
-                                  left: (constraints.maxWidth * currentProgress) - 8,
+                                  left:
+                                      ((constraints.maxWidth *
+                                                  currentProgress) -
+                                              8)
+                                          .clamp(
+                                            0.0,
+                                            constraints.maxWidth - 16,
+                                          ),
                                   child: Container(
                                     width: 16,
                                     height: 16,
@@ -149,7 +160,14 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                                 ),
                                 // 添加一个更明显的拖动指示器（圆球）
                                 Positioned(
-                                  left: (constraints.maxWidth * currentProgress) - 8,
+                                  left:
+                                      ((constraints.maxWidth *
+                                                  currentProgress) -
+                                              8)
+                                          .clamp(
+                                            0.0,
+                                            constraints.maxWidth - 16,
+                                          ),
                                   child: Container(
                                     width: 16,
                                     height: 16,
@@ -158,7 +176,9 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                                       shape: BoxShape.circle,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.3),
+                                          color: Colors.black.withValues(
+                                            alpha: 0.3,
+                                          ),
                                           blurRadius: 4,
                                           offset: const Offset(0, 2),
                                         ),
@@ -181,6 +201,6 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
       },
     );
   }
-// ... existing code ...
 
+  // ... existing code ...
 }
