@@ -51,7 +51,10 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
               controller: _tabController,
               children: [
                 /// 简介内容
-                Introduction(animeName: widget.animeName),
+                Introduction(
+                  animeName: widget.animeName,
+                  animeId: widget.animeId,
+                ),
 
                 /// 评论内容
                 CommentsPage(animeId: widget.animeId),

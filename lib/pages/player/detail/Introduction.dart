@@ -4,9 +4,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:AnimeFlow/modules/bangumi/episodes.dart';
-import 'package:AnimeFlow/request/bangumi/bangumi.dart';
-
 import 'episode.dart';
 
 class Introduction extends StatefulWidget {
@@ -20,19 +17,6 @@ class Introduction extends StatefulWidget {
 }
 
 class _IntroductionState extends State<Introduction> {
-  Episodes? episodes;
-  bool _isLoading = true;
-
-  //获取剧集信息
-  Future<Episodes?> _getEpisodes() async {
-    if (widget.animeId != null) {
-      episodes = await BangumiService.getEpisodesByID(widget.animeId!);
-      setState(() {
-        _isLoading = false;
-      });
-    }
-    return null;
-  }
 
   //抽屉弹窗
   void _showBottomSheet(BuildContext context) {
@@ -100,7 +84,6 @@ class _IntroductionState extends State<Introduction> {
   @override
   void initState() {
     super.initState();
-    _getEpisodes();
   }
 
   @override
@@ -131,7 +114,7 @@ class _IntroductionState extends State<Introduction> {
           ],
         ),
         const SizedBox(height: 16),
-        EpisodeItem(episode: episodes),
+        EpisodeItem(animeId: widget.animeId,animeName: widget.animeName)
       ],
     );
   }

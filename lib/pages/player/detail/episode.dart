@@ -1,197 +1,138 @@
 ///  @Author Ligg
 ///  @Time 2025/7/26
 library;
+
 import 'package:flutter/material.dart';
 import 'package:AnimeFlow/modules/bangumi/episodes.dart';
+import 'package:AnimeFlow/request/bangumi/bangumi.dart';
 
-class EpisodeItem extends StatelessWidget {
-  final Data? episode;
+class EpisodeItem extends StatefulWidget {
+  final int? animeId;
+  final String? animeName;
   final VoidCallback? onTap;
 
-  const EpisodeItem({super.key, required this.episode, this.onTap});
-
+  const EpisodeItem(
+      {super.key, required this.animeId, this.onTap, this.animeName,});
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(
-          episode!.nameCn!.isNotEmpty
-              ? episode!.nameCn!
-              : episode!.name!.isNotEmpty
-              ? episode!.name!
-              : '待播出',
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('第${episode!.ep}集'),
-            if (episode!.airdate!.isNotEmpty) Text('播出日期: ${episode!.airdate}'),
-            if (episode!.duration!.isNotEmpty) Text('时长: ${episode!.duration}'),
-          ],
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.comment, size: 25),
-                const SizedBox(width: 5),
-                Text('${episode!.comment}'),
-              ],
-            ),
-          ],
-        ),
-        onTap: onTap,
+  State<EpisodeItem> createState() => _EpisodeItemState();
+
+}
+
+class _EpisodeItemState extends State<EpisodeItem> {
+  Episodes? episodes;
+  bool _isLoading = true;
+
+  Future<Episodes?> _getEpisodes() async {
+    if (widget.animeId != null) {
+      episodes = await BangumiService.getEpisodesByID(widget.animeId!);
+      setState(() {
+        _isLoading = false;
+      });
+    }
+    return null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getEpisodes();
+  }
+
+  //数据源卡片组件
+  Widget _buildDataSourceCard() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Theme.of(context).colorScheme.outline, width: 1),
       ),
-    );
-  }
-}
-
-class EpisodeList extends StatelessWidget {
-  final Episodes episodes;
-  final ScrollController? scrollController;
-  final bool closeOnTap;
-  final Function(Data)? onEpisodeSelected;
-
-  const EpisodeList({
-    super.key,
-    required this.episodes,
-    this.scrollController,
-    this.closeOnTap = false,
-    this.onEpisodeSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      controller: scrollController,
-      shrinkWrap: true,
-      physics: scrollController != null
-          ? null
-          : const NeverScrollableScrollPhysics(),
-      itemCount: episodes.data!.length,
-      itemBuilder: (context, index) {
-        final episode = episodes.data![index];
-        return Container(
-          margin: const EdgeInsets.symmetric(
-            vertical: 4,
-            horizontal: 16,
-          ),
-          child: EpisodeItem(
-            episode: episode,
-            onTap: () {
-              // 调用回调函数
-              onEpisodeSelected?.call(episode);
-              //关闭弹窗
-              if (closeOnTap) {
-                Navigator.of(context).pop();
-              }
-            },
-          ),
-        );
-      },
-    );
-  }
-}
-
-class EpisodeCountRow extends StatelessWidget {
-  final int episodeCount;
-  final VoidCallback onRefresh;
-  final Episodes episodes;
-  final Function(Data)? onEpisodeSelected;
-
-  const EpisodeCountRow({
-    super.key,
-    required this.episodeCount,
-    required this.onRefresh,
-    required this.episodes,
-    this.onEpisodeSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text('剧集数量: $episodeCount', style: TextStyle(fontSize: 16)),
-        const Spacer(),
-        IconButton(
-          icon: const Icon(Icons.format_align_right_rounded),
-          onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              builder: (BuildContext context) {
-                return EpisodeDrawer(
-                  episodes: episodes,
-                  onEpisodeSelected: onEpisodeSelected,
-                );
-              },
-            );
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class EpisodeDrawer extends StatelessWidget {
-  final Episodes episodes;
-  final Function(Data)? onEpisodeSelected;
-
-  const EpisodeDrawer({
-    super.key,
-    required this.episodes,
-    this.onEpisodeSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      minChildSize: 0.3,
-      maxChildSize: 0.9,
-      expand: false,
-      builder: (context, scrollController) {
-        return Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Column(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 数据源标题行
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                margin: const EdgeInsets.all(10),
-                width: 40,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  borderRadius: BorderRadius.circular(10),
+              Text(
+                '数据源',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: const Text(
-                  '剧集列表',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: EpisodeList(
-                  episodes: episodes,
-                  scrollController: scrollController,
-                  closeOnTap: true,
-                  onEpisodeSelected: onEpisodeSelected,
+              // 更换按钮
+              ElevatedButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.swap_horiz, size: 20),
+                label: const Text('更换'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  foregroundColor: Theme.of(context).colorScheme.primary,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ],
           ),
-        );
-      },
+          const SizedBox(height: 8),
+          // 数据源信息
+          Row(
+            children: [
+              // 图标
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: Colors.pink[500],
+                  borderRadius: BorderRadius.circular(16),
+                  image: const DecorationImage(
+                    image: NetworkImage('https://example.com/logo.png'), // 替换为实际图标URL
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              // 数据源名称
+              Text(
+                'girigiri愛動漫', // 这里可以动态设置
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          // 描述信息
+          Text(
+            '我们不可能成为恋人！绝对不行。（※似乎可行？） 07', // 这里可以动态设置
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+        children: [
+          Text('剧集Id${widget.animeId}, 名称${widget.animeName}'),
+
+          /// 数据源卡片
+          _buildDataSourceCard()
+        ]
     );
   }
 }
