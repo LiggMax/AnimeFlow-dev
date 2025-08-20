@@ -111,6 +111,7 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                                 : 0.0;
 
                             return Stack(
+                              clipBehavior: Clip.none, // 允许子组件超出边界
                               children: [
                                 // 背景轨道
                                 Container(
@@ -139,50 +140,35 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                                     borderRadius: BorderRadius.circular(2),
                                   ),
                                 ),
-                                // 拖拽时的指示器或当前位置指示器
                                 Positioned(
                                   left:
                                       ((constraints.maxWidth *
                                                   currentProgress) -
-                                              8)
+                                              10)
                                           .clamp(
                                             0.0,
-                                            constraints.maxWidth - 16,
+                                            constraints.maxWidth - 20,
                                           ),
-                                  child: Container(
-                                    width: 16,
-                                    height: 16,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.blue,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                ),
-                                // 添加一个更明显的拖动指示器（圆球）
-                                Positioned(
-                                  left:
-                                      ((constraints.maxWidth *
-                                                  currentProgress) -
-                                              8)
-                                          .clamp(
-                                            0.0,
-                                            constraints.maxWidth - 16,
+                                  top: -5,
+                                  child: Material(
+                                    elevation: 4, // 提升层级
+                                    color: Colors.transparent,
+                                    child: Container(
+                                      width: 16,
+                                      height: 16,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withValues(
+                                              alpha: 0.3,
+                                            ),
+                                            blurRadius: 4,
+                                            offset: const Offset(0, 2),
                                           ),
-                                  child: Container(
-                                    width: 16,
-                                    height: 16,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withValues(
-                                            alpha: 0.3,
-                                          ),
-                                          blurRadius: 4,
-                                          offset: const Offset(0, 2),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
