@@ -46,8 +46,8 @@ dependencies:
   cached_network_image: ^3.3.0
 
   ##播放器
-  media_kit: ^1.1.11 # 主要包装.
-  media_kit_video: ^1.2.5 # 用于视频渲染.
+  media_kit: ^1.2.0 # 主要包装.
+  media_kit_video: ^1.3.0 # 用于视频渲染.
   media_kit_libs_video: ^1.0.5 # 原生视频依赖项.
 
   window_manager: ^0.3.8 # 桌面端窗口管理

@@ -6,7 +6,7 @@ import 'package:media_kit/media_kit.dart';
 class CustomSeekBar extends StatefulWidget {
   final Player player;
 
-  const CustomSeekBar({Key? key, required this.player}) : super(key: key);
+  const CustomSeekBar({super.key, required this.player});
 
   @override
   State<CustomSeekBar> createState() => _CustomSeekBarState();
