@@ -31,8 +31,8 @@ class _ControlsPageState extends State<ControlsPage> {
       children: [
         // 顶部自定义控件
         Positioned(
-          left: 0,
-          right: 0,
+          left: 5,
+          right: 5,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -100,22 +100,22 @@ class _ControlsPageState extends State<ControlsPage> {
 
         // 底部控件栏
         Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
+          bottom: -5,
+          left: 5,
+          right: 5,
           child: Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  MaterialPlayOrPauseButton(),
+                  MaterialPlayOrPauseButton(iconSize: 30),
                   const SizedBox(width: 8),
 
                   // 进度条
                   Expanded(child: CustomSeekBar(player: widget.player)),
 
                   const SizedBox(width: 8),
-                  MaterialFullscreenButton(),
+                  MaterialFullscreenButton(iconSize: 30),
                 ],
               ),
             ],
