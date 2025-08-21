@@ -35,6 +35,7 @@ class ThemeController extends ChangeNotifier {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
         statusBarBrightness: Brightness.light,
+        /// 确保浅色主题下系统导航条颜色正确
         systemNavigationBarColor: ColorScheme.fromSeed(
           seedColor: Color(0xFF5CDCF6),
           brightness: Brightness.light,
@@ -53,12 +54,16 @@ class ThemeController extends ChangeNotifier {
       seedColor: Color(0xFF5CDCF6),
       brightness: Brightness.dark,
     ),
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.transparent,
+        /// 确保深色主题下系统导航条颜色正确
+        systemNavigationBarColor: ColorScheme.fromSeed(
+          seedColor: Color(0xFF5CDCF6),
+          brightness: Brightness.dark,
+        ).surface,
         systemNavigationBarIconBrightness: Brightness.light,
         systemNavigationBarDividerColor: Colors.transparent,
       ),
