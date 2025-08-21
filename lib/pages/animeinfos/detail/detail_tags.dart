@@ -6,10 +6,7 @@ import 'detail_info.dart';
 class AnimeTagsSection extends StatelessWidget {
   final List<BangumiTag> tags;
 
-  const AnimeTagsSection({
-    super.key,
-    required this.tags,
-  });
+  const AnimeTagsSection({super.key, required this.tags});
 
   @override
   Widget build(BuildContext context) {
@@ -64,12 +61,19 @@ class _AnimeTagsRowState extends State<AnimeTagsRow> {
                     horizontal: 12,
                     vertical: 6,
                   ),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Theme.of(context).primaryColor,
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   child: Text(
                     '${tag.name} (${tag.count})',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.blue[700],
-                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
