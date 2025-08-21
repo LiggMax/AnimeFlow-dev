@@ -171,7 +171,6 @@ class _EpisodeItemState extends State<EpisodeItem> {
         ),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
         leading: SizedBox(
           width: 60,
           height: 40,
