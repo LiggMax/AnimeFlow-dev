@@ -15,7 +15,8 @@ class AppRouter {
   static const String playInfo = 'play_info';
   static const String search = 'search';
 
-  final GoRouter routes = GoRouter(
+  // 使用静态实例，确保全局只有一个GoRouter实例
+  static final GoRouter _instance = GoRouter(
     routes: [
       //主页
       GoRoute(
@@ -37,9 +38,9 @@ class AppRouter {
         path: '/play_info',
         name: 'play_info',
         builder: (context, state) {
-          final extra = state.extra as Map<String, dynamic>;
-          final animeName = extra['animeName'];
-          final animeId = extra['animeId'];
+          final extra = state.extra as Map<String, dynamic>?;
+          final animeName = extra?['animeName'];
+          final animeId = extra?['animeId'];
           return PlayInfo(animeName: animeName, animeId: animeId);
         },
       ),
@@ -62,4 +63,7 @@ class AppRouter {
       body: Center(child: Text('页面不存在：${state.uri.path}')),
     ),
   );
+
+  // 提供静态访问方法
+  static GoRouter get routes => _instance;
 }

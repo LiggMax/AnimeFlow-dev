@@ -28,6 +28,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late ThemeController themeController;
+  late GoRouter _router;
   bool _isInitialized = false;
   final AppLinks _appLinks = AppLinks();
   StreamSubscription<Uri?>? _sub;
@@ -36,6 +37,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     themeController = ThemeController();
+    _router = AppRouter.routes;
     _initializeTheme();
     _initDeepLinkListener();
   }
@@ -80,7 +82,7 @@ class _MyAppState extends State<MyApp> {
       if (code != null) {
         debugPrint('授权成功，Code = $code');
         _handleTokenExchange(code);
-        context.pushNamed(AppRouter.home);
+        _router.go(AppRouter.home);
       }
     }
   }
@@ -123,7 +125,7 @@ class _MyAppState extends State<MyApp> {
               themeMode: themeController.isDarkMode
                   ? ThemeMode.dark
                   : ThemeMode.light,
-              routerConfig: AppRouter().routes,
+              routerConfig: _router,
             ),
           );
         },
