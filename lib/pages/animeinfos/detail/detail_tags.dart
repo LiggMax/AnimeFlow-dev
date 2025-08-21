@@ -64,9 +64,10 @@ class _AnimeTagsRowState extends State<AnimeTagsRow> {
                     horizontal: 12,
                     vertical: 6,
                   ),
+
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.primaryContainer,
                       width: 1.5,
                     ),
                     borderRadius: BorderRadius.circular(10),
@@ -75,7 +76,7 @@ class _AnimeTagsRowState extends State<AnimeTagsRow> {
                     '${tag.name} (${tag.count})',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
