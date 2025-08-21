@@ -209,7 +209,6 @@ class _WeeklyAnimeGridState extends State<WeeklyAnimeGrid>
               isScrollable: true,
               tabAlignment: TabAlignment.start,
               tabs: _buildWeekTabs(),
-              labelColor: Theme.of(context).primaryColor,
               unselectedLabelColor: Colors.grey,
               indicatorColor: Theme.of(context).primaryColor,
               indicatorWeight: 2,
