@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:AnimeFlow/modules/bangumi/episodes.dart';
 import 'package:AnimeFlow/request/bangumi/bangumi.dart';
+import 'package:lottie/lottie.dart';
 
 class EpisodeItem extends StatefulWidget {
   final int? animeId;
@@ -170,7 +171,7 @@ class _EpisodeItemState extends State<EpisodeItem> {
         ),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
         leading: SizedBox(
           width: 60,
           height: 40,
@@ -198,13 +199,21 @@ class _EpisodeItemState extends State<EpisodeItem> {
           children: [
             isSelected
                 ? Container(
-                    margin: const EdgeInsets.only(right: 8),
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
-                      borderRadius: BorderRadius.circular(12),
+                    //选中动画
+                    child: Lottie.asset(
+                      'assets/animations/playAnime.json',
+                      height: 33,
+                      width: 38,
+                      //替换动画颜色
+                      delegates: LottieDelegates(
+                        values: [
+                          ValueDelegate.color(
+                            const ['**'],
+                            value: Theme.of(context).colorScheme.primary,
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Icon(Icons.check, color: Colors.white, size: 16),
                   )
                 : Icon(
                     Icons.play_circle_outline,
@@ -213,26 +222,23 @@ class _EpisodeItemState extends State<EpisodeItem> {
                   ),
 
             // 评论数
-            Container(
-              margin: const EdgeInsets.only(top: 4),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.comment_outlined,
-                    size: 18,
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.comment_outlined,
+                  size: 18,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  '${episode.comment}',
+                  style: TextStyle(
+                    fontSize: 12,
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${episode.comment}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),
