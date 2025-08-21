@@ -114,6 +114,8 @@ class _IntroductionState extends State<Introduction> {
           ],
         ),
         const SizedBox(height: 16),
+
+        //剧集组件
         EpisodeItem(animeId: widget.animeId,animeName: widget.animeName)
       ],
     );
