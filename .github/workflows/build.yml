@@ -188,10 +188,10 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v2.16.0
         with:
           channel: stable
           flutter-version-file: pubspec.yaml
@@ -208,16 +208,7 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Fix iOS dependencies
-        run: |          
-          cd ios
-          pod deintegrate || echo "Pods not initialized"
-          pod cache clean --all
-          rm -rf ~/Library/Developer/Xcode/DerivedData
-          flutter clean
-          cd ..
-
-      - name: Build iOS
+      - name: Build IPA
         run: |          
           flutter build ios --release --no-codesign
           echo "iOS build completed"
