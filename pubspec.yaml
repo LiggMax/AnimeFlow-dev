@@ -18,6 +18,22 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # of the product and file versions while build-number is used as the build suffix.
 version: 0.0.1
 
+##logo图标生成
+#生成命令  dart run flutter_launcher_icons
+flutter_launcher_icons:
+  ios: true
+  android: true
+  linux: true
+  windows:
+    generate: true
+  macos:
+    generate: true
+  web:
+    generate: true
+  image_path: "assets/logoIcon/LogoIcon.jpg"
+  remove_alpha_ios: true  # 添加这一行来移除iOS图标的alpha通道
+  adaptive_icon_background: "#FFFFFF"
+
 environment:
   sdk: ^3.8.1
   flutter: 3.32.5
@@ -45,6 +61,7 @@ dependencies:
   go_router: ^16.1.0
   cached_network_image: ^3.3.0
   lottie: ^3.3.1
+  flutter_launcher_icons: ^0.13.1
 
   ##播放器
   media_kit: ^1.2.0 # 主要包装.
