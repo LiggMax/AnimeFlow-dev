@@ -185,7 +185,8 @@ jobs:
 
   build-ios:
     if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all'}}
-    runs-on: macos-14
+    runs-on: "macos-latest"
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -218,58 +219,7 @@ jobs:
 
       - name: Build IPA
         run: |
-          # 设置部署目标以确保兼容性
-          export IPHONEOS_DEPLOYMENT_TARGET=12.0
-          
-          # 检查环境信息
-          echo "=== Environment Information ==="
-          echo "Xcode version:"
-          xcodebuild -version
-          echo "Available iOS SDKs:"
-          xcodebuild -showsdks | grep ios
-          echo "Available simulators:"
-          xcrun simctl list devices available | head -20
-          
-          # 根据GitHub Actions官方文档建议，优先使用设备构建
-          echo "=== Attempting iOS Device Build (Release) ==="
-          if flutter build ios --release --no-codesign; then
-            echo "✅ iOS device build completed successfully"
-            BUILD_TYPE="device"
-            BUILD_PATH="build/ios/iphoneos/Runner.app"
-          else
-            echo "❌ Device build failed, trying simulator approach..."
-            
-            # 备选方案：使用模拟器Debug构建
-            echo "=== Attempting iOS Simulator Build (Debug) ==="
-            if flutter build ios --debug --no-codesign --simulator; then
-              echo "✅ iOS simulator build completed successfully"
-              BUILD_TYPE="simulator"
-              BUILD_PATH="build/ios/iphonesimulator/Runner.app"
-            else
-              echo "❌ Simulator build also failed, trying cleanup and retry..."
-              
-              # 最后的备选方案：清理后重试
-              echo "=== Cleanup and Retry ==="
-              flutter clean
-              flutter pub get
-              cd ios && pod deintegrate && pod install --repo-update && cd ..
-              
-              # 重试设备构建
-              if flutter build ios --release --no-codesign; then
-                echo "✅ iOS device build completed after cleanup"
-                BUILD_TYPE="device"
-                BUILD_PATH="build/ios/iphoneos/Runner.app"
-              else
-                echo "❌ All build attempts failed"
-                exit 1
-              fi
-            fi
-          fi
-          
-          echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
-          echo "BUILD_PATH=$BUILD_PATH" >> $GITHUB_ENV
-          echo "Final build type: $BUILD_TYPE"
-          echo "Build path: $BUILD_PATH"
+          flutter build ios --release --no-codesign
 
       - name: Create IPA
         run: |          
