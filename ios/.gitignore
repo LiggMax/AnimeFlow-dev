@@ -11,6 +11,7 @@
 **/DerivedData/
 Icon?
 **/Pods/
+/build/
 **/.symlinks/
 profile
 xcuserdata
@@ -32,3 +33,4 @@ Runner/GeneratedPluginRegistrant.*
 !default.mode2v3
 !default.pbxuser
 !default.perspectivev3
+
