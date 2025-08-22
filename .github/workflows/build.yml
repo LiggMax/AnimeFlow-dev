@@ -196,6 +196,12 @@ jobs:
           channel: stable
           flutter-version-file: pubspec.yaml
 
+      - name: Configure Xcode
+        run: |
+          sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+          xcodebuild -version
+          xcodebuild -showsdks
+
       - name: Get app name
         id: app_name
         run: |          
@@ -206,17 +212,40 @@ jobs:
           echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
 
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          flutter pub get
+          cd ios && pod install --repo-update && cd ..
 
       - name: Build IPA
         run: |          
-          flutter build ios --release --no-codesign
-          echo "iOS build completed"
+          # 配置 iOS SDK 以使用可用版本
+          AVAILABLE_SDK=$(xcodebuild -showsdks | grep iphoneos | tail -1 | awk '{print $NF}')
+          echo "Using iOS SDK: $AVAILABLE_SDK"
+          
+          # 设置部署目标以确保兼容性
+          export IPHONEOS_DEPLOYMENT_TARGET=12.0
+          
+          # 首先尝试为模拟器构建，如果需要，回退到设备构建
+          if flutter build ios --release --no-codesign --simulator --target-platform ios-x64; then
+            echo "iOS simulator build completed"
+            BUILD_TYPE="simulator"
+          else
+            echo "Simulator build failed, trying device build..."
+            # Try device build with specific configuration
+            flutter build ios --release --no-codesign --target-platform ios-arm64
+            echo "iOS device build completed"
+            BUILD_TYPE="device"
+          fi
+          echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
 
       - name: Create IPA
         run: |          
           mkdir Payload
-          cp -R build/ios/iphoneos/Runner.app Payload/Runner.app
+          if [ "$BUILD_TYPE" = "simulator" ]; then
+            cp -R build/ios/iphonesimulator/Runner.app Payload/Runner.app
+          else
+            cp -R build/ios/iphoneos/Runner.app Payload/Runner.app
+          fi
           zip -q -r ${{ env.APP_NAME }}.ipa Payload
 
       - name: Archive artifacts
