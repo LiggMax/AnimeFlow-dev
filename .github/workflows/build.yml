@@ -198,7 +198,7 @@ jobs:
 
       - name: Get app name
         id: app_name
-        run: |
+        run: |          
           APP_NAME=$(grep '^name:' pubspec.yaml | sed 's/^name:[[:space:]]*//' | tr -d ' ')
           if [ -z "$APP_NAME" ]; then
             APP_NAME="AnimeFlow"
@@ -208,13 +208,22 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Fix iOS dependencies
+        run: |          
+          cd ios
+          pod deintegrate || echo "Pods not initialized"
+          pod cache clean --all
+          rm -rf ~/Library/Developer/Xcode/DerivedData
+          flutter clean
+          cd ..
+
       - name: Build iOS
-        run: |
+        run: |          
           flutter build ios --release --no-codesign
           echo "iOS build completed"
 
       - name: Create IPA
-        run: |
+        run: |          
           mkdir Payload
           cp -R build/ios/iphoneos/Runner.app Payload/Runner.app
           zip -q -r ${{ env.APP_NAME }}.ipa Payload
