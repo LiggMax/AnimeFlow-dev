@@ -41,7 +41,6 @@ class _ResourcesState extends State<Resources> {
   ///获取视频源Url
   Future<String?> _getPlayUrl(String url) async {
     final playUrl = await VideoService.getPlayUrl(url);
-    print('获取的播放地址: $playUrl');
     return playUrl;
   }
 
