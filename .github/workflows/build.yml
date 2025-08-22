@@ -217,25 +217,13 @@ jobs:
           cd ios && pod install --repo-update && cd ..
 
       - name: Build IPA
-        run: |          
-          # 设置部署目标以确保兼容性
-          export IPHONEOS_DEPLOYMENT_TARGET=12.0
-          
-          # 检查可用的模拟器
-          xcrun simctl list devices available
-          
-          # 为模拟器构建 - 避免代码签名问题
-          echo "Building for iOS Simulator..."
-          flutter build ios --release --no-codesign --simulator
-          echo "iOS simulator build completed"
-          BUILD_TYPE="simulator"          
-          echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
+        run: |
+          flutter build ios --release --no-codesign
 
       - name: Create IPA
         run: |          
           mkdir Payload
-          # 使用模拟器构建的结果
-          cp -R build/ios/iphoneos/Runner.app Payload/Runner.app
+          cp -R build/ios/iphonesimulator/Runner.app Payload/Runner.app
           zip -q -r ${{ env.APP_NAME }}.ipa Payload
 
       - name: Archive artifacts
