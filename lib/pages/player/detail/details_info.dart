@@ -1,11 +1,9 @@
 ///@Author Ligg
 ///@Time 2025/8/19
 library;
-
 import 'package:flutter/material.dart';
-
-import '../comments.dart';
-import 'Introduction.dart';
+import 'comments/comments.dart';
+import 'introduction/Introduction.dart';
 
 class DetailPage extends StatefulWidget {
   final String? animeName;
