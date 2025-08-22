@@ -65,15 +65,12 @@ class _EpisodeItemState extends State<EpisodeItem> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // 允许全屏显示
-      backgroundColor: Colors.transparent, // 透明背景
+      backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
         return DraggableScrollableSheet(
-          initialChildSize: 0.7,
-          // 初始显示
-          minChildSize: 0.4,
-          // 最小
-          maxChildSize: 0.95,
-          // 最大
+          initialChildSize: 0.7, // 初始显示
+          minChildSize: 0.4, // 最小
+          maxChildSize: 0.95, // 最大
           expand: false,
           builder: (BuildContext context, ScrollController scrollController) {
             return Container(

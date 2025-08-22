@@ -3,6 +3,7 @@
 ///简介页面
 library;
 
+import 'package:AnimeFlow/pages/player/detail/introduction/video_resources.dart';
 import 'package:flutter/material.dart';
 import 'episode.dart';
 
@@ -128,8 +129,11 @@ class _IntroductionState extends State<Introduction> {
         ),
         const SizedBox(height: 16),
 
-        //剧集组件
+        ///剧集组件
         EpisodeItem(animeId: widget.animeId, animeName: widget.animeName),
+
+        ///视频资源组件
+        Resources(animeName: widget.animeName, episodeNumber: 1,)
       ],
     );
   }
