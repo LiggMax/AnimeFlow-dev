@@ -14,11 +14,18 @@ class PlayInfo extends StatefulWidget {
 }
 
 class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
-
+  String? _currentVideoUrl; // 添加视频URL状态
 
   @override
   void initState() {
     super.initState();
+  }
+
+  /// 处理视频URL回调
+  void _handleVideoUrlReceived(String videoUrl) {
+    setState(() {
+      _currentVideoUrl = videoUrl;
+    });
   }
 
   @override
@@ -39,10 +46,16 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
         child: Column(
           children: [
             /// 视频播放器
-            VideoPage(animeName: widget.animeName),
+            VideoPage(
+              animeName: widget.animeName,
+              url: _currentVideoUrl),
 
             ///内容区域
-            DetailPage(animeName: widget.animeName, animeId: widget.animeId),
+            DetailPage(
+              animeName: widget.animeName,
+              animeId: widget.animeId,
+              onVideoUrlReceived: _handleVideoUrlReceived,
+            ),
           ],
         ),
       ),

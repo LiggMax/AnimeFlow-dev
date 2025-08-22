@@ -1,6 +1,7 @@
 ///@Author Ligg
 ///@Time 2025/8/19
 library;
+
 import 'package:flutter/material.dart';
 import 'comments/comments.dart';
 import 'introduction/Introduction.dart';
@@ -8,8 +9,14 @@ import 'introduction/Introduction.dart';
 class DetailPage extends StatefulWidget {
   final String? animeName;
   final int? animeId;
+  final Function(String)? onVideoUrlReceived; // 添加视频URL回调
 
-  const DetailPage({Key? key, this.animeName, this.animeId}) : super(key: key);
+  const DetailPage({
+    Key? key,
+    this.animeName,
+    this.animeId,
+    this.onVideoUrlReceived,
+  }) : super(key: key);
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -52,6 +59,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                 Introduction(
                   animeName: widget.animeName,
                   animeId: widget.animeId,
+                  onVideoUrlReceived: widget.onVideoUrlReceived,
                 ),
 
                 /// 评论内容

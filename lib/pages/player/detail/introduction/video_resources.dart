@@ -5,8 +5,15 @@ class Resources extends StatefulWidget {
   final String? animeName;
   final int? episodeNumber;
   final VoidCallback? onTap;
+  final Function(String)? onVideoUrlReceived; // 添加视频URL回调
 
-  const Resources({super.key, this.onTap, this.animeName, this.episodeNumber});
+  const Resources({
+    super.key,
+    this.onTap,
+    this.animeName,
+    this.episodeNumber,
+    this.onVideoUrlReceived,
+  });
 
   @override
   State<Resources> createState() => _ResourcesState();
@@ -29,8 +36,13 @@ class _ResourcesState extends State<Resources> {
       _episodes = response ?? [];
       _isAutoSelecting = false;
     });
+  }
 
-    print('获取的剧集列表: $_episodes');
+  ///获取视频源Url
+  Future<String?> _getPlayUrl(String url) async {
+    final playUrl = await VideoService.getPlayUrl(url);
+    print('获取的播放地址: $playUrl');
+    return playUrl;
   }
 
   //抽屉弹窗
@@ -270,7 +282,7 @@ class _ResourcesState extends State<Resources> {
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    _playSelectedEpisode();
+                                    _selectedEpisode();
                                     Navigator.pop(context);
                                   },
                                   child: Text('播放'),
@@ -421,8 +433,9 @@ class _ResourcesState extends State<Resources> {
     );
   }
 
-  /// 播放选中的剧集
-  void _playSelectedEpisode() {
+  /// 选中的剧集
+  /// 传递选中的播放剧集链接获取实际的播放地址
+  void _selectedEpisode() async {
     if (_episodes.isEmpty) return;
 
     final selectedSource = _episodes[_selectedSourceIndex];
@@ -432,8 +445,9 @@ class _ResourcesState extends State<Resources> {
     if (routes == null ||
         episodes == null ||
         _selectedRouteIndex >= routes.length ||
-        _selectedRouteIndex >= episodes.length)
+        _selectedRouteIndex >= episodes.length) {
       return;
+    }
 
     final routeEpisodes = episodes[_selectedRouteIndex] as List;
     if (_selectedEpisodeIndex >= routeEpisodes.length) return;
@@ -442,9 +456,20 @@ class _ResourcesState extends State<Resources> {
     final episodeUrl = episode['url'];
 
     if (episodeUrl != null && episodeUrl.isNotEmpty) {
-      // 这里可以调用播放逻辑
-      print('播放剧集: ${episode['title']} - URL: $episodeUrl');
+      final playUrl = await _getPlayUrl(episodeUrl);
+      if (playUrl != null && widget.onVideoUrlReceived != null) {
+        // 调用回调函数，将播放URL传递给父组件
+        widget.onVideoUrlReceived!(playUrl);
 
+        // 显示提示信息
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '已选择播放源: ${episode['title'] ?? '第${episode['episode']}集'}',
+            ),
+          ),
+        );
+      }
     }
   }
 

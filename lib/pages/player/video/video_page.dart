@@ -9,7 +9,15 @@ import 'controls/controls.dart';
 
 class VideoPage extends StatefulWidget {
   final String? animeName;
-  const VideoPage({Key? key, this.animeName}) : super(key: key);
+  final String? url;
+  final Function(String)? onVideoUrlReceived; // 添加视频URL回调
+
+  const VideoPage({
+    super.key,
+    this.animeName,
+    this.url,
+    this.onVideoUrlReceived,
+  });
 
   @override
   State<VideoPage> createState() => VideoPageState();
@@ -26,9 +34,20 @@ class VideoPageState extends State<VideoPage> {
   void initState() {
     super.initState();
     // Play a [Media] or [Playlist].
-    player.open(
-      Media('https://apn.moedot.net/d/wo/2507/%E6%9B%B4%E8%A1%A304z.mp4'),
-    );
+    if (widget.url != null && widget.url!.isNotEmpty) {
+      player.open(Media(widget.url!));
+    }
+  }
+
+  @override
+  void didUpdateWidget(VideoPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // 当URL发生变化时，更新播放器
+    if (widget.url != null &&
+        widget.url != oldWidget.url &&
+        widget.url!.isNotEmpty) {
+      player.open(Media(widget.url!));
+    }
   }
 
   @override
@@ -46,7 +65,7 @@ class VideoPageState extends State<VideoPage> {
       child: Video(
         controller: controller,
         controls: (state) {
-          return ControlsPage(player: player,animeName: widget.animeName,);
+          return ControlsPage(player: player, animeName: widget.animeName);
         },
       ),
     );
