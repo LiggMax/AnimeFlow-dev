@@ -41,7 +41,7 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
             /// 视频播放器
             VideoPage(animeName: widget.animeName),
 
-            ///底部页面
+            ///内容区域
             DetailPage(animeName: widget.animeName, animeId: widget.animeId),
           ],
         ),
