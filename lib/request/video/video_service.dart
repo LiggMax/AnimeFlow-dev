@@ -4,9 +4,9 @@
  */
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
-import 'request.dart';
+import '../request.dart';
 import 'package:AnimeFlow/utils/analysis.dart';
-import 'api/common_api.dart';
+import '../api/common_api.dart';
 
 class VideoService {
   static final Logger _log = Logger('VideoService');
@@ -16,7 +16,7 @@ class VideoService {
   static const int requestInterval = 1;
 
   ///  获取剧集源
-  static Future<List<Map<String, dynamic>>?> getVideoSource(
+  static Future<List<Map<String, dynamic>>?> getEpisodeSource(
     String keyword,
     int ep,
   ) async {
@@ -80,7 +80,7 @@ class VideoService {
     }
   }
 
-  ///发送请求获取播放地址
+  ///获取播放地址
   static Future<String?> getPlayUrl(String url) async {
     try {
       final response = await httpRequest.get(

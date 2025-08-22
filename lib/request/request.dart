@@ -9,6 +9,7 @@ class HttpRequest {
   factory HttpRequest() => _instance;
 
   HttpRequest._internal() {
+    // 初始化Dio实例
     _dio = Dio(BaseOptions(
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),

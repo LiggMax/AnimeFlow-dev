@@ -20,7 +20,7 @@ class VideoAnalysis {
   static const String matchEpisodeSortFromName = r'第\s*(?<ep>.+)\s*[话集]'; //剧集序号正则
   static const String selectEpisodesFromList = 'a';
 
-  /// 解析解析条目
+  /// 解析解析搜索条目
   static Map<String, List<String>> parseSearchResults(String htmlData) {
     try {
       // 解析HTML文档
@@ -41,9 +41,6 @@ class VideoAnalysis {
           })
           .where((link) => link.isNotEmpty)
           .toList();
-
-      _log.info('解析到 ${titles.length} 个标题');
-      _log.info('解析到 ${links.length} 个链接');
 
       return {'titles': titles, 'links': links};
     } catch (e) {
@@ -135,7 +132,7 @@ class VideoAnalysis {
         if (videoUrl != null && videoUrl.isNotEmpty) {
           // 处理转义的URL
           _log.info('原始视频链接: $videoUrl');
-          
+
           final unescapedUrl = videoUrl
               .replaceAll(r'\\/', '/') // 移除转义的正斜杠
               .replaceAll(r'\\"', '"') // 移除转义的引号
