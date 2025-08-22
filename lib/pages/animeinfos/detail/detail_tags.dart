@@ -105,7 +105,7 @@ class _AnimeTagsRowState extends State<AnimeTagsRow> {
                 children: [
                   Text(
                     isExpanded
-                        ? '收起 (${widget.tags.length - widget.maxInitialTags})'
+                        ? '收起'
                         : '展开 (+${widget.tags.length - widget.maxInitialTags})',
                     style: const TextStyle(
                       fontSize: 12,
