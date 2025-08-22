@@ -1,0 +1,55 @@
+name: Build Flutter iOS
+
+on:
+  workflow_dispatch:   # 手动触发构建
+
+jobs:
+  build_ios:
+    runs-on: macos-latest
+
+    steps:
+      # 1. 拉取代码
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. 安装 Flutter
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: pubspec.yaml
+          channel: stable
+
+      # 3. 获取依赖
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 4. 构建 iOS
+      - name: Build iOS
+        run: flutter build ios --release --no-codesign
+
+      # 5. 打包 IPA (不签名)
+      - name: Archive iOS app
+        run: |
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -sdk iphoneos \
+            archive -archivePath build/Runner.xcarchive \
+            DEVELOPMENT_TEAM=XXXXXXXXXX CODE_SIGNING_ALLOWED=NO
+
+      - name: Export IPA
+        run: |
+          cd ios
+          xcodebuild -exportArchive \
+            -archivePath build/Runner.xcarchive \
+            -exportPath build/ipa \
+            -exportOptionsPlist ExportOptions.plist \
+            CODE_SIGNING_ALLOWED=NO
+
+      # 6. 上传构建产物
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: ios/build/ipa/*.ipa

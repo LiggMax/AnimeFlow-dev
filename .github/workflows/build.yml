@@ -232,45 +232,38 @@ jobs:
 
       - name: Build IPA
         run: |
-          # 设置兼容的部署目标（使用传统版本避免18.0问题）
-          export IPHONEOS_DEPLOYMENT_TARGET=12.0
+          # 设置更低的部署目标以确保兼容性
+          export IPHONEOS_DEPLOYMENT_TARGET=11.0
           
           echo "=== iOS Build Configuration ==="
-          echo "Target iOS SDK: $LATEST_IOS_SDK"
           echo "Deployment Target: $IPHONEOS_DEPLOYMENT_TARGET"
           
-          # 检查可用的构建目标
-          echo "=== Available Build Destinations ==="
-          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -showdestinations || true
+          # 检查可用的iOS SDKs
+          echo "=== Available iOS SDKs ==="
+          xcodebuild -showsdks | grep -E "(iphoneos|iphonesimulator)"
           
-          # 尝试不同的构建策略
+          echo "=== Available Simulators ==="
+          xcrun simctl list devices available | head -5
+          
+          # 简化的构建策略
           echo "=== Attempting iOS Build ==="
           
-          # 策牥1: 使用可用的iOS SDK进行设备构建
-          if xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -destination generic/platform=iOS -sdk $LATEST_IOS_SDK CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO build; then
-            echo "✅ iOS device build completed with SDK: $LATEST_IOS_SDK"
+          # 策略1: 使用Flutter命令构建设备版本
+          if flutter build ios --release --no-codesign; then
+            echo "✅ iOS device build completed"
             BUILD_TYPE="device"
             BUILD_PATH="build/ios/iphoneos/Runner.app"
           else
-            echo "❌ Direct device build failed, trying Flutter command..."
+            echo "❌ Device build failed, trying simulator build..."
             
-            # 策牥2: 使用Flutter命令构建（指定SDK版本）
-            if flutter build ios --release --no-codesign --ios-sdk=$LATEST_IOS_SDK; then
-              echo "✅ Flutter iOS build completed with SDK: $LATEST_IOS_SDK"
-              BUILD_TYPE="device"
-              BUILD_PATH="build/ios/iphoneos/Runner.app"
+            # 策略2: 使用Flutter命令构建模拟器版本
+            if flutter build ios --debug --no-codesign --simulator; then
+              echo "✅ iOS simulator build completed"
+              BUILD_TYPE="simulator"
+              BUILD_PATH="build/ios/iphonesimulator/Runner.app"
             else
-              echo "❌ Flutter device build failed, trying simulator build..."
-              
-              # 策牥3: 模拟器构建作为备选方案
-              if flutter build ios --debug --no-codesign --simulator; then
-                echo "✅ iOS simulator build completed (Debug mode)"
-                BUILD_TYPE="simulator"
-                BUILD_PATH="build/ios/iphonesimulator/Runner.app"
-              else
-                echo "❌ All build strategies failed"
-                exit 1
-              fi
+              echo "❌ All build strategies failed"
+              exit 1
             fi
           fi
           
