@@ -27,6 +27,7 @@ class _EpisodeItemState extends State<EpisodeItem> {
   Episodes? episodes;
   bool _isLoading = true;
   Data? _selectedEpisode; // 当前选择的剧集
+  int? _currentEpisodeNumber; // 当前选中的剧集索引
 
   /// 获取剧集
   Future<void> _getEpisodes() async {
@@ -40,6 +41,7 @@ class _EpisodeItemState extends State<EpisodeItem> {
         // 自动选择第一集
         if (res?.data?.isNotEmpty == true) {
           _selectedEpisode = res!.data!.first;
+          _currentEpisodeNumber = 1;
         }
       });
     } catch (_) {
@@ -51,9 +53,10 @@ class _EpisodeItemState extends State<EpisodeItem> {
   }
 
   /// 选择剧集
-  void _selectEpisode(Data episode) {
+  void _selectEpisode(Data episode, int episodeNumber) {
     setState(() {
       _selectedEpisode = episode;
+      _currentEpisodeNumber = episodeNumber;
     });
   }
 
@@ -206,10 +209,9 @@ class _EpisodeItemState extends State<EpisodeItem> {
                       //替换动画颜色
                       delegates: LottieDelegates(
                         values: [
-                          ValueDelegate.color(
-                            const ['**'],
-                            value: Theme.of(context).colorScheme.primary,
-                          ),
+                          ValueDelegate.color(const [
+                            '**',
+                          ], value: Theme.of(context).colorScheme.primary),
                         ],
                       ),
                     ),
@@ -243,7 +245,7 @@ class _EpisodeItemState extends State<EpisodeItem> {
         ),
         onTap: () {
           // 处理剧集选择
-          _selectEpisode(episode);
+          _selectEpisode(episode, episodeNumber);
           Navigator.pop(context); // 关闭弹窗
           // 这里可以添加播放逻辑
           ScaffoldMessenger.of(context).showSnackBar(
@@ -271,7 +273,7 @@ class _EpisodeItemState extends State<EpisodeItem> {
           children: [
             Expanded(
               child: Text(
-                _selectedEpisode?.nameCn ?? _selectedEpisode?.name ?? '',
+                '${_currentEpisodeNumber.toString().padLeft(2, '0')}-${_selectedEpisode?.nameCn ?? _selectedEpisode?.name ?? ''}',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
