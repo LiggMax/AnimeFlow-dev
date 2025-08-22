@@ -17,9 +17,14 @@ class Introduction extends StatefulWidget {
 }
 
 class _IntroductionState extends State<Introduction> {
+  bool _isBottomSheetOpen = false;
 
   //抽屉弹窗
   void _showBottomSheet(BuildContext context) {
+    setState(() {
+      _isBottomSheetOpen = true;
+    });
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, //允许全屏显示
@@ -34,6 +39,7 @@ class _IntroductionState extends State<Introduction> {
           expand: false,
           builder: (BuildContext context, ScrollController scrollController) {
             return Container(
+              width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: const BorderRadius.vertical(
@@ -54,22 +60,18 @@ class _IntroductionState extends State<Introduction> {
                   ),
                   // 内容列表
                   Expanded(
-                    child: ListView.builder(
-                      controller: scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemBuilder: (BuildContext context, int index) {
-                        return Stack(
-                          children: [
-                            Row(
-                              children: [
-                                Image.network(
-                                  'https://lain.bgm.tv/r/400/pic/cover/l/b8/0d/513345_jv4wM.jpg',
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
-                      },
+                    child: Column(
+                      children: [
+                        Text(
+                          '番剧详情施工中...',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
+                        Icon(Icons.handyman_outlined),
+                      ],
                     ),
                   ),
                 ],
@@ -78,7 +80,12 @@ class _IntroductionState extends State<Introduction> {
           },
         );
       },
-    );
+    ).then((_) {
+      // 当bottom sheet关闭时，更新状态
+      setState(() {
+        _isBottomSheetOpen = false;
+      });
+    });
   }
 
   @override
@@ -106,7 +113,13 @@ class _IntroductionState extends State<Introduction> {
             ),
             const Spacer(),
             IconButton(
-              icon: const Icon(Icons.more_vert),
+              icon: Icon(
+                _isBottomSheetOpen
+                    ? Icons.keyboard_arrow_up
+                    : Icons.keyboard_arrow_down,
+                size: 30,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
               onPressed: () {
                 _showBottomSheet(context);
               },
@@ -116,7 +129,7 @@ class _IntroductionState extends State<Introduction> {
         const SizedBox(height: 16),
 
         //剧集组件
-        EpisodeItem(animeId: widget.animeId,animeName: widget.animeName)
+        EpisodeItem(animeId: widget.animeId, animeName: widget.animeName),
       ],
     );
   }

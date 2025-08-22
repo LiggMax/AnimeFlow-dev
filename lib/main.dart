@@ -12,10 +12,10 @@ import 'package:AnimeFlow/request/bangumi/bangumi_oauth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MediaKit.ensureInitialized();
 
   // 初始化Hive
   await Hive.initFlutter();
-  MediaKit.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -82,7 +82,7 @@ class _MyAppState extends State<MyApp> {
       if (code != null) {
         debugPrint('授权成功，Code = $code');
         _handleTokenExchange(code);
-        _router.go(AppRouter.home);
+        return _router.go(AppRouter.home);
       }
     }
   }
