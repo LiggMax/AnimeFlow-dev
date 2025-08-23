@@ -303,7 +303,7 @@ class BBCodeParser {
             return Container(
               height: isReply ? 100 : 120,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
