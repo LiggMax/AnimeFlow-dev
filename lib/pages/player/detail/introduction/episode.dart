@@ -15,7 +15,8 @@ class EpisodeItem extends StatefulWidget {
   const EpisodeItem({
     super.key,
     required this.animeId,
-    this.animeName, this.onEpisodeIdReceived,
+    this.animeName,
+    this.onEpisodeIdReceived,
   });
 
   @override
@@ -186,7 +187,11 @@ class _EpisodeItemState extends State<EpisodeItem> {
           ),
         ),
         title: Text(
-          episode.nameCn ?? episode.name ?? '未播出',
+          (episode.nameCn?.isNotEmpty == true)
+              ? episode.nameCn!
+              : (episode.name?.isNotEmpty == true)
+              ? episode.name!
+              : '未播出',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -246,7 +251,13 @@ class _EpisodeItemState extends State<EpisodeItem> {
           Navigator.pop(context); // 关闭弹窗
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('选择了第$episodeNumber集: ${episode.name ?? '未知剧集'}'),
+              content: Text(
+                '选择了第$episodeNumber集: ${(episode.nameCn?.isNotEmpty == true)
+                    ? episode.nameCn!
+                    : (episode.name?.isNotEmpty == true)
+                    ? episode.name!
+                    : "未知剧集"}',
+              ),
             ),
           );
         },
@@ -269,7 +280,11 @@ class _EpisodeItemState extends State<EpisodeItem> {
           children: [
             Expanded(
               child: Text(
-                '${_currentEpisodeNumber.toString().padLeft(2, '0')}-${_selectedEpisode?.nameCn ?? _selectedEpisode?.name ?? ''}',
+                '${_currentEpisodeNumber.toString().padLeft(2, '0')}-${(_selectedEpisode?.nameCn?.isNotEmpty == true)
+                    ? _selectedEpisode!.nameCn!
+                    : (_selectedEpisode?.name?.isNotEmpty == true)
+                    ? _selectedEpisode!.name!
+                    : ''}',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
