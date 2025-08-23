@@ -6,9 +6,11 @@
 /// BBCode标签解析工具类
 library;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:AnimeFlow/utils/bgm_icon.dart';
+import 'package:AnimeFlow/utils/image_viewer.dart';
 
 /// 内容元素类型
 enum ContentElementType { text, image, colorText, emoji }
@@ -52,9 +54,7 @@ class BBCodeParser {
         final colorMatch = RegExp(
           r'\[color=([^\]]+?)\]([^\[]*?)\[/color\]',
         ).firstMatch(remaining);
-        final bgmMatch = RegExp(
-          r'\(bgm(\d+)\)',
-        ).firstMatch(remaining);
+        final bgmMatch = RegExp(r'\(bgm(\d+)\)').firstMatch(remaining);
 
         // 找到最早出现的标签
         int earliestIndex = remaining.length;
@@ -328,41 +328,38 @@ class BBCodeParser {
 
     if (iconData is String) {
       // 返回网络图片
+      final heroTag = 'emoji_${iconData.hashCode}';
+
       return Container(
         margin: const EdgeInsets.symmetric(horizontal: 2),
-        child: Image.network(
-          iconData,
-          width: isReply ? 16 : 20,
-          height: isReply ? 16 : 20,
-          fit: BoxFit.contain,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return SizedBox(
+        child: GestureDetector(
+          onTap: () => ImageViewer.show(context, iconData, heroTag: heroTag),
+          child: Hero(
+            tag: heroTag,
+            child: CachedNetworkImage(
+              imageUrl: iconData,
               width: isReply ? 16 : 20,
               height: isReply ? 16 : 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 1,
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
-                    : null,
+              fit: BoxFit.contain,
+              placeholder: (context, url) => SizedBox(
+                width: isReply ? 16 : 20,
+                height: isReply ? 16 : 20,
+                child: CircularProgressIndicator(strokeWidth: 1),
               ),
-            );
-          },
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              width: isReply ? 16 : 20,
-              height: isReply ? 16 : 20,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
+              errorWidget: (context, url, error) => Container(
+                width: isReply ? 16 : 20,
+                height: isReply ? 16 : 20,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Icon(
+                  Icons.running_with_errors_sharp,
+                  size: isReply ? 12 : 16,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
-              child: Icon(
-                Icons.running_with_errors_sharp,
-                size: isReply ? 12 : 16,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            );
-          },
+            ),
+          ),
         ),
       );
     } else {
@@ -384,64 +381,61 @@ class BBCodeParser {
     BuildContext context, {
     bool isReply = false,
   }) {
+    // 为Hero动画生成唯一标签
+    final heroTag = 'image_${imageUrl.hashCode}';
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       constraints: BoxConstraints(
         maxWidth: isReply ? 200 : 300,
         maxHeight: isReply ? 150 : 200,
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Image.network(
-          imageUrl,
-          fit: BoxFit.cover,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Container(
-              height: isReply ? 100 : 120,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: CircularProgressIndicator(
-                  value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!
-                      : null,
+      child: GestureDetector(
+        onTap: () => ImageViewer.show(context, imageUrl, heroTag: heroTag),
+        child: Hero(
+          tag: heroTag,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: CachedNetworkImage(
+              imageUrl: imageUrl,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(8),
                 ),
+                child: const Center(child: CircularProgressIndicator()),
               ),
-            );
-          },
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              height: isReply ? 100 : 120,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.errorContainer,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.broken_image,
-                      color: Theme.of(context).colorScheme.onErrorContainer,
-                      size: isReply ? 24 : 32,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '图片加载失败',
-                      style: TextStyle(
+              errorWidget: (context, url, error) => Container(
+                width: isReply ? 60 : 80,
+                height: isReply ? 40 : 60,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.errorContainer,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.broken_image,
+                        size: isReply ? 20 : 24,
                         color: Theme.of(context).colorScheme.onErrorContainer,
-                        fontSize: isReply ? 10 : 12,
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Text(
+                        '加载失败',
+                        style: TextStyle(
+                          fontSize: isReply ? 8 : 10,
+                          color: Theme.of(context).colorScheme.onErrorContainer,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            );
-          },
+            ),
+          ),
         ),
       ),
     );

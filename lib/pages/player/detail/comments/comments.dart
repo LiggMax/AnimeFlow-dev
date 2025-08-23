@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:AnimeFlow/modules/bangumi/episodes_comments.dart';
 import 'package:AnimeFlow/request/bangumi/bangumi.dart';
 import 'package:AnimeFlow/utils/bbcode_parser.dart';
+import 'package:AnimeFlow/utils/image_viewer.dart';
 
 class CommentsPage extends StatefulWidget {
   final int? animeId;
@@ -150,14 +151,29 @@ class _CommentsPageState extends State<CommentsPage>
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   // 用户头像
-                  CircleAvatar(
-                    radius: isReply ? 16 : 20,
-                    backgroundImage: comment.user?.avatar?.small != null
-                        ? NetworkImage(comment.user!.avatar!.small!)
-                        : null,
-                    child: comment.user?.avatar?.small == null
-                        ? const Icon(Icons.person)
-                        : null,
+                  GestureDetector(
+                    onTap: () {
+                      if (comment.user?.avatar?.small != null) {
+                        // 使用中等尺寸的头像或大尺寸头像
+                        final imageUrl = comment.user?.avatar?.medium ??
+                                       comment.user?.avatar?.large ??
+                                       comment.user!.avatar!.small!;
+                        final heroTag = 'avatar_${comment.user!.id}_$isReply';
+                        ImageViewer.show(context, imageUrl, heroTag: heroTag);
+                      }
+                    },
+                    child: Hero(
+                      tag: 'avatar_${comment.user?.id ?? 'unknown'}_$isReply',
+                      child: CircleAvatar(
+                        radius: isReply ? 16 : 20,
+                        backgroundImage: comment.user?.avatar?.small != null
+                            ? NetworkImage(comment.user!.avatar!.small!)
+                            : null,
+                        child: comment.user?.avatar?.small == null
+                            ? const Icon(Icons.person)
+                            : null,
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 12),
                   // 用户名和时间
