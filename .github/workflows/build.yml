@@ -20,7 +20,27 @@ on:
         default: "all"
 
 jobs:
+  get-app-info:
+    runs-on: ubuntu-latest
+    outputs:
+      app_name: ${{ steps.get_app_info.outputs.app_name }}
+      app_version: ${{ steps.get_app_info.outputs.app_version }}
+      app_name_version: ${{ steps.get_app_info.outputs.app_name_version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get app name and version
+        id: get_app_info
+        run: |
+          APP_NAME=$(grep '^name:' pubspec.yaml | sed 's/^name:[[:space:]]*//' | tr -d ' ')
+          APP_VERSION=$(grep '^version:' pubspec.yaml | sed 's/^version:[[:space:]]*//' | tr -d ' ')
+          echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
+          echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
+          echo "app_name_version=${APP_NAME}-${APP_VERSION}" >> $GITHUB_OUTPUT
+
   build-android:
+    needs: get-app-info
     if: ${{ github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all'}}
     runs-on: ubuntu-latest
     steps:
@@ -33,15 +53,6 @@ jobs:
           channel: stable
           flutter-version-file: pubspec.yaml
 
-      - name: Get app name
-        id: app_name
-        run: |
-          APP_NAME=$(grep '^name:' pubspec.yaml | sed 's/^name:[[:space:]]*//' | tr -d ' ')
-          if [ -z "$APP_NAME" ]; then
-            APP_NAME="AnimeFlow"
-          fi
-          echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
-
       - name: Install dependencies
         run: flutter pub get
 
@@ -53,11 +64,12 @@ jobs:
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-android
+          name: ${{ needs.get-app-info.outputs.app_name_version }}-android
           path: build/app/outputs/flutter-apk/*.apk
           if-no-files-found: ignore
 
   build-linux:
+    needs: get-app-info
     if: ${{ github.event.inputs.platform == 'linux' || github.event.inputs.platform == 'all'}}
     runs-on: ubuntu-latest
     steps:
@@ -75,15 +87,6 @@ jobs:
           channel: stable
           flutter-version-file: pubspec.yaml
 
-      - name: Get app name
-        id: app_name
-        run: |
-          APP_NAME=$(grep '^name:' pubspec.yaml | sed 's/^name:[[:space:]]*//' | tr -d ' ')
-          if [ -z "$APP_NAME" ]; then
-            APP_NAME="AnimeFlow"
-          fi
-          echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
-
       - name: Install dependencies
         run: flutter pub get
 
@@ -95,11 +98,12 @@ jobs:
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-linux
+          name: ${{ needs.get-app-info.outputs.app_name_version }}-linux
           path: build/linux/
           if-no-files-found: ignore
 
   build-windows:
+    needs: get-app-info
     if: ${{ github.event.inputs.platform == 'windows' || github.event.inputs.platform == 'all'}}
     runs-on: windows-latest
     steps:
@@ -112,18 +116,6 @@ jobs:
           channel: stable
           flutter-version-file: pubspec.yaml
 
-      - name: Get app name
-        id: app_name
-        run: |
-          $content = Get-Content pubspec.yaml -Raw
-          $match = [regex]::Match($content, '^name:\s*(\S+)', [System.Text.RegularExpressions.RegexOptions]::Multiline)
-          if ($match.Success) {
-            $APP_NAME = $match.Groups[1].Value.Trim()
-          } else {
-            $APP_NAME = "AnimeFlow"
-          }
-          echo "APP_NAME=$APP_NAME" >> $env:GITHUB_ENV
-
       - name: Install dependencies
         run: flutter pub get
 
@@ -135,11 +127,12 @@ jobs:
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-windows
+          name: ${{ needs.get-app-info.outputs.app_name_version }}-windows
           path: build/windows/x64/runner/Release/
           if-no-files-found: ignore
 
   build-macos:
+    needs: get-app-info
     if: ${{ github.event.inputs.platform == 'macos' || github.event.inputs.platform == 'all' }}
     runs-on: macos-latest
     steps:
@@ -152,15 +145,6 @@ jobs:
           channel: stable
           flutter-version-file: pubspec.yaml
 
-      - name: Get app name
-        id: app_name
-        run: |
-          APP_NAME=$(grep '^name:' pubspec.yaml | sed 's/^name:[[:space:]]*//' | tr -d ' ')
-          if [ -z "$APP_NAME" ]; then
-            APP_NAME="AnimeFlow"
-          fi
-          echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
-
       - name: Install dependencies
         run: flutter pub get
 
@@ -172,20 +156,21 @@ jobs:
       - name : Create DMG
         run: |
           mkdir -p build/dist
-          cp -a build/macos/Build/Products/Release/AnimeFlow.app build/dist
+          cp -a build/macos/Build/Products/Release/${{ needs.get-app-info.outputs.app_name }}.app build/dist
           ln -s /Applications build/dist/Applications
-          hdiutil create -fs HFS+ -volname ${{ env.APP_NAME }} -srcfolder build/dist ${{ env.APP_NAME }}.dmg
+          hdiutil create -fs HFS+ -volname ${{ needs.get-app-info.outputs.app_name_version }} -srcfolder build/dist ${{ needs.get-app-info.outputs.app_name_version }}.dmg
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-macos
-          path: build/macos/Build/Products/Release/AnimeFlow.app
+          name: ${{ needs.get-app-info.outputs.app_name_version }}-macos
+          path: build/macos/Build/Products/Release/${{ needs.get-app-info.outputs.app_name }}.app
           if-no-files-found: ignore
 
   build-ios:
+    needs: get-app-info
     if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all'}}
-    runs-on: macos-latest  # macOS-15 with Xcode 16.0
+    runs-on: macos-14
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -193,115 +178,24 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2.16.0
         with:
-          channel: stable
           flutter-version-file: pubspec.yaml
-
-      - name: System and Xcode Configuration
-        run: |
-          echo "=== System Information ==="
-          sw_vers
-          
-          echo "=== Xcode Configuration ==="
-          sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
-          xcodebuild -version
-          
-          echo "=== Available iOS SDKs ==="
-          xcodebuild -showsdks | grep iphoneos
-          
-          echo "=== Available Simulator Runtimes ==="
-          xcrun simctl list runtimes
-          
-          # 获取最新可用的iOS SDK版本
-          LATEST_IOS_SDK=$(xcodebuild -showsdks | grep iphoneos | tail -1 | awk '{print $NF}')
-          echo "Latest available iOS SDK: $LATEST_IOS_SDK"
-          echo "LATEST_IOS_SDK=$LATEST_IOS_SDK" >> $GITHUB_ENV
-
-      - name: Get app name
-        id: app_name
-        run: |          
-          APP_NAME=$(grep '^name:' pubspec.yaml | sed 's/^name:[[:space:]]*//' | tr -d ' ')
-          if [ -z "$APP_NAME" ]; then
-            APP_NAME="AnimeFlow"
-          fi
-          echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
+          channel: stable
 
       - name: Install dependencies
-        run: |
-          flutter pub get
-          cd ios && pod install --repo-update && cd ..
+        run: flutter pub get
 
       - name: Build IPA
-        run: |
-          # 设置更低的部署目标以确保兼容性
-          export IPHONEOS_DEPLOYMENT_TARGET=11.0
-          
-          echo "=== iOS Build Configuration ==="
-          echo "Deployment Target: $IPHONEOS_DEPLOYMENT_TARGET"
-          
-          # 检查可用的iOS SDKs
-          echo "=== Available iOS SDKs ==="
-          xcodebuild -showsdks | grep -E "(iphoneos|iphonesimulator)"
-          
-          echo "=== Available Simulators ==="
-          xcrun simctl list devices available | head -5
-          
-          # 简化的构建策略
-          echo "=== Attempting iOS Build ==="
-          
-          # 策略1: 使用Flutter命令构建设备版本
-          if flutter build ios --release --no-codesign; then
-            echo "✅ iOS device build completed"
-            BUILD_TYPE="device"
-            BUILD_PATH="build/ios/iphoneos/Runner.app"
-          else
-            echo "❌ Device build failed, trying simulator build..."
-            
-            # 策略2: 使用Flutter命令构建模拟器版本
-            if flutter build ios --debug --no-codesign --simulator; then
-              echo "✅ iOS simulator build completed"
-              BUILD_TYPE="simulator"
-              BUILD_PATH="build/ios/iphonesimulator/Runner.app"
-            else
-              echo "❌ All build strategies failed"
-              exit 1
-            fi
-          fi
-          
-          echo "BUILD_TYPE=$BUILD_TYPE" >> $GITHUB_ENV
-          echo "BUILD_PATH=$BUILD_PATH" >> $GITHUB_ENV
-          echo "Final build configuration: Type=$BUILD_TYPE, Path=$BUILD_PATH"
+        run: flutter build ios --release --no-codesign
 
       - name: Create IPA
         run: |
-          echo "=== Creating IPA Package ==="
-          echo "Build Type: $BUILD_TYPE"
-          echo "Build Path: $BUILD_PATH"
-          
-          # 检查构建产物是否存在
-          if [ ! -d "$BUILD_PATH" ]; then
-            echo "❌ Build artifact not found at: $BUILD_PATH"
-            echo "Available .app files:"
-            find build -name "*.app" -type d || true
-            exit 1
-          fi
-          
-          # 创建IPA包
-          mkdir -p Payload
-          cp -R "$BUILD_PATH" Payload/Runner.app
-          zip -q -r ${{ env.APP_NAME }}.ipa Payload
-          
-          # 验证IPA文件
-          if [ -f "${{ env.APP_NAME }}.ipa" ]; then
-            echo "✅ IPA created successfully: ${{ env.APP_NAME }}.ipa"
-            ls -lh ${{ env.APP_NAME }}.ipa
-          else
-            echo "❌ Failed to create IPA file"
-            exit 1
-          fi
+          mkdir Payload
+          cp -R build/ios/iphoneos/Runner.app Payload/Runner.app
+          zip -q -r ${{ needs.get-app-info.outputs.app_name_version }}.ipa Payload
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-ios
-          path: ${{ env.APP_NAME }}.ipa
+          name: ${{ needs.get-app-info.outputs.app_name_version }}-ios
+          path: ${{ needs.get-app-info.outputs.app_name_version }}.ipa
           if-no-files-found: ignore
