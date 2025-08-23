@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 class BgmIconParser {
 
   //解析图标
+  //TODO 链接萍姐部分依旧有问题，后续需要优化
   static Object parseIcon(int number) {
     if (number >= 1 && number <= 23) {
       return 'https://bgm.tv/img/smiles/bgm/$number.png';
