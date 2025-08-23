@@ -141,15 +141,51 @@ jobs:
         run: |
           flutter build linux --release
           echo "Linux build completed"
-          echo "=== Linux build output structure ==="
-          find build/linux -type f -name "*" | head -20
-          echo "=== End of Linux build output ==="
+
+      - name: Package Linux artifacts (.tar.gz and .deb)
+        run: |
+          # 创建tar.gz包
+          tar -czvf "${{ needs.get-app-info.outputs.app_name_version }}-linux.tar.gz" -C build/linux/x64/release bundle
+          
+          DEB_DIR="${{ needs.get-app-info.outputs.app_name }}_${{ needs.get-app-info.outputs.app_version }}_amd64"
+          mkdir -p "$DEB_DIR/usr/bin"
+          mkdir -p "$DEB_DIR/usr/lib"
+          mkdir -p "$DEB_DIR/DEBIAN"
+          mkdir -p "$DEB_DIR/usr/share/applications"
+          mkdir -p "$DEB_DIR/usr/share/icons/hicolor/256x256/apps"
+          
+          cp -r build/linux/x64/release/bundle/* "$DEB_DIR/usr/bin/"
+          
+          cat > "$DEB_DIR/DEBIAN/control" <<EOF
+          Package: ${{ needs.get-app-info.outputs.app_name }}
+          Version: ${{ needs.get-app-info.outputs.app_version }}
+          Section: utils
+          Priority: optional
+          Architecture: amd64
+          Maintainer: ${{ github.repository_owner }} <${{ github.repository_owner }}@users.noreply.github.com>
+          Description: AnimeFlow - A Flutter anime streaming application
+           A cross-platform application for streaming anime content.
+          EOF
+          
+          cat > "$DEB_DIR/usr/share/applications/${{ needs.get-app-info.outputs.app_name }}.desktop" <<EOF
+          [Desktop Entry]
+          Name=${{ needs.get-app-info.outputs.app_name }}
+          Exec=${{ needs.get-app-info.outputs.app_name }}
+          Type=Application
+          Categories=Utility;
+          EOF
+          
+          dpkg-deb --build --root-owner-group "$DEB_DIR"
+          
+          mv "${DEB_DIR}.deb" "${{ needs.get-app-info.outputs.app_name_version }}-linux.deb"
 
       - name: Archive Linux artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.get-app-info.outputs.app_name_version }}-linux
-          path: build/linux/
+          path: |
+            ${{ needs.get-app-info.outputs.app_name_version }}-linux.tar.gz
+            ${{ needs.get-app-info.outputs.app_name_version }}-linux.deb
           if-no-files-found: error
 
   # 构建Windows版本
@@ -297,7 +333,7 @@ jobs:
             - iOS (ipa)
             - macOS ( dmg)
             - Windows (exe)
-            - Linux (AppImage)
+            - Linux (tar.gz, deb)
             
             ### 📦 下载
             请从下方附件中下载对应平台的安装包。
@@ -309,6 +345,8 @@ jobs:
             artifacts/**/*.ipa
             artifacts/**/*.dmg
             artifacts/**/*.zip
+            artifacts/**/*.tar.gz
+            artifacts/**/*.deb
             artifacts/**/*
           draft: false
           prerelease: false
@@ -351,7 +389,7 @@ jobs:
             - iOS (ipa)
             - macOS ( dmg)
             - Windows (exe)
-            - Linux (AppImage)
+            - Linux (tar.gz, deb)
             
             ### 📦 下载
             请从下方附件中下载对应平台的安装包。
@@ -365,7 +403,8 @@ jobs:
             artifacts/${{ needs.get-app-info.outputs.app_name_version }}-ios/*.ipa
             artifacts/${{ needs.get-app-info.outputs.app_name_version }}-macos/*.dmg
             artifacts/${{ needs.get-app-info.outputs.app_name_version }}-windows/*.zip
-            artifacts/${{ needs.get-app-info.outputs.app_name_version }}-linux/*
+            artifacts/${{ needs.get-app-info.outputs.app_name_version }}-linux/*.tar.gz
+            artifacts/${{ needs.get-app-info.outputs.app_name_version }}-linux/*.deb
           draft: false
           prerelease: false
         env:
