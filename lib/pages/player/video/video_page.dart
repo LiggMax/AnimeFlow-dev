@@ -10,13 +10,11 @@ import 'controls/controls.dart';
 class VideoPage extends StatefulWidget {
   final String? animeName;
   final String? url;
-  final Function(String)? onVideoUrlReceived; // 添加视频URL回调
 
   const VideoPage({
     super.key,
     this.animeName,
     this.url,
-    this.onVideoUrlReceived,
   });
 
   @override
@@ -24,16 +22,16 @@ class VideoPage extends StatefulWidget {
 }
 
 class VideoPageState extends State<VideoPage> {
-  // Create a [Player] to control playback.
+  // 创建一个[Player]来控制播放.
   late final player = Player();
 
-  // Create a [VideoController] to handle video output from [Player].
+  // 创建一个[videoController]来处理[player]的视频输出。
   late final controller = VideoController(player);
 
   @override
   void initState() {
     super.initState();
-    // Play a [Media] or [Playlist].
+    // 播放[媒体]或[播放列表]。
     if (widget.url != null && widget.url!.isNotEmpty) {
       player.open(Media(widget.url!));
     }
@@ -61,7 +59,7 @@ class VideoPageState extends State<VideoPage> {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.width * 9.0 / 16.0,
-      // Use [Video] widget to display video output.
+      // 使用[Video]小部件显示视频输出.
       child: Video(
         controller: controller,
         controls: (state) {

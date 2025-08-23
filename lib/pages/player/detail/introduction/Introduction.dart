@@ -10,13 +10,15 @@ import 'episode.dart';
 class Introduction extends StatefulWidget {
   final String? animeName;
   final int? animeId;
-  final Function(String)? onVideoUrlReceived; // 添加视频URL回调
+  final Function(String)? onVideoUrlReceived; //URL回调
+  final Function(int)? onEpisodeIdReceived; //剧集回调
 
   const Introduction({
     super.key,
     this.animeName,
     this.animeId,
     this.onVideoUrlReceived,
+    this.onEpisodeIdReceived,
   });
 
   @override
@@ -136,11 +138,16 @@ class _IntroductionState extends State<Introduction> {
         const SizedBox(height: 16),
 
         ///剧集组件
-        EpisodeItem(animeId: widget.animeId, animeName: widget.animeName),
+        EpisodeItem(
+          animeId: widget.animeId,
+          animeName: widget.animeName,
+          onEpisodeIdReceived: widget.onEpisodeIdReceived,
+        ),
 
         ///视频资源组件
         Resources(
           animeName: widget.animeName,
+          //TODO 临时写死静态数据，后需要需要传递回调回来的数据
           episodeNumber: 1,
           onVideoUrlReceived: widget.onVideoUrlReceived,
         ),

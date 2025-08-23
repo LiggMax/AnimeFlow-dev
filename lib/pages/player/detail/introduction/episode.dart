@@ -10,13 +10,12 @@ import 'package:lottie/lottie.dart';
 class EpisodeItem extends StatefulWidget {
   final int? animeId;
   final String? animeName;
-  final VoidCallback? onTap;
+  final Function(int)? onEpisodeIdReceived;
 
   const EpisodeItem({
     super.key,
     required this.animeId,
-    this.onTap,
-    this.animeName,
+    this.animeName, this.onEpisodeIdReceived,
   });
 
   @override
@@ -57,6 +56,7 @@ class _EpisodeItemState extends State<EpisodeItem> {
     setState(() {
       _selectedEpisode = episode;
       _currentEpisodeNumber = episodeNumber;
+      widget.onEpisodeIdReceived!(episode.id!.toInt());
     });
   }
 
@@ -244,7 +244,6 @@ class _EpisodeItemState extends State<EpisodeItem> {
           // 处理剧集选择
           _selectEpisode(episode, episodeNumber);
           Navigator.pop(context); // 关闭弹窗
-          // 这里可以添加播放逻辑
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('选择了第$episodeNumber集: ${episode.name ?? '未知剧集'}'),

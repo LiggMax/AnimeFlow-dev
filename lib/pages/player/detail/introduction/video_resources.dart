@@ -5,7 +5,7 @@ class Resources extends StatefulWidget {
   final String? animeName;
   final int? episodeNumber;
   final VoidCallback? onTap;
-  final Function(String)? onVideoUrlReceived; // 添加视频URL回调
+  final Function(String)? onVideoUrlReceived; // URL回调
 
   const Resources({
     super.key,

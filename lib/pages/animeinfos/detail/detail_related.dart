@@ -73,7 +73,6 @@ class RelatedItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // TODO: 导航到条目详情页面
         context.pushNamed(
           'anime_data',
           pathParameters: {'animeId': item.id.toString()},

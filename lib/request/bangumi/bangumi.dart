@@ -10,6 +10,7 @@ import 'package:AnimeFlow/modules/bangumi/comments.dart';
 import 'package:AnimeFlow/modules/bangumi/related.dart';
 import 'package:AnimeFlow/request/api/common_api.dart';
 import 'package:AnimeFlow/request/api/bangumi/p1_api.dart';
+import 'package:AnimeFlow/modules/bangumi/episodes_comments.dart';
 
 class BangumiService {
   static final Logger _log = Logger('BangumiService');
@@ -129,6 +130,37 @@ class BangumiService {
       return CharacterData.fromJson(response.data);
     } catch (e) {
       _log.severe('获取角色失败: $e');
+      return null;
+    }
+  }
+
+  ///剧集评论
+  static Future<List<EpisodesComments>?> getEpisodeComments(
+    int episodeId,
+  ) async {
+    try {
+      final response = await httpRequest.get(
+        BangumiP1Api.bangumiEpisodeComment.replaceAll(
+          '{episode_id}',
+          episodeId.toString(),
+        ),
+        options: Options(headers: {'User-Agent': CommonApi.bangumiUserAgent}),
+      );
+
+      // 检查响应数据是否为列表
+      if (response.data is List) {
+        return (response.data as List)
+            .map((json) => EpisodesComments.fromJson(json))
+            .toList();
+      } else if (response.data is Map<String, dynamic>) {
+        // 如果是单个对象，包装为列表
+        return [EpisodesComments.fromJson(response.data)];
+      } else {
+        _log.warning('未知的剧集评论数据格式');
+        return [];
+      }
+    } catch (e) {
+      _log.severe('获取剧集评论失败: $e');
       return null;
     }
   }

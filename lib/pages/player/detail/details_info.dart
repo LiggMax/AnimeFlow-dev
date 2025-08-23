@@ -9,14 +9,16 @@ import 'introduction/Introduction.dart';
 class DetailPage extends StatefulWidget {
   final String? animeName;
   final int? animeId;
-  final Function(String)? onVideoUrlReceived; // 添加视频URL回调
+  final Function(String)? onVideoUrlReceived; // URL回调
+  final Function(int)? onEpisodeIdReceived; // 剧集id回调
 
   const DetailPage({
-    Key? key,
+    super.key,
     this.animeName,
     this.animeId,
     this.onVideoUrlReceived,
-  }) : super(key: key);
+    this.onEpisodeIdReceived,
+  });
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -24,6 +26,7 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   late TabController _tabController;
+  int? _selectedEpisodeId;
 
   @override
   void initState() {
@@ -35,6 +38,13 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  // 处理剧集回调
+  void _handleEpisodeIdReceived(int episodeId) {
+    setState(() {
+      _selectedEpisodeId = episodeId;
+    });
   }
 
   @override
@@ -60,10 +70,14 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                   animeName: widget.animeName,
                   animeId: widget.animeId,
                   onVideoUrlReceived: widget.onVideoUrlReceived,
+                  onEpisodeIdReceived: _handleEpisodeIdReceived,
                 ),
 
                 /// 评论内容
-                CommentsPage(animeId: widget.animeId),
+                CommentsPage(
+                  animeId: widget.animeId,
+                  episodeId: _selectedEpisodeId,
+                ),
               ],
             ),
           ),
