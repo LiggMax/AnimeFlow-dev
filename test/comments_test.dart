@@ -49,7 +49,10 @@ void main() {
       expect(comment.id, equals(1917149));
       expect(comment.content, equals('这是一个测试评论'));
       expect(comment.user?.nickname, equals('测试用户'));
-      expect(comment.user?.avatar?.small, equals('https://example.com/avatar.jpg'));
+      expect(
+        comment.user?.avatar?.small,
+        equals('https://example.com/avatar.jpg'),
+      );
       expect(comment.reactions?.length, equals(1));
       expect(comment.reactions?.first.value, equals(140));
       expect(comment.replies?.length, equals(0));
@@ -112,7 +115,7 @@ void main() {
       expect(comment.content, equals('主评论内容'));
       expect(comment.user?.nickname, equals('主评论用户'));
       expect(comment.replies?.length, equals(1));
-      
+
       final reply = comment.replies?.first;
       expect(reply?.id, equals(1919900));
       expect(reply?.content, equals('这是一条回复'));
@@ -173,7 +176,9 @@ void main() {
       ''';
 
       final json = jsonDecode(sampleJson) as List;
-      final comments = json.map((item) => EpisodesComments.fromJson(item)).toList();
+      final comments = json
+          .map((item) => EpisodesComments.fromJson(item))
+          .toList();
 
       expect(comments.length, equals(2));
       expect(comments[0].content, equals('第一条评论'));

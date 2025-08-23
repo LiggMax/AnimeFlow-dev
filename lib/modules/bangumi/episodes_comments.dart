@@ -12,16 +12,17 @@ library;
 
 class EpisodesComments {
   EpisodesComments({
-      num? id,
-      num? mainID,
-      num? creatorID,
-      num? relatedID,
-      num? createdAt,
-      String? content,
-      num? state,
-      List<EpisodesComments>? replies,
-      User? user,
-      List<Reactions>? reactions,}){
+    num? id,
+    num? mainID,
+    num? creatorID,
+    num? relatedID,
+    num? createdAt,
+    String? content,
+    num? state,
+    List<EpisodesComments>? replies,
+    User? user,
+    List<Reactions>? reactions,
+  }) {
     _id = id;
     _mainID = mainID;
     _creatorID = creatorID;
@@ -32,7 +33,7 @@ class EpisodesComments {
     _replies = replies;
     _user = user;
     _reactions = reactions;
-}
+  }
 
   EpisodesComments.fromJson(dynamic json) {
     _id = json['id'];
@@ -66,27 +67,29 @@ class EpisodesComments {
   List<EpisodesComments>? _replies;
   User? _user;
   List<Reactions>? _reactions;
-EpisodesComments copyWith({  num? id,
-  num? mainID,
-  num? creatorID,
-  num? relatedID,
-  num? createdAt,
-  String? content,
-  num? state,
-  List<EpisodesComments>? replies,
-  User? user,
-  List<Reactions>? reactions,
-}) => EpisodesComments(  id: id ?? _id,
-  mainID: mainID ?? _mainID,
-  creatorID: creatorID ?? _creatorID,
-  relatedID: relatedID ?? _relatedID,
-  createdAt: createdAt ?? _createdAt,
-  content: content ?? _content,
-  state: state ?? _state,
-  replies: replies ?? _replies,
-  user: user ?? _user,
-  reactions: reactions ?? _reactions,
-);
+  EpisodesComments copyWith({
+    num? id,
+    num? mainID,
+    num? creatorID,
+    num? relatedID,
+    num? createdAt,
+    String? content,
+    num? state,
+    List<EpisodesComments>? replies,
+    User? user,
+    List<Reactions>? reactions,
+  }) => EpisodesComments(
+    id: id ?? _id,
+    mainID: mainID ?? _mainID,
+    creatorID: creatorID ?? _creatorID,
+    relatedID: relatedID ?? _relatedID,
+    createdAt: createdAt ?? _createdAt,
+    content: content ?? _content,
+    state: state ?? _state,
+    replies: replies ?? _replies,
+    user: user ?? _user,
+    reactions: reactions ?? _reactions,
+  );
   num? get id => _id;
   num? get mainID => _mainID;
   num? get creatorID => _creatorID;
@@ -118,19 +121,16 @@ EpisodesComments copyWith({  num? id,
     }
     return map;
   }
-
 }
 
 /// users : [{"id":277833,"username":"277833","nickname":"カレン"}]
 /// value : 140
 
 class Reactions {
-  Reactions({
-      List<Users>? users,
-      num? value,}){
+  Reactions({List<Users>? users, num? value}) {
     _users = users;
     _value = value;
-}
+  }
 
   Reactions.fromJson(dynamic json) {
     if (json['users'] != null) {
@@ -143,11 +143,8 @@ class Reactions {
   }
   List<Users>? _users;
   num? _value;
-Reactions copyWith({  List<Users>? users,
-  num? value,
-}) => Reactions(  users: users ?? _users,
-  value: value ?? _value,
-);
+  Reactions copyWith({List<Users>? users, num? value}) =>
+      Reactions(users: users ?? _users, value: value ?? _value);
   List<Users>? get users => _users;
   num? get value => _value;
 
@@ -159,7 +156,6 @@ Reactions copyWith({  List<Users>? users,
     map['value'] = _value;
     return map;
   }
-
 }
 
 /// id : 277833
@@ -167,14 +163,11 @@ Reactions copyWith({  List<Users>? users,
 /// nickname : "カレン"
 
 class Users {
-  Users({
-      num? id,
-      String? username,
-      String? nickname,}){
+  Users({num? id, String? username, String? nickname}) {
     _id = id;
     _username = username;
     _nickname = nickname;
-}
+  }
 
   Users.fromJson(dynamic json) {
     _id = json['id'];
@@ -184,13 +177,11 @@ class Users {
   num? _id;
   String? _username;
   String? _nickname;
-Users copyWith({  num? id,
-  String? username,
-  String? nickname,
-}) => Users(  id: id ?? _id,
-  username: username ?? _username,
-  nickname: nickname ?? _nickname,
-);
+  Users copyWith({num? id, String? username, String? nickname}) => Users(
+    id: id ?? _id,
+    username: username ?? _username,
+    nickname: nickname ?? _nickname,
+  );
   num? get id => _id;
   String? get username => _username;
   String? get nickname => _nickname;
@@ -202,7 +193,6 @@ Users copyWith({  num? id,
     map['nickname'] = _nickname;
     return map;
   }
-
 }
 
 /// id : 1043955
@@ -215,13 +205,14 @@ Users copyWith({  num? id,
 
 class User {
   User({
-      num? id,
-      String? username,
-      String? nickname,
-      Avatar? avatar,
-      num? group,
-      String? sign,
-      num? joinedAt,}){
+    num? id,
+    String? username,
+    String? nickname,
+    Avatar? avatar,
+    num? group,
+    String? sign,
+    num? joinedAt,
+  }) {
     _id = id;
     _username = username;
     _nickname = nickname;
@@ -229,7 +220,7 @@ class User {
     _group = group;
     _sign = sign;
     _joinedAt = joinedAt;
-}
+  }
 
   User.fromJson(dynamic json) {
     _id = json['id'];
@@ -247,21 +238,23 @@ class User {
   num? _group;
   String? _sign;
   num? _joinedAt;
-User copyWith({  num? id,
-  String? username,
-  String? nickname,
-  Avatar? avatar,
-  num? group,
-  String? sign,
-  num? joinedAt,
-}) => User(  id: id ?? _id,
-  username: username ?? _username,
-  nickname: nickname ?? _nickname,
-  avatar: avatar ?? _avatar,
-  group: group ?? _group,
-  sign: sign ?? _sign,
-  joinedAt: joinedAt ?? _joinedAt,
-);
+  User copyWith({
+    num? id,
+    String? username,
+    String? nickname,
+    Avatar? avatar,
+    num? group,
+    String? sign,
+    num? joinedAt,
+  }) => User(
+    id: id ?? _id,
+    username: username ?? _username,
+    nickname: nickname ?? _nickname,
+    avatar: avatar ?? _avatar,
+    group: group ?? _group,
+    sign: sign ?? _sign,
+    joinedAt: joinedAt ?? _joinedAt,
+  );
   num? get id => _id;
   String? get username => _username;
   String? get nickname => _nickname;
@@ -283,7 +276,6 @@ User copyWith({  num? id,
     map['joinedAt'] = _joinedAt;
     return map;
   }
-
 }
 
 /// small : "https://lain.bgm.tv/pic/user/s/001/04/39/1043955.jpg?r=1753280548&hd=1"
@@ -291,14 +283,11 @@ User copyWith({  num? id,
 /// large : "https://lain.bgm.tv/pic/user/l/001/04/39/1043955.jpg?r=1753280548&hd=1"
 
 class Avatar {
-  Avatar({
-      String? small,
-      String? medium,
-      String? large,}){
+  Avatar({String? small, String? medium, String? large}) {
     _small = small;
     _medium = medium;
     _large = large;
-}
+  }
 
   Avatar.fromJson(dynamic json) {
     _small = json['small'];
@@ -308,13 +297,11 @@ class Avatar {
   String? _small;
   String? _medium;
   String? _large;
-Avatar copyWith({  String? small,
-  String? medium,
-  String? large,
-}) => Avatar(  small: small ?? _small,
-  medium: medium ?? _medium,
-  large: large ?? _large,
-);
+  Avatar copyWith({String? small, String? medium, String? large}) => Avatar(
+    small: small ?? _small,
+    medium: medium ?? _medium,
+    large: large ?? _large,
+  );
   String? get small => _small;
   String? get medium => _medium;
   String? get large => _large;
@@ -326,5 +313,4 @@ Avatar copyWith({  String? small,
     map['large'] = _large;
     return map;
   }
-
 }
