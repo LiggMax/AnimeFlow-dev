@@ -383,7 +383,7 @@ jobs:
           body: |
             ## 🎉 Release ${{ needs.get-version.outputs.version_name }}
             
-            ### 正式发布第一个版本${{needs.get-version}}
+            ### ${{needs.get-version}}
             ### 📱 支持的平台
             - Android (apk)
             - iOS (ipa)
