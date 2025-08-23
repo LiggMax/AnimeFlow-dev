@@ -134,7 +134,7 @@ jobs:
   build-macos:
     needs: get-app-info
     if: ${{ github.event.inputs.platform == 'macos' || github.event.inputs.platform == 'all' }}
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
