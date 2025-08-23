@@ -52,55 +52,58 @@ class ImageViewer extends StatelessWidget {
               // 图片内容
               Center(
                 child: Container(
-                  margin: const EdgeInsets.all(24),
+                  margin: const EdgeInsets.only(left: 10,right: 10),
                   child: InteractiveViewer(
                     minScale: 0.5,
                     maxScale: 3.0,
                     child: Hero(
                       tag: heroTag ?? imageUrl,
-                      child: CachedNetworkImage(
-                        imageUrl: imageUrl,
-                        fit: BoxFit.contain,
-                        placeholder: (context, url) => Container(
-                          width: 200,
-                          height: 200,
-                          decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerHighest,
-                            borderRadius: BorderRadius.circular(12),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: CachedNetworkImage(
+                          imageUrl: imageUrl,
+                          fit: BoxFit.contain,
+                          placeholder: (context, url) => Container(
+                            width: 200,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
                           ),
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          width: 200,
-                          height: 200,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.errorContainer,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.broken_image,
-                                size: 48,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onErrorContainer,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                '图片加载失败',
-                                style: TextStyle(
+                          errorWidget: (context, url, error) => Container(
+                            width: 200,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.errorContainer,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.broken_image,
+                                  size: 48,
                                   color: Theme.of(
                                     context,
                                   ).colorScheme.onErrorContainer,
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: 8),
+                                Text(
+                                  '图片加载失败',
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onErrorContainer,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -108,6 +111,7 @@ class ImageViewer extends StatelessWidget {
                   ),
                 ),
               ),
+
               // 关闭按钮
               Positioned(
                 top: MediaQuery.of(context).padding.top + 16,
