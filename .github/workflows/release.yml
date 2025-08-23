@@ -58,9 +58,29 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
+  # 获取应用信息
+  get-app-info:
+    runs-on: ubuntu-latest
+    outputs:
+      app_name: ${{ steps.get_app_info.outputs.app_name }}
+      app_version: ${{ steps.get_app_info.outputs.app_version }}
+      app_name_version: ${{ steps.get_app_info.outputs.app_name_version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get app name and version
+        id: get_app_info
+        run: |
+          APP_NAME=$(grep '^name:' pubspec.yaml | sed 's/^name:[[:space:]]*//' | tr -d ' ')
+          APP_VERSION=$(grep '^version:' pubspec.yaml | sed 's/^version:[[:space:]]*//' | tr -d ' ')
+          echo "app_name=$APP_NAME" >> $GITHUB_OUTPUT
+          echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
+          echo "app_name_version=${APP_NAME}-${APP_VERSION}" >> $GITHUB_OUTPUT
+
   # 构建Android版本
   build-android:
-    needs: get-version
+    needs: [get-version, get-app-info]
     if: ${{ github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all' || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
@@ -72,15 +92,6 @@ jobs:
         with:
           channel: ${{ env.FLUTTER_VERSION }}
           flutter-version-file: pubspec.yaml
-
-      - name: Get app name
-        id: app_name
-        run: |
-          APP_NAME=$(grep '^name:' pubspec.yaml | sed 's/^name:[[:space:]]*//' | tr -d ' ')
-          if [ -z "$APP_NAME" ]; then
-            APP_NAME="AnimeFlow"
-          fi
-          echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: flutter pub get
@@ -98,14 +109,14 @@ jobs:
       - name: Archive Android artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-android-${{ needs.get-version.outputs.version_name }}
+          name: ${{ needs.get-app-info.outputs.app_name_version }}-android
           path: |
             build/app/outputs/flutter-apk/*.apk
           if-no-files-found: error
 
   # 构建Linux版本
   build-linux:
-    needs: get-version
+    needs: [get-version, get-app-info]
     if: ${{ github.event.inputs.platform == 'linux' || github.event.inputs.platform == 'all' || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
@@ -123,15 +134,6 @@ jobs:
           channel: ${{ env.FLUTTER_VERSION }}
           flutter-version-file: pubspec.yaml
 
-      - name: Get app name
-        id: app_name
-        run: |
-          APP_NAME=$(grep '^name:' pubspec.yaml | sed 's/^name:[[:space:]]*//' | tr -d ' ')
-          if [ -z "$APP_NAME" ]; then
-            APP_NAME="AnimeFlow"
-          fi
-          echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
-
       - name: Install dependencies
         run: flutter pub get
 
@@ -146,13 +148,13 @@ jobs:
       - name: Archive Linux artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-linux-${{ needs.get-version.outputs.version_name }}
+          name: ${{ needs.get-app-info.outputs.app_name_version }}-linux
           path: build/linux/
           if-no-files-found: error
 
   # 构建Windows版本
   build-windows:
-    needs: get-version
+    needs: [get-version, get-app-info]
     if: ${{ github.event.inputs.platform == 'windows' || github.event.inputs.platform == 'all' || github.event_name == 'push' }}
     runs-on: windows-latest
     steps:
@@ -165,18 +167,6 @@ jobs:
           channel: ${{ env.FLUTTER_VERSION }}
           flutter-version-file: pubspec.yaml
 
-      - name: Get app name
-        id: app_name
-        run: |
-          $content = Get-Content pubspec.yaml -Raw
-          $match = [regex]::Match($content, '^name:\s*(\S+)', [System.Text.RegularExpressions.RegexOptions]::Multiline)
-          if ($match.Success) {
-            $APP_NAME = $match.Groups[1].Value.Trim()
-          } else {
-            $APP_NAME = "AnimeFlow"
-          }
-          echo "APP_NAME=$APP_NAME" >> $env:GITHUB_ENV
-
       - name: Install dependencies
         run: flutter pub get
 
@@ -188,13 +178,13 @@ jobs:
       - name: Archive Windows artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-windows-${{ needs.get-version.outputs.version_name }}
+          name: ${{ needs.get-app-info.outputs.app_name_version }}-windows
           path: build/windows/x64/runner/Release/
           if-no-files-found: error
 
   # 构建macOS版本
   build-macos:
-    needs: get-version
+    needs: [get-version, get-app-info]
     if: ${{ github.event.inputs.platform == 'macos' || github.event.inputs.platform == 'all' || github.event_name == 'push' }}
     runs-on: macos-latest
     steps:
@@ -207,15 +197,6 @@ jobs:
           channel: ${{ env.FLUTTER_VERSION }}
           flutter-version-file: pubspec.yaml
 
-      - name: Get app name
-        id: app_name
-        run: |
-          APP_NAME=$(grep '^name:' pubspec.yaml | sed 's/^name:[[:space:]]*//' | tr -d ' ')
-          if [ -z "$APP_NAME" ]; then
-            APP_NAME="AnimeFlow"
-          fi
-          echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
-
       - name: Install dependencies
         run: flutter pub get
 
@@ -227,20 +208,20 @@ jobs:
       - name: Create DMG
         run: |
           mkdir -p build/dist
-          cp -a build/macos/Build/Products/Release/AnimeFlow.app build/dist
+          cp -a build/macos/Build/Products/Release/${{ needs.get-app-info.outputs.app_name }}.app build/dist
           ln -s /Applications build/dist/Applications
-          hdiutil create -fs HFS+ -volname "${{ env.APP_NAME }}-${{ needs.get-version.outputs.version_name }}" -srcfolder build/dist "${{ env.APP_NAME }}-${{ needs.get-version.outputs.version_name }}.dmg"
+          hdiutil create -fs HFS+ -volname "${{ needs.get-app-info.outputs.app_name_version }}" -srcfolder build/dist "${{ needs.get-app-info.outputs.app_name_version }}.dmg"
 
       - name: Archive macOS artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-macos-${{ needs.get-version.outputs.version_name }}
-          path: ${{ env.APP_NAME }}-${{ needs.get-version.outputs.version_name }}.dmg
+          name: ${{ needs.get-app-info.outputs.app_name_version }}-macos
+          path: ${{ needs.get-app-info.outputs.app_name_version }}.dmg
           if-no-files-found: error
 
   # 构建iOS版本
   build-ios:
-    needs: get-version
+    needs: [get-version, get-app-info]
     if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all' || github.event_name == 'push' }}
     runs-on: macos-latest
     steps:
@@ -252,15 +233,6 @@ jobs:
         with:
           channel: ${{ env.FLUTTER_VERSION }}
           flutter-version-file: pubspec.yaml
-
-      - name: Get app name
-        id: app_name
-        run: |
-          APP_NAME=$(grep '^name:' pubspec.yaml | sed 's/^name:[[:space:]]*//' | tr -d ' ')
-          if [ -z "$APP_NAME" ]; then
-            APP_NAME="AnimeFlow"
-          fi
-          echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: flutter pub get
@@ -274,18 +246,18 @@ jobs:
         run: |
           mkdir Payload
           cp -R build/ios/iphoneos/Runner.app Payload/Runner.app
-          zip -q -r "${{ env.APP_NAME }}-${{ needs.get-version.outputs.version_name }}.ipa" Payload
+          zip -q -r "${{ needs.get-app-info.outputs.app_name_version }}.ipa" Payload
 
       - name: Archive iOS artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-ios-${{ needs.get-version.outputs.version_name }}
-          path: "${{ env.APP_NAME }}-${{ needs.get-version.outputs.version_name }}.ipa"
+          name: ${{ needs.get-app-info.outputs.app_name_version }}-ios
+          path: "${{ needs.get-app-info.outputs.app_name_version }}.ipa"
           if-no-files-found: error
 
   # 创建GitHub Release
   create-release:
-    needs: [get-version, build-android, build-linux, build-windows, build-macos, build-ios]
+    needs: [get-version, get-app-info, build-android, build-linux, build-windows, build-macos, build-ios]
     if: ${{ github.event.inputs.create_release != 'false' && github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     permissions:
@@ -293,15 +265,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Get app name
-        id: app_name
-        run: |
-          APP_NAME=$(grep '^name:' pubspec.yaml | sed 's/^name:[[:space:]]*//' | tr -d ' ')
-          if [ -z "$APP_NAME" ]; then
-            APP_NAME="AnimeFlow"
-          fi
-          echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
 
       - name: Download all artifacts
         uses: actions/download-artifact@v4
@@ -318,7 +281,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.get-version.outputs.version }}
-          name: ${{ env.APP_NAME }} ${{ needs.get-version.outputs.version_name }}
+          name: ${{ needs.get-app-info.outputs.app_name }} ${{ needs.get-version.outputs.version_name }}
           body: |
             ## 🎉 Release ${{ needs.get-version.outputs.version_name }}
             
@@ -337,10 +300,8 @@ jobs:
             - 初步实现番剧信息展示，番剧播放
           files: |
             artifacts/**/*.apk
-            artifacts/**/*.aab
             artifacts/**/*.ipa
             artifacts/**/*.dmg
-            artifacts/**/*.app
             artifacts/**/*.exe
             artifacts/**/*
           draft: false
@@ -350,7 +311,7 @@ jobs:
 
   # 自动创建Release（当推送tag时）
   auto-create-release:
-    needs: [get-version, build-android, build-linux, build-windows, build-macos, build-ios]
+    needs: [get-version, get-app-info, build-android, build-linux, build-windows, build-macos, build-ios]
     if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     permissions:
@@ -358,15 +319,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Get app name
-        id: app_name
-        run: |
-          APP_NAME=$(grep '^name:' pubspec.yaml | sed 's/^name:[[:space:]]*//' | tr -d ' ')
-          if [ -z "$APP_NAME" ]; then
-            APP_NAME="AnimeFlow"
-          fi
-          echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
 
       - name: Download all artifacts
         uses: actions/download-artifact@v4
@@ -383,7 +335,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.get-version.outputs.version }}
-          name: ${{ env.APP_NAME }} ${{ needs.get-version.outputs.version_name }}
+          name: ${{ needs.get-app-info.outputs.app_name }} ${{ needs.get-version.outputs.version_name }}
           body: |
             ## 🎉 Release ${{ needs.get-version.outputs.version_name }}
             
@@ -399,13 +351,15 @@ jobs:
             请从下方附件中下载对应平台的安装包。
             
             ### 🔄 更新内容
+            - ${{needs.get-version}}版本正式发布
             - 初步实现番剧信息展示，番剧播放
+            - 这是一个里程碑版本，实现了基本的流媒体功能，但功能依旧有很多不完善需要等待后续的叠氮更新
           files: |
-            artifacts/${{ env.APP_NAME }}-android-${{ needs.get-version.outputs.version_name }}/*.apk
-            artifacts/${{ env.APP_NAME }}-ios-${{ needs.get-version.outputs.version_name }}/*.ipa
-            artifacts/${{ env.APP_NAME }}-macos-${{ needs.get-version.outputs.version_name }}/*.dmg
-            artifacts/${{ env.APP_NAME }}-windows-${{ needs.get-version.outputs.version_name }}/*.exe
-            artifacts/${{ env.APP_NAME }}-linux-${{ needs.get-version.outputs.version_name }}/*
+            artifacts/${{ needs.get-app-info.outputs.app_name_version }}-android/*.apk
+            artifacts/${{ needs.get-app-info.outputs.app_name_version }}-ios/*.ipa
+            artifacts/${{ needs.get-app-info.outputs.app_name_version }}-macos/*.dmg
+            artifacts/${{ needs.get-app-info.outputs.app_name_version }}-windows/*.exe
+            artifacts/${{ needs.get-app-info.outputs.app_name_version }}-linux/*
           draft: false
           prerelease: false
         env:
