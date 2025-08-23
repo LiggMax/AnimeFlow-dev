@@ -147,6 +147,8 @@ jobs:
           # 创建tar.gz包
           tar -czvf "${{ needs.get-app-info.outputs.app_name_version }}-linux.tar.gz" -C build/linux/x64/release bundle
           
+          # 创建DEB包
+          # 创建DEB目录结构
           DEB_DIR="${{ needs.get-app-info.outputs.app_name }}_${{ needs.get-app-info.outputs.app_version }}_amd64"
           mkdir -p "$DEB_DIR/usr/bin"
           mkdir -p "$DEB_DIR/usr/lib"
@@ -154,8 +156,10 @@ jobs:
           mkdir -p "$DEB_DIR/usr/share/applications"
           mkdir -p "$DEB_DIR/usr/share/icons/hicolor/256x256/apps"
           
+          # 复制应用程序文件
           cp -r build/linux/x64/release/bundle/* "$DEB_DIR/usr/bin/"
           
+          # 创建控制文件
           cat > "$DEB_DIR/DEBIAN/control" <<EOF
           Package: ${{ needs.get-app-info.outputs.app_name }}
           Version: ${{ needs.get-app-info.outputs.app_version }}
@@ -167,6 +171,7 @@ jobs:
            A cross-platform application for streaming anime content.
           EOF
           
+          # 创建桌面文件
           cat > "$DEB_DIR/usr/share/applications/${{ needs.get-app-info.outputs.app_name }}.desktop" <<EOF
           [Desktop Entry]
           Name=${{ needs.get-app-info.outputs.app_name }}
@@ -175,8 +180,10 @@ jobs:
           Categories=Utility;
           EOF
           
+          # 构建DEB包
           dpkg-deb --build --root-owner-group "$DEB_DIR"
           
+          # 重命名DEB包
           mv "${DEB_DIR}.deb" "${{ needs.get-app-info.outputs.app_name_version }}-linux.deb"
 
       - name: Archive Linux artifacts
@@ -327,7 +334,7 @@ jobs:
           body: |
             ## 🎉 Release ${{ needs.get-version.outputs.version_name }}
             
-            ### 正式发布第一个版本${{needs.get-version}}
+            ### 正式发布第一个版本${{ needs.get-version.outputs.version }}
             ### 📱 支持的平台
             - Android (apk)
             - iOS (ipa)
@@ -383,7 +390,7 @@ jobs:
           body: |
             ## 🎉 Release ${{ needs.get-version.outputs.version_name }}
             
-            ### ${{needs.get-version}}
+            ### 正式发布第一个版本${{ needs.get-version.outputs.version }}
             ### 📱 支持的平台
             - Android (apk)
             - iOS (ipa)
@@ -395,7 +402,7 @@ jobs:
             请从下方附件中下载对应平台的安装包。
             
             ### 🔄 更新内容
-            - ${{needs.get-version}}版本正式发布
+            - ${{ needs.get-version.outputs.version }}版本正式发布
             - 初步实现番剧信息展示，番剧播放
             - 这是一个里程碑版本，实现了基本的流媒体功能，但功能依旧有很多不完善需要等待后续的叠氮更新
           files: |
