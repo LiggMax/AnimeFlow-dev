@@ -1,0 +1,352 @@
+/*
+  @Author Ligg
+  @Time 2025/8/23
+ */
+
+/// BBCode标签解析工具类
+library;
+
+import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+/// 内容元素类型
+enum ContentElementType { text, image, colorText }
+
+/// 内容元素
+class ContentElement {
+  final ContentElementType type;
+  final String content;
+  final Color? color;
+  final String? imageUrl;
+
+  ContentElement({
+    required this.type,
+    required this.content,
+    this.color,
+    this.imageUrl,
+  });
+}
+
+class BBCodeParser {
+  static final Logger _log = Logger('BBCodeParser');
+
+  /// 解析BBCode内容为结构化元素列表
+  static List<ContentElement> parseContent(String content) {
+    if (content.isEmpty) return [];
+
+    try {
+      final elements = <ContentElement>[];
+      String remaining = content;
+
+      // 处理换行符
+      remaining = remaining.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+
+      while (remaining.isNotEmpty) {
+        // 查找最近的标签
+        final imgMatch = RegExp(
+          r'\[img\]([^\[]+?)\[/img\]',
+        ).firstMatch(remaining);
+        final colorMatch = RegExp(
+          r'\[color=([^\]]+?)\]([^\[]*?)\[/color\]',
+        ).firstMatch(remaining);
+
+        // 找到最早出现的标签
+        int earliestIndex = remaining.length;
+        String tagType = 'none';
+        RegExpMatch? earliestMatch;
+
+        if (imgMatch != null && imgMatch.start < earliestIndex) {
+          earliestIndex = imgMatch.start;
+          tagType = 'img';
+          earliestMatch = imgMatch;
+        }
+
+        if (colorMatch != null && colorMatch.start < earliestIndex) {
+          earliestIndex = colorMatch.start;
+          tagType = 'color';
+          earliestMatch = colorMatch;
+        }
+
+        // 如果没有找到任何标签，处理剩余文本
+        if (earliestMatch == null) {
+          final cleanText = _cleanOtherTags(remaining).trim();
+          if (cleanText.isNotEmpty) {
+            elements.add(
+              ContentElement(type: ContentElementType.text, content: cleanText),
+            );
+          }
+          break;
+        }
+
+        // 添加标签前的文本
+        if (earliestIndex > 0) {
+          final beforeText = _cleanOtherTags(
+            remaining.substring(0, earliestIndex),
+          ).trim();
+          if (beforeText.isNotEmpty) {
+            elements.add(
+              ContentElement(
+                type: ContentElementType.text,
+                content: beforeText,
+              ),
+            );
+          }
+        }
+
+        // 处理找到的标签
+        switch (tagType) {
+          case 'img':
+            final imageUrl = imgMatch!.group(1);
+            if (imageUrl != null && imageUrl.isNotEmpty) {
+              elements.add(
+                ContentElement(
+                  type: ContentElementType.image,
+                  content: '',
+                  imageUrl: imageUrl,
+                ),
+              );
+            }
+            remaining = remaining.substring(imgMatch.end);
+            break;
+
+          case 'color':
+            final colorValue = colorMatch!.group(1);
+            final colorText = colorMatch.group(2);
+            if (colorText != null && colorText.isNotEmpty) {
+              elements.add(
+                ContentElement(
+                  type: ContentElementType.colorText,
+                  content: colorText,
+                  color: _parseColor(colorValue),
+                ),
+              );
+            }
+            remaining = remaining.substring(colorMatch.end);
+            break;
+
+          default:
+            remaining = remaining.substring(1);
+        }
+      }
+
+      return elements;
+    } catch (e) {
+      _log.severe('BBCode解析错误: $e');
+      // 发生错误时返回纯文本
+      return [
+        ContentElement(
+          type: ContentElementType.text,
+          content: _cleanOtherTags(content),
+        ),
+      ];
+    }
+  }
+
+  /// 清理其他不支持的标签
+  static String _cleanOtherTags(String text) {
+    return text
+        // 移除 [url] 相关标签
+        .replaceAll(RegExp(r'\[url=[^\]]*?\]'), '')
+        .replaceAll(RegExp(r'\[/url\]'), '')
+        .replaceAll(RegExp(r'\[url\]'), '')
+        // 移除 [right] 标签
+        .replaceAll(RegExp(r'\[right\]'), '')
+        .replaceAll(RegExp(r'\[/right\]'), '')
+        // 移除 [size] 标签
+        .replaceAllMapped(RegExp(r'\[size=[^\]]*?\]([^\[]*?)\[/size\]'), (
+          match,
+        ) {
+          return match.group(1) ?? '';
+        })
+        // 移除 [b] [i] [u] 标签但保留内容
+        .replaceAllMapped(RegExp(r'\[b\]([^\[]*?)\[/b\]'), (match) {
+          return match.group(1) ?? '';
+        })
+        .replaceAllMapped(RegExp(r'\[i\]([^\[]*?)\[/i\]'), (match) {
+          return match.group(1) ?? '';
+        })
+        .replaceAllMapped(RegExp(r'\[u\]([^\[]*?)\[/u\]'), (match) {
+          return match.group(1) ?? '';
+        })
+        // 移除其他单独的闭合标签
+        .replaceAll(RegExp(r'\[/[^\]]+?\]'), '')
+        // 移除其他未闭合的开始标签
+        .replaceAll(RegExp(r'\[[^\]]+?\]'), '')
+        // 清理多余空白
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+  }
+
+  /// 解析颜色值
+  static Color? _parseColor(String? colorValue) {
+    if (colorValue == null || colorValue.isEmpty) return null;
+
+    try {
+      // 移除 # 号
+      String hex = colorValue.replaceAll('#', '');
+
+      // 如果是3位颜色值，扩展为6位
+      if (hex.length == 3) {
+        hex = hex.split('').map((char) => char + char).join('');
+      }
+
+      // 确保是6位十六进制
+      if (hex.length == 6) {
+        final int value = int.parse(hex, radix: 16);
+        return Color(0xFF000000 + value);
+      }
+    } catch (e) {
+      _log.warning('颜色解析失败: $colorValue, 错误: $e');
+    }
+
+    return null;
+  }
+
+  /// 构建内容组件列表
+  static List<Widget> buildContentWidgets(
+    List<ContentElement> elements,
+    BuildContext context, {
+    bool isReply = false,
+  }) {
+    final widgets = <Widget>[];
+
+    for (final element in elements) {
+      switch (element.type) {
+        case ContentElementType.text:
+          if (element.content.isNotEmpty) {
+            widgets.add(
+              _buildTextWidget(element.content, context, isReply: isReply),
+            );
+          }
+          break;
+
+        case ContentElementType.colorText:
+          if (element.content.isNotEmpty) {
+            widgets.add(
+              _buildColorTextWidget(
+                element.content,
+                element.color,
+                context,
+                isReply: isReply,
+              ),
+            );
+          }
+          break;
+
+        case ContentElementType.image:
+          if (element.imageUrl?.isNotEmpty == true) {
+            widgets.add(
+              _buildImageWidget(element.imageUrl!, context, isReply: isReply),
+            );
+          }
+          break;
+      }
+    }
+
+    return widgets;
+  }
+
+  /// 构建普通文本组件
+  static Widget _buildTextWidget(
+    String text,
+    BuildContext context, {
+    bool isReply = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          fontSize: isReply ? 13 : 14,
+          height: 1.4,
+        ),
+      ),
+    );
+  }
+
+  /// 构建彩色文本组件
+  static Widget _buildColorTextWidget(
+    String text,
+    Color? color,
+    BuildContext context, {
+    bool isReply = false,
+  }) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+        fontSize: isReply ? 13 : 14,
+        height: 1.4,
+        color: color ?? Theme.of(context).textTheme.bodyMedium?.color,
+      ),
+    );
+  }
+
+  /// 构建图片组件
+  static Widget _buildImageWidget(
+    String imageUrl,
+    BuildContext context, {
+    bool isReply = false,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      constraints: BoxConstraints(
+        maxWidth: isReply ? 200 : 300,
+        maxHeight: isReply ? 150 : 200,
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Image.network(
+          imageUrl,
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Container(
+              height: isReply ? 100 : 120,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceVariant,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
+                      : null,
+                ),
+              ),
+            );
+          },
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              height: isReply ? 100 : 120,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.errorContainer,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.broken_image,
+                      color: Theme.of(context).colorScheme.onErrorContainer,
+                      size: isReply ? 24 : 32,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '图片加载失败',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onErrorContainer,
+                        fontSize: isReply ? 10 : 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}

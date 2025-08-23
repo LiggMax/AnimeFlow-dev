@@ -5,6 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:AnimeFlow/modules/bangumi/episodes_comments.dart';
 import 'package:AnimeFlow/request/bangumi/bangumi.dart';
+import 'package:AnimeFlow/utils/bbcode_parser.dart';
 
 class CommentsPage extends StatefulWidget {
   final int? animeId;
@@ -94,6 +95,37 @@ class _CommentsPageState extends State<CommentsPage>
     }
   }
 
+  /// 使用BBCode解析器构建富文本内容组件
+  Widget _buildRichContent(String content, {bool isReply = false}) {
+    // 解析BBCode内容
+    final elements = BBCodeParser.parseContent(content);
+
+    // 构建组件列表
+    final widgets = BBCodeParser.buildContentWidgets(
+      elements,
+      context,
+      isReply: isReply,
+    );
+
+    if (widgets.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    // 如果只有一个组件且是文本，直接返回
+    if (widgets.length == 1 &&
+        elements.length == 1 &&
+        elements.first.type == ContentElementType.text) {
+      return widgets.first;
+    }
+
+    // 多个组件或包含图片时使用Wrap布局
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.start,
+      runSpacing: 4,
+      children: widgets,
+    );
+  }
+
   /// 构建评论项
   Widget _buildCommentItem(EpisodesComments comment, {bool isReply = false}) {
     return Column(
@@ -169,12 +201,7 @@ class _CommentsPageState extends State<CommentsPage>
               const SizedBox(height: 12),
               // 评论内容
               if (comment.content?.isNotEmpty == true)
-                Text(
-                  comment.content!,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(fontSize: isReply ? 13 : 14),
-                ),
+                _buildRichContent(comment.content!, isReply: isReply),
               const SizedBox(height: 8),
               // 反应/点赞信息
               if (comment.reactions?.isNotEmpty == true)

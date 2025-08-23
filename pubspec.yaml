@@ -62,6 +62,7 @@ dependencies:
   cached_network_image: ^3.3.0
   lottie: ^3.3.1
   flutter_launcher_icons: ^0.13.1
+  flutter_html: ^3.0.0
 
   ##播放器
   media_kit: ^1.2.0 # 主要包装.
