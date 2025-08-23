@@ -8,9 +8,10 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:AnimeFlow/utils/bgm_icon.dart';
 
 /// 内容元素类型
-enum ContentElementType { text, image, colorText }
+enum ContentElementType { text, image, colorText, emoji }
 
 /// 内容元素
 class ContentElement {
@@ -18,12 +19,14 @@ class ContentElement {
   final String content;
   final Color? color;
   final String? imageUrl;
+  final int? emojiId;
 
   ContentElement({
     required this.type,
     required this.content,
     this.color,
     this.imageUrl,
+    this.emojiId,
   });
 }
 
@@ -49,6 +52,9 @@ class BBCodeParser {
         final colorMatch = RegExp(
           r'\[color=([^\]]+?)\]([^\[]*?)\[/color\]',
         ).firstMatch(remaining);
+        final bgmMatch = RegExp(
+          r'\(bgm(\d+)\)',
+        ).firstMatch(remaining);
 
         // 找到最早出现的标签
         int earliestIndex = remaining.length;
@@ -65,6 +71,12 @@ class BBCodeParser {
           earliestIndex = colorMatch.start;
           tagType = 'color';
           earliestMatch = colorMatch;
+        }
+
+        if (bgmMatch != null && bgmMatch.start < earliestIndex) {
+          earliestIndex = bgmMatch.start;
+          tagType = 'bgm';
+          earliestMatch = bgmMatch;
         }
 
         // 如果没有找到任何标签，处理剩余文本
@@ -122,6 +134,23 @@ class BBCodeParser {
               );
             }
             remaining = remaining.substring(colorMatch.end);
+            break;
+
+          case 'bgm':
+            final emojiIdStr = bgmMatch!.group(1);
+            if (emojiIdStr != null) {
+              final emojiId = int.tryParse(emojiIdStr);
+              if (emojiId != null) {
+                elements.add(
+                  ContentElement(
+                    type: ContentElementType.emoji,
+                    content: '',
+                    emojiId: emojiId,
+                  ),
+                );
+              }
+            }
+            remaining = remaining.substring(bgmMatch.end);
             break;
 
           default:
@@ -240,6 +269,14 @@ class BBCodeParser {
             );
           }
           break;
+
+        case ContentElementType.emoji:
+          if (element.emojiId != null) {
+            widgets.add(
+              _buildEmojiWidget(element.emojiId!, context, isReply: isReply),
+            );
+          }
+          break;
       }
     }
 
@@ -281,6 +318,67 @@ class BBCodeParser {
     );
   }
 
+  /// 构建BGM表情组件
+  static Widget _buildEmojiWidget(
+    int emojiId,
+    BuildContext context, {
+    bool isReply = false,
+  }) {
+    final iconData = BgmIconParser.parseIcon(emojiId);
+    
+    if (iconData is String) {
+      // 返回网络图片
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 2),
+        child: Image.network(
+          iconData,
+          width: isReply ? 16 : 20,
+          height: isReply ? 16 : 20,
+          fit: BoxFit.contain,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return SizedBox(
+              width: isReply ? 16 : 20,
+              height: isReply ? 16 : 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 1,
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes!
+                    : null,
+              ),
+            );
+          },
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              width: isReply ? 16 : 20,
+              height: isReply ? 16 : 20,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.errorContainer,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Icon(
+                Icons.sentiment_very_satisfied,
+                size: isReply ? 12 : 16,
+                color: Theme.of(context).colorScheme.onErrorContainer,
+              ),
+            );
+          },
+        ),
+      );
+    } else {
+      // 返回默认图标
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 2),
+        child: Icon(
+          Icons.sentiment_very_satisfied,
+          size: isReply ? 16 : 20,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      );
+    }
+  }
+
   /// 构建图片组件
   static Widget _buildImageWidget(
     String imageUrl,
@@ -303,7 +401,7 @@ class BBCodeParser {
             return Container(
               height: isReply ? 100 : 120,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                color: Theme.of(context).colorScheme.surfaceVariant,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
