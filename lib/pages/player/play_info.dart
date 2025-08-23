@@ -1,5 +1,5 @@
 import 'package:AnimeFlow/pages/player/detail/details_info.dart';
-import 'package:AnimeFlow/pages/player/video/video_page.dart';
+import 'package:AnimeFlow/pages/video/video_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

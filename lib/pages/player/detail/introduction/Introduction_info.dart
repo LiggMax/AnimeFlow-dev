@@ -25,8 +25,12 @@ class Introduction extends StatefulWidget {
   State<Introduction> createState() => _IntroductionState();
 }
 
-class _IntroductionState extends State<Introduction> {
+class _IntroductionState extends State<Introduction>
+    with AutomaticKeepAliveClientMixin {
   bool _isBottomSheetOpen = false;
+
+  @override
+  bool get wantKeepAlive => true;
 
   //抽屉弹窗
   void _showBottomSheet(BuildContext context) {
@@ -97,13 +101,11 @@ class _IntroductionState extends State<Introduction> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
+
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [

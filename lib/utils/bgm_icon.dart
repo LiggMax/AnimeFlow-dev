@@ -13,7 +13,7 @@ class BgmIconParser {
     if (number >= 1 && number <= 23) {
       return 'https://bgm.tv/img/smiles/bgm/$number.png';
     } else if (number >= 24 && number <= 125) {
-      return 'https://bgm.tv/img/smiles/tv_vs/bgm_$number.png';
+      return 'https://bgm.tv/img/smiles/tv/$number.gif';
     } else if (number >= 200 && number <= 238) {
       return 'https://bgm.tv/img/smiles/tv_vs/bgm_$number.png';
     } else if (number >= 500 && number <= 529) {

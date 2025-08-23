@@ -4,7 +4,7 @@ library;
 
 import 'package:flutter/material.dart';
 import 'comments/comments.dart';
-import 'introduction/Introduction.dart';
+import 'introduction/Introduction_info.dart';
 
 class DetailPage extends StatefulWidget {
   final String? animeName;

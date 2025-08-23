@@ -325,7 +325,7 @@ class BBCodeParser {
     bool isReply = false,
   }) {
     final iconData = BgmIconParser.parseIcon(emojiId);
-    
+
     if (iconData is String) {
       // 返回网络图片
       return Container(
@@ -354,13 +354,12 @@ class BBCodeParser {
               width: isReply ? 16 : 20,
               height: isReply ? 16 : 20,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.errorContainer,
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Icon(
-                Icons.sentiment_very_satisfied,
+                Icons.running_with_errors_sharp,
                 size: isReply ? 12 : 16,
-                color: Theme.of(context).colorScheme.onErrorContainer,
+                color: Theme.of(context).colorScheme.primary,
               ),
             );
           },
