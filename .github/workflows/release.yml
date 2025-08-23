@@ -175,11 +175,17 @@ jobs:
           flutter build windows --release
           echo "Windows build completed"
 
+      - name: Package Windows artifacts
+        run: |
+          cd build/windows/x64/runner/Release
+          Compress-Archive -Path * -DestinationPath ../../../../../${{ needs.get-app-info.outputs.app_name_version }}-windows.zip
+          cd ../../../../../
+
       - name: Archive Windows artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.get-app-info.outputs.app_name_version }}-windows
-          path: build/windows/x64/runner/Release/
+          path: ${{ needs.get-app-info.outputs.app_name_version }}-windows.zip
           if-no-files-found: error
 
   # 构建macOS版本
@@ -302,7 +308,7 @@ jobs:
             artifacts/**/*.apk
             artifacts/**/*.ipa
             artifacts/**/*.dmg
-            artifacts/**/*.exe
+            artifacts/**/*.zip
             artifacts/**/*
           draft: false
           prerelease: false
@@ -358,7 +364,7 @@ jobs:
             artifacts/${{ needs.get-app-info.outputs.app_name_version }}-android/*.apk
             artifacts/${{ needs.get-app-info.outputs.app_name_version }}-ios/*.ipa
             artifacts/${{ needs.get-app-info.outputs.app_name_version }}-macos/*.dmg
-            artifacts/${{ needs.get-app-info.outputs.app_name_version }}-windows/*.exe
+            artifacts/${{ needs.get-app-info.outputs.app_name_version }}-windows/*.zip
             artifacts/${{ needs.get-app-info.outputs.app_name_version }}-linux/*
           draft: false
           prerelease: false
