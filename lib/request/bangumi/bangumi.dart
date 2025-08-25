@@ -147,18 +147,12 @@ class BangumiService {
         options: Options(headers: {'User-Agent': CommonApi.bangumiUserAgent}),
       );
 
-      // 检查响应数据是否为列表
-      if (response.data is List) {
-        return (response.data as List)
-            .map((json) => EpisodesComments.fromJson(json))
-            .toList();
-      } else if (response.data is Map<String, dynamic>) {
-        // 如果是单个对象，包装为列表
-        return [EpisodesComments.fromJson(response.data)];
-      } else {
-        _log.warning('未知的剧集评论数据格式');
-        return [];
-      }
+      List<EpisodesComments> comments = (response.data as List)
+          .map((json) => EpisodesComments.fromJson(json))
+          .toList();
+      // 按时间排序
+      comments.sort((a,b) => b.createdAt!.compareTo(a.createdAt!));
+      return comments;
     } catch (e) {
       _log.severe('获取剧集评论失败: $e');
       return null;
