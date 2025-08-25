@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:AnimeFlow/request/bangumi/bangumi.dart';
 import 'package:AnimeFlow/modules/bangumi/comments.dart';
 
-/// 评论内容组件
+/// 讨论内容组件
 class AnimeCommentsContent extends StatefulWidget {
   final int animeId;
   final VoidCallback? onLoadMoreTriggered;
@@ -67,10 +67,7 @@ class AnimeCommentsContentState extends State<AnimeCommentsContent> {
             _isLoadingMore = false;
             if (data != null && data.data.isNotEmpty) {
               // 合并评论数据
-              _commentsData = CommentsData(
-                total: data.total,
-                data: [..._commentsData!.data, ...data.data],
-              );
+              _commentsData!.data.addAll(data.data);
               _currentOffset += _pageSize;
             } else {
               _hasMore = false;
@@ -164,10 +161,7 @@ class AnimeCommentsContentState extends State<AnimeCommentsContent> {
               _error!,
               style: const TextStyle(fontSize: 14, color: Colors.grey),
             ),
-            ElevatedButton(
-              onPressed: _loadComments,
-              child: const Text('重新加载'),
-            ),
+            ElevatedButton(onPressed: _loadComments, child: const Text('重新加载')),
           ],
         ),
       );
@@ -175,10 +169,7 @@ class AnimeCommentsContentState extends State<AnimeCommentsContent> {
 
     if (_commentsData == null || _commentsData!.data.isEmpty) {
       return const Center(
-        child: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: Text('暂无评论数据'),
-        ),
+        child: Padding(padding: EdgeInsets.all(20.0), child: Text('暂无评论数据')),
       );
     }
 
@@ -212,35 +203,48 @@ class AnimeCommentsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            '评论 (${commentsData.total})',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
-        // 评论列表 - 使用Column，让父级CustomScrollView处理滚动
-        ...commentsData.data.map((comment) => _buildCommentItem(comment)),
-        // 加载更多指示器
-        if (hasMore && isLoadingMore) _buildLoadingMoreIndicator(),
-        // 没有更多数据的提示
-        if (!hasMore && commentsData.data.isNotEmpty)
-          const Padding(
+
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(), // 禁用内部滚动，由父级CustomScrollView处理
+      itemBuilder: (context, index) {
+        // 标题
+        if (index == 0) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              '评论 (${commentsData.total})',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          );
+        }
+
+        // 评论项
+        if (index <= commentsData.data.length) {
+          final commentIndex = index - 1;
+          return _CommentItem(
+            key: ValueKey(commentsData.data[commentIndex].id),
+            comment: commentsData.data[commentIndex],
+          );
+        }
+
+        // 底部状态指示器
+        if (hasMore && isLoadingMore) {
+          return _buildLoadingMoreIndicator();
+        } else if (!hasMore && commentsData.data.isNotEmpty) {
+          return const Padding(
             padding: EdgeInsets.all(16.0),
             child: Center(
               child: Text(
                 '已加载全部评论',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
             ),
-          ),
-      ],
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 
@@ -252,9 +256,19 @@ class AnimeCommentsList extends StatelessWidget {
       child: const Center(child: CircularProgressIndicator()),
     );
   }
+}
 
-  /// 构建单个评论项
-  Widget _buildCommentItem(BangumiComment comment) {
+/// 评论项组件
+class _CommentItem extends StatelessWidget {
+  final BangumiComment comment;
+
+  const _CommentItem({
+    super.key,
+    required this.comment,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.only(bottom: 15, left: 16, right: 16),
       child: Padding(
@@ -300,54 +314,11 @@ class AnimeCommentsList extends StatelessWidget {
                 ),
                 // 评分信息使用星星图标展示
                 if (comment.rate > 0) ...[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ...List.generate(5, (index) {
-                            final starValue = comment.rate / 2;
-                            final isFilled = index < starValue;
-                            final isHalf =
-                                (starValue - index) > 0 &&
-                                (starValue - index) < 1;
-
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 1),
-                              child: Icon(
-                                isHalf ? Icons.star_half : Icons.star,
-                                size: 14,
-                                color: isFilled || isHalf
-                                    ? Colors.amber
-                                    : Colors.grey.shade300,
-                              ),
-                            );
-                          }),
-                          const SizedBox(width: 4),
-                          Text(
-                            comment.rateText,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.amber,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      // 评论类型标签
-                      Text(
-                        comment.typeText,
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    ],
-                  ),
+                  _RatingWidget(comment: comment),
                 ],
               ],
             ),
 
-            const SizedBox(height: 8),
             // 评论内容
             if (comment.comment.isNotEmpty) ...[
               Text(comment.comment, style: const TextStyle(fontSize: 14)),
@@ -356,6 +327,60 @@ class AnimeCommentsList extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// 独立的评分组件
+class _RatingWidget extends StatelessWidget {
+  final BangumiComment comment;
+
+  const _RatingWidget({
+    required this.comment,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ...List.generate(5, (index) {
+              final starValue = comment.rate / 2;
+              final isFilled = index < starValue;
+              final isHalf = (starValue - index) > 0 && (starValue - index) < 1;
+
+              return Padding(
+                padding: const EdgeInsets.only(right: 1),
+                child: Icon(
+                  isHalf ? Icons.star_half : Icons.star,
+                  size: 14,
+                  color: isFilled || isHalf
+                      ? Colors.amber
+                      : Colors.grey.shade300,
+                ),
+              );
+            }),
+            const SizedBox(width: 4),
+            Text(
+              comment.rateText,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.amber,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        // 评论类型标签
+        Text(
+          comment.typeText,
+          style: const TextStyle(fontSize: 12),
+        ),
+      ],
     );
   }
 }
