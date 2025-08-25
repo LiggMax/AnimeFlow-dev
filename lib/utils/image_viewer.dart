@@ -77,8 +77,6 @@ class ImageViewer extends StatelessWidget {
                             ),
                           ),
                           errorWidget: (context, url, error) => Container(
-                            width: 200,
-                            height: 200,
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.errorContainer,
                               borderRadius: BorderRadius.circular(12),
