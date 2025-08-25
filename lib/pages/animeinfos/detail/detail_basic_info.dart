@@ -63,15 +63,14 @@ class AnimeInfoRow extends StatelessWidget {
               '$label:',
               style: const TextStyle(
                 fontSize: 14,
-                color: Colors.grey,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(fontSize: 14),
+              style: const TextStyle(fontSize: 12),
             ),
           ),
         ],

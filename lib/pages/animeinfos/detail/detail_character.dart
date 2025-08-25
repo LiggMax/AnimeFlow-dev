@@ -5,6 +5,7 @@
 import 'package:AnimeFlow/request/bangumi/bangumi.dart';
 import 'package:AnimeFlow/modules/bangumi/character_data.dart';
 import 'package:flutter/material.dart';
+import '../../../utils/fullscreen_utils.dart';
 import 'detail_info.dart';
 
 class AnimeCharacter extends StatefulWidget {
@@ -68,6 +69,10 @@ class _AnimeCharacterState extends State<AnimeCharacter> {
       return const SizedBox.shrink();
     }
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    final crossAxisCount = screenWidth > 900 ? 4 : screenWidth > 600 ? 4 : 2;
+    final childAspectRatio = screenWidth > 900 ? 2.0 : screenWidth > 600 ? 2.5 : 3.0;
+
     return AnimeInfoSection(
       title: '角色信息',
       children: [
@@ -76,9 +81,9 @@ class _AnimeCharacterState extends State<AnimeCharacter> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           padding: EdgeInsets.zero,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 2.5,
+          gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            childAspectRatio: childAspectRatio,
             crossAxisSpacing: 8,
             mainAxisSpacing: 8,
           ),
@@ -212,20 +217,27 @@ class _AnimeCharacterState extends State<AnimeCharacter> {
               ),
               // 角色列表
               Expanded(
-                child: GridView.builder(
-                  controller: scrollController,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 2.5,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                  ),
-                  itemCount: _allCharacters.length,
-                  itemBuilder: (context, index) {
-                    final character = _allCharacters[index];
-                    return _buildCharacterListItem(character);
-                  },
+                child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final width = constraints.maxWidth;
+                      final crossAxisCount = width > 900 ? 4 : width > 600 ? 3 : 2;
+                      final childAspectRatio = width > 900 ? 2.0 : width > 600 ? 2.5 : 3.0;
+                      return GridView.builder(
+                        controller: scrollController,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: crossAxisCount,
+                          childAspectRatio: childAspectRatio,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                        ),
+                        itemCount: _allCharacters.length,
+                        itemBuilder: (context, index) {
+                          final character = _allCharacters[index];
+                          return _buildCharacterListItem(character);
+                        },
+                      );
+                    }
                 ),
               ),
             ],
