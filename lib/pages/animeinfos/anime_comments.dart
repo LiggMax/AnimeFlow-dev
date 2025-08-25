@@ -203,10 +203,13 @@ class AnimeCommentsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 计算总项目数：标题 + 评论数 + 加载指示器(如果需要)
+    final totalItems = 1 + commentsData.data.length + (hasMore ? 1 : 1); // +1 for header, +1 for footer
 
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(), // 禁用内部滚动，由父级CustomScrollView处理
+      itemCount: totalItems,
       itemBuilder: (context, index) {
         // 标题
         if (index == 0) {
@@ -319,6 +322,7 @@ class _CommentItem extends StatelessWidget {
               ],
             ),
 
+            const SizedBox(height: 8),
             // 评论内容
             if (comment.comment.isNotEmpty) ...[
               Text(comment.comment, style: const TextStyle(fontSize: 14)),
@@ -336,6 +340,7 @@ class _RatingWidget extends StatelessWidget {
   final BangumiComment comment;
 
   const _RatingWidget({
+    super.key,
     required this.comment,
   });
 
