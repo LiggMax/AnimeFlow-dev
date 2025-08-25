@@ -51,11 +51,12 @@ class _AnimeRelatedSectionState extends State<AnimeRelatedSection> {
             crossAxisCount: FullscreenUtils.getCrossAxisCount(context),
             childAspectRatio: 0.7,
             crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
           ),
           itemCount: _relatedData!.data.length,
           itemBuilder: (context, index) {
             final item = _relatedData!.data[index];
-            return RelatedItemCard(item: item);
+            return _RelatedItemCard(item: item);
           },
         ),
       ],
@@ -64,10 +65,10 @@ class _AnimeRelatedSectionState extends State<AnimeRelatedSection> {
 }
 
 /// 相关条目卡片组件
-class RelatedItemCard extends StatelessWidget {
+class _RelatedItemCard extends StatelessWidget {
   final RelatedItem item;
 
-  const RelatedItemCard({super.key, required this.item});
+  const _RelatedItemCard({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
