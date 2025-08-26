@@ -204,11 +204,15 @@ class AnimeCommentsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 计算总项目数：标题 + 评论数 + 加载指示器(如果需要)
-    final totalItems = 1 + commentsData.data.length + (hasMore ? 1 : 1); // +1 for header, +1 for footer
+    final totalItems =
+        1 +
+        commentsData.data.length +
+        (hasMore ? 1 : 1); // +1 for header, +1 for footer
 
     return ListView.builder(
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(), // 禁用内部滚动，由父级CustomScrollView处理
+      physics:
+          const NeverScrollableScrollPhysics(), // 禁用内部滚动，由父级CustomScrollView处理
       itemCount: totalItems,
       itemBuilder: (context, index) {
         // 标题
@@ -265,10 +269,7 @@ class AnimeCommentsList extends StatelessWidget {
 class _CommentItem extends StatelessWidget {
   final BangumiComment comment;
 
-  const _CommentItem({
-    super.key,
-    required this.comment,
-  });
+  const _CommentItem({super.key, required this.comment});
 
   @override
   Widget build(BuildContext context) {
@@ -316,9 +317,7 @@ class _CommentItem extends StatelessWidget {
                   ),
                 ),
                 // 评分信息使用星星图标展示
-                if (comment.rate > 0) ...[
-                  _RatingWidget(comment: comment),
-                ],
+                if (comment.rate > 0) ...[_RatingWidget(comment: comment)],
               ],
             ),
 
@@ -335,14 +334,11 @@ class _CommentItem extends StatelessWidget {
   }
 }
 
-/// 独立的评分组件
+/// 评分组件
 class _RatingWidget extends StatelessWidget {
   final BangumiComment comment;
 
-  const _RatingWidget({
-    super.key,
-    required this.comment,
-  });
+  const _RatingWidget({required this.comment});
 
   @override
   Widget build(BuildContext context) {
@@ -381,10 +377,7 @@ class _RatingWidget extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         // 评论类型标签
-        Text(
-          comment.typeText,
-          style: const TextStyle(fontSize: 12),
-        ),
+        Text(comment.typeText, style: const TextStyle(fontSize: 12)),
       ],
     );
   }

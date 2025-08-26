@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:AnimeFlow/modules/bangumi/user_info.dart';
 
 class UserHeader extends StatefulWidget {
-  const UserHeader({super.key, required this.userInfo});
+  const UserHeader({super.key, required this.userInfo, this.height});
 
   final UserInfo userInfo;
+  final double? height;
 
   @override
   State<UserHeader> createState() => _UserHeaderState();
@@ -39,8 +40,8 @@ class _UserHeaderState extends State<UserHeader> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    const double headerHeight = 300;
-    const double centerY = 150;
+    final double headerHeight = widget.height ?? 270;
+    final double centerY = headerHeight / 2;
     const double avatarRadius = 44;
     const double orbitRadius = 80;
 
