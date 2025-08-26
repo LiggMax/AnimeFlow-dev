@@ -22,6 +22,7 @@ class ControlsPage extends StatefulWidget {
 
 class _ControlsPageState extends State<ControlsPage> {
   bool _showControls = true;
+  bool _isMouseHovering = false;
   Timer? _hideTimer;
   Timer? _batteryUpdateTimer;
   bool _showSeekIndicator = false;
@@ -47,25 +48,48 @@ class _ControlsPageState extends State<ControlsPage> {
     // 取消之前的定时器
     _hideTimer?.cancel();
 
-    // 自动隐藏时间
-    _hideTimer = Timer(const Duration(seconds: 5), () {
-      if (mounted) {
-        setState(() {
-          _showControls = false;
-        });
-      }
+    // 如果鼠标没有悬停，则设置自动隐藏
+    if (!_isMouseHovering) {
+      _hideTimer = Timer(const Duration(seconds: 5), () {
+        if (mounted && !_isMouseHovering) {
+          setState(() {
+            _showControls = false;
+          });
+        }
+      });
+    }
+  }
+
+  // 鼠标进入事件
+  void _onMouseEnter(PointerEvent event) {
+    setState(() {
+      _isMouseHovering = true;
+      _showControls = true;
     });
+    // 取消自动隐藏定时器
+    _hideTimer?.cancel();
+  }
+
+  // 鼠标离开事件
+  void _onMouseExit(PointerEvent event) {
+    setState(() {
+      _isMouseHovering = false;
+    });
+    // 重新启动自动隐藏定时器
+    _showControlsTemporarily();
   }
 
   // 切换控件显示状态
   void _toggleControls() {
     if (_showControls) {
-      // 如果控件正在显示，则隐藏
-      setState(() {
-        _showControls = false;
-      });
-      // 取消自动隐藏定时器
-      _hideTimer?.cancel();
+      // 如果控件正在显示，且鼠标未悬停，则隐藏
+      if (!_isMouseHovering) {
+        setState(() {
+          _showControls = false;
+        });
+        // 取消自动隐藏定时器
+        _hideTimer?.cancel();
+      }
     } else {
       // 如果控件隐藏，则显示并设置自动隐藏
       _showControlsTemporarily();
@@ -165,9 +189,12 @@ class _ControlsPageState extends State<ControlsPage> {
     final orientation = MediaQuery.of(context).orientation;
     final isFullscreen = orientation == Orientation.landscape;
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
+    return MouseRegion(
+      onEnter: _onMouseEnter,
+      onExit: _onMouseExit,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
         // 透明的点击检测层，覆盖整个屏幕
         Positioned.fill(
           child: GestureDetector(
@@ -437,6 +464,7 @@ class _ControlsPageState extends State<ControlsPage> {
           },
         ),
       ],
-    );
+    ),
+  );
   }
 }
