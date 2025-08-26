@@ -31,7 +31,6 @@ class _ControlsPageState extends State<ControlsPage> {
   Duration _duration = Duration.zero;
   late Stream<String> _timeStream;
 
-
   // 时间格式化方法
   String _formatTime(Duration duration) {
     final minutes = duration.inMinutes;
@@ -153,7 +152,6 @@ class _ControlsPageState extends State<ControlsPage> {
     ).asBroadcastStream();
   }
 
-
   @override
   void dispose() {
     _hideTimer?.cancel();
@@ -234,14 +232,16 @@ class _ControlsPageState extends State<ControlsPage> {
                                   onPressed: () => Navigator.pop(context),
                                 ),
                                 Flexible(
-                                  child: Text(
-                                    widget.animeName ?? '',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                  child: isFullscreen
+                                      ? Text(
+                                          widget.animeName ?? '',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        )
+                                      : SizedBox.shrink(),
                                 ),
                               ],
                             ),
@@ -277,9 +277,7 @@ class _ControlsPageState extends State<ControlsPage> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 // 电池电量显示（只在全屏模式下显示）
-                                if (isFullscreen) ...[
-                                  BatteryIndicator()
-                                ],
+                                if (isFullscreen) ...[BatteryIndicator()],
                                 IconButton(
                                   icon: const Icon(
                                     Icons.info_outline,

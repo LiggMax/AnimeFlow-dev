@@ -5,7 +5,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'controls/controls.dart';
+import 'controls/controls_info.dart';
 
 class VideoPage extends StatefulWidget {
   final String? animeName;

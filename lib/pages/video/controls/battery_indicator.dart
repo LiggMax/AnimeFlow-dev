@@ -58,17 +58,13 @@ class _BatteryIndicatorState extends State<BatteryIndicator> {
 
   // 更新电池状态
   void _updateBatteryStatus() async {
-    try {
-      final level = await _battery.batteryLevel;
-      final state = await _battery.batteryState;
-      if (mounted && (level != _batteryLevel || state != _batteryState)) {
-        setState(() {
-          _batteryLevel = level;
-          _batteryState = state;
-        });
-      }
-    } catch (e) {
-      // 静默失败，保持原有值
+    final level = await _battery.batteryLevel;
+    final state = await _battery.batteryState;
+    if (mounted && (level != _batteryLevel || state != _batteryState)) {
+      setState(() {
+        _batteryLevel = level;
+        _batteryState = state;
+      });
     }
   }
 
