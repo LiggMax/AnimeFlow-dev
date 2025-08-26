@@ -187,20 +187,32 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('搜索'),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          // 搜索框
-          _buildSearchBar(),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: const Text('搜索'), centerTitle: true),
+        body: Column(
+          children: [
+            // 搜索框
+            _buildSearchBar(),
 
-          // 搜索内容
-          Expanded(child: _buildSearchContent()),
-        ],
+            // 搜索内容
+            Expanded(child: _buildSearchContent()),
+          ],
+        ),
       ),
+      // appBar: AppBar(
+      //   title: const Text('搜索'),
+      //   centerTitle: true,
+      // ),
+      // body: Column(
+      //   children: [
+      //     // 搜索框
+      //     _buildSearchBar(),
+      //
+      //     // 搜索内容
+      //     Expanded(child: _buildSearchContent()),
+      //   ],
+      // ),
     );
   }
 
@@ -211,7 +223,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
         controller: _searchController,
         focusNode: _searchFocusNode,
         decoration: InputDecoration(
-          hintText: '搜索动漫、角色、声优...',
+          hintText: '搜索动漫...',
           prefixIcon: const Icon(Icons.search),
           suffixIcon: _searchController.text.isNotEmpty
               ? IconButton(
@@ -264,9 +276,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
               TextButton(onPressed: _clearHistory, child: const Text('清空')),
             ],
           ),
-          const SizedBox(height: 8),
           ..._searchHistory.map((history) => _buildHistoryItem(history)),
-          const SizedBox(height: 24),
         ],
 
         // 热门搜索
@@ -329,7 +339,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
       children: [
         // 搜索结果统计和操作按钮
         Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.only(left: 10, right: 10),
           child: Row(
             children: [
               Text(
@@ -699,7 +709,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   void _onAnimeTap(SearchAnimeItem anime) {
     context.pushNamed(
       AppRouter.animeData,
-      pathParameters: { 'animeId': anime.id.toString()},
+      pathParameters: {'animeId': anime.id.toString()},
     );
   }
 }
