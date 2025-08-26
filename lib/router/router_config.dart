@@ -18,6 +18,12 @@ class AppRouter {
   // 使用静态实例，确保全局只有一个GoRouter实例
   static final GoRouter _instance = GoRouter(
     routes: [
+      GoRoute(
+        path: '/callback',
+        redirect: (context, state) {
+          return null;
+        },
+      ),
       //主页
       GoRoute(
         path: home,
