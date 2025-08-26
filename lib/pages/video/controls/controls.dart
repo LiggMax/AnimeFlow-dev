@@ -82,7 +82,7 @@ class _ControlsPageState extends State<ControlsPage> {
     });
 
     // 1秒后自动隐藏
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         setState(() {
           _showPlaybackIndicator = false;
