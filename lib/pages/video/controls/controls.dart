@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/material.dart';
 import 'package:intl/intl.dart';
+import 'battery_indicator.dart';
 import 'custom_seek_bar.dart';
 import 'seek_indicator.dart';
 
@@ -22,12 +23,14 @@ class ControlsPage extends StatefulWidget {
 class _ControlsPageState extends State<ControlsPage> {
   bool _showControls = true;
   Timer? _hideTimer;
+  Timer? _batteryUpdateTimer;
   bool _showSeekIndicator = false;
   bool _showPlaybackIndicator = false;
   Duration _seekPosition = Duration.zero;
   Duration _currentPosition = Duration.zero;
   Duration _duration = Duration.zero;
   late Stream<String> _timeStream;
+
 
   // 时间格式化方法
   String _formatTime(Duration duration) {
@@ -150,9 +153,11 @@ class _ControlsPageState extends State<ControlsPage> {
     ).asBroadcastStream();
   }
 
+
   @override
   void dispose() {
     _hideTimer?.cancel();
+    _batteryUpdateTimer?.cancel();
     super.dispose();
   }
 
@@ -265,12 +270,16 @@ class _ControlsPageState extends State<ControlsPage> {
                                   : const SizedBox.shrink(),
                             ),
                           ),
-                          // 右侧区域：信息按钮
+                          // 右侧区域：电池电量和信息按钮
                           Expanded(
                             flex: 1,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
+                                // 电池电量显示（只在全屏模式下显示）
+                                if (isFullscreen) ...[
+                                  BatteryIndicator()
+                                ],
                                 IconButton(
                                   icon: const Icon(
                                     Icons.info_outline,
