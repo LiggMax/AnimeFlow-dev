@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/material.dart';
-
+import 'package:intl/intl.dart';
 import 'custom_seek_bar.dart';
 import 'seek_indicator.dart';
 
@@ -27,6 +27,7 @@ class _ControlsPageState extends State<ControlsPage> {
   Duration _seekPosition = Duration.zero;
   Duration _currentPosition = Duration.zero;
   Duration _duration = Duration.zero;
+  late Stream<String> _timeStream;
 
   // 时间格式化方法
   String _formatTime(Duration duration) {
@@ -101,7 +102,10 @@ class _ControlsPageState extends State<ControlsPage> {
     });
   }
 
-  void _onHorizontalDragUpdate(DragUpdateDetails details, BuildContext context) {
+  void _onHorizontalDragUpdate(
+    DragUpdateDetails details,
+    BuildContext context,
+  ) {
     if (_duration.inMilliseconds <= 0) return;
 
     // 计算拖拽距离对应的时间变化
@@ -139,6 +143,11 @@ class _ControlsPageState extends State<ControlsPage> {
     super.initState();
     // 初始化时显示控件
     _showControlsTemporarily();
+
+    _timeStream = Stream.periodic(
+      const Duration(minutes: 1),
+      (_) => DateFormat("HH:mm").format(DateTime.now()),
+    ).asBroadcastStream();
   }
 
   @override
@@ -149,6 +158,10 @@ class _ControlsPageState extends State<ControlsPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 检测是否为全屏（横屏）模式
+    final orientation = MediaQuery.of(context).orientation;
+    final isFullscreen = orientation == Orientation.landscape;
+
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -158,7 +171,8 @@ class _ControlsPageState extends State<ControlsPage> {
             onTap: _toggleControls,
             onDoubleTap: _togglePlayback,
             onHorizontalDragStart: _onHorizontalDragStart,
-            onHorizontalDragUpdate: (details) => _onHorizontalDragUpdate(details, context),
+            onHorizontalDragUpdate: (details) =>
+                _onHorizontalDragUpdate(details, context),
             onHorizontalDragEnd: _onHorizontalDragEnd,
             behavior: HitTestBehavior.opaque,
             child: Container(color: Colors.transparent),
@@ -199,38 +213,77 @@ class _ControlsPageState extends State<ControlsPage> {
                       left: 5,
                       right: 5,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.arrow_back,
-                                  color: Colors.white,
-                                  size: 28,
+                          // 左侧区域：返回按钮和动漫名称
+                          Expanded(
+                            flex: 1,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.arrow_back_ios_rounded,
+                                    color: Colors.white,
+                                    size: 25,
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
                                 ),
-                                onPressed: () => Navigator.pop(context),
-                              ),
-                              Text(
-                                widget.animeName ?? '',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
+                                Flexible(
+                                  child: Text(
+                                    widget.animeName ?? '',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.info_outline,
-                              color: Colors.white,
-                              size: 28,
+                              ],
                             ),
-                            onPressed: () =>
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('信息按钮点击')),
+                          ),
+                          // 中间区域：系统时间（只在全屏模式下显示）
+                          Expanded(
+                            flex: 1,
+                            child: Center(
+                              child: isFullscreen
+                                  ? StreamBuilder<String>(
+                                      stream: _timeStream,
+                                      initialData: DateFormat(
+                                        "HH:mm",
+                                      ).format(DateTime.now()),
+                                      builder: (context, snapshot) {
+                                        return Text(
+                                          snapshot.data ?? '',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        );
+                                      },
+                                    )
+                                  : const SizedBox.shrink(),
+                            ),
+                          ),
+                          // 右侧区域：信息按钮
+                          Expanded(
+                            flex: 1,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.info_outline,
+                                    color: Colors.white,
+                                    size: 28,
+                                  ),
+                                  onPressed: () => ScaffoldMessenger.of(context)
+                                      .showSnackBar(
+                                        const SnackBar(content: Text('信息按钮点击')),
+                                      ),
                                 ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -257,7 +310,7 @@ class _ControlsPageState extends State<ControlsPage> {
                       ),
                     ),
 
-                    //时间信息
+                    //视频时间信息
                     Positioned(
                       bottom: 40,
                       left: 10,
@@ -333,7 +386,7 @@ class _ControlsPageState extends State<ControlsPage> {
                   child: SizedBox(
                     width: 120,
                     height: 100,
-                    child:  Center(
+                    child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -356,6 +409,7 @@ class _ControlsPageState extends State<ControlsPage> {
             );
           },
         ),
+
         ///滑动进度指示器
         SeekIndicator(
           visible: _showSeekIndicator,
