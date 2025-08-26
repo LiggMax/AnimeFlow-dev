@@ -7,10 +7,7 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:AnimeFlow/pages/tabs/user/header.dart';
 import 'package:AnimeFlow/pages/tabs/user/no_login.dart';
-import 'package:AnimeFlow/modules/bangumi/user_collection.dart';
 import 'package:AnimeFlow/utils/theme_extensions.dart';
-
-import 'collection.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -129,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage>
 
   Widget _buildLoadingHeader() {
     return Container(
-      height: 270,
+      height: 200,
       alignment: Alignment.center,
       child: const Padding(
         padding: EdgeInsets.all(16.0),
@@ -231,14 +228,17 @@ class _ProfileDetailAppBar extends StatelessWidget {
       stretch: true,
       centerTitle: false,
       // 高度设置
-      expandedHeight: 270 + kTextTabBarHeight + kToolbarHeight,
+      expandedHeight: 225 + kToolbarHeight,
       collapsedHeight:
           kTextTabBarHeight +
           kToolbarHeight +
           MediaQuery.paddingOf(context).top,
       flexibleSpace: FlexibleSpaceBar(
         collapseMode: CollapseMode.pin,
-        background: background,
+        background: Padding(
+          padding: EdgeInsets.only(bottom: kTextTabBarHeight),
+          child: background,
+        ),
       ),
       forceElevated: innerBoxIsScrolled,
       bottom: _ProfileDetailTabBar(
