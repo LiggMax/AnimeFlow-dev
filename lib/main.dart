@@ -82,7 +82,6 @@ class _MyAppState extends State<MyApp> {
       if (code != null) {
         debugPrint('授权成功，Code = $code');
         _handleTokenExchange(code);
-        return _router.go(AppRouter.home);
       }
     }
   }
