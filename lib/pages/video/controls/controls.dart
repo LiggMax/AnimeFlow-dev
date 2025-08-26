@@ -7,6 +7,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/material.dart';
 
 import 'custom_seek_bar.dart';
+import 'ignore_pointer.dart';
 
 class ControlsPage extends StatefulWidget {
   final String? animeName;
@@ -21,6 +22,10 @@ class ControlsPage extends StatefulWidget {
 class _ControlsPageState extends State<ControlsPage> {
   bool _showControls = true;
   Timer? _hideTimer;
+  bool _showSeekIndicator = false;
+  Duration _seekPosition = Duration.zero;
+  Duration _currentPosition = Duration.zero;
+  Duration _duration = Duration.zero;
 
   // 时间格式化方法
   String _formatTime(Duration duration) {
@@ -63,6 +68,49 @@ class _ControlsPageState extends State<ControlsPage> {
     }
   }
 
+  void _onHorizontalDragStart(DragStartDetails details) {
+    // 开始拖拽时获取当前播放位置和总时长
+    setState(() {
+      _currentPosition = widget.player.state.position;
+      _duration = widget.player.state.duration;
+      _seekPosition = _currentPosition;
+      _showSeekIndicator = true;
+    });
+  }
+
+  void _onHorizontalDragUpdate(DragUpdateDetails details, BuildContext context) {
+    if (_duration.inMilliseconds <= 0) return;
+
+    // 计算拖拽距离对应的时间变化
+    final box = context.findRenderObject() as RenderBox;
+    final width = box.size.width;
+    final dx = details.delta.dx;
+
+    // 根据屏幕宽度计算单位时间，这里设置为屏幕宽度代表总时长的10%
+    final millisecondsPerPixel = (_duration.inMilliseconds * 0.1) / width;
+    final millisecondsChange = dx * millisecondsPerPixel;
+
+    // 更新预览位置
+    final newSeekPosition = _seekPosition.inMilliseconds + millisecondsChange;
+    final clampedSeekPosition = newSeekPosition.clamp(
+      0.0,
+      _duration.inMilliseconds.toDouble(),
+    );
+
+    setState(() {
+      _seekPosition = Duration(milliseconds: clampedSeekPosition.toInt());
+    });
+  }
+
+  void _onHorizontalDragEnd(DragEndDetails details) {
+    // 拖拽结束时跳转到指定位置
+    widget.player.seek(_seekPosition);
+
+    setState(() {
+      _showSeekIndicator = false;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -85,6 +133,9 @@ class _ControlsPageState extends State<ControlsPage> {
         Positioned.fill(
           child: GestureDetector(
             onTap: _toggleControls,
+            onHorizontalDragStart: _onHorizontalDragStart,
+            onHorizontalDragUpdate: (details) => _onHorizontalDragUpdate(details, context),
+            onHorizontalDragEnd: _onHorizontalDragEnd,
             behavior: HitTestBehavior.opaque,
             child: Container(color: Colors.transparent),
           ),
@@ -245,6 +296,7 @@ class _ControlsPageState extends State<ControlsPage> {
               : const SizedBox.shrink(key: ValueKey('controls_hidden')),
         ),
 
+        /// 添加缓冲动画指示器
         StreamBuilder<bool>(
           stream: widget.player.stream.buffering,
           initialData: widget.player.state.buffering,
@@ -279,6 +331,11 @@ class _ControlsPageState extends State<ControlsPage> {
               ),
             );
           },
+        ),
+        ///滑动进度指示器
+        SeekIndicator(visible: _showSeekIndicator,
+            currentPosition: _currentPosition,
+            seekPosition: _seekPosition,
         ),
       ],
     );
