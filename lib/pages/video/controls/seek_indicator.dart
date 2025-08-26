@@ -58,3 +58,34 @@ class SeekIndicator extends StatelessWidget {
     );
   }
 }
+
+class PlaybackToggleIndicator extends StatelessWidget {
+  final bool visible;
+  final bool isPlaying;
+
+  const PlaybackToggleIndicator({
+    super.key,
+    required this.visible,
+    required this.isPlaying,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Center(
+        child: Visibility(
+          visible: visible,
+          child: SizedBox(
+            width: 100,
+            height: 100,
+            child: Icon(
+              isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+              color: Colors.white70,
+              size: 60,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

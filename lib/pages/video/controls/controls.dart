@@ -7,7 +7,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/material.dart';
 
 import 'custom_seek_bar.dart';
-import 'ignore_pointer.dart';
+import 'seek_indicator.dart';
 
 class ControlsPage extends StatefulWidget {
   final String? animeName;
@@ -23,6 +23,7 @@ class _ControlsPageState extends State<ControlsPage> {
   bool _showControls = true;
   Timer? _hideTimer;
   bool _showSeekIndicator = false;
+  bool _showPlaybackIndicator = false;
   Duration _seekPosition = Duration.zero;
   Duration _currentPosition = Duration.zero;
   Duration _duration = Duration.zero;
@@ -66,6 +67,28 @@ class _ControlsPageState extends State<ControlsPage> {
       // 如果控件隐藏，则显示并设置自动隐藏
       _showControlsTemporarily();
     }
+  }
+
+  // 双击切换播放/暂停状态
+  void _togglePlayback() {
+    widget.player.playOrPause();
+    _showPlaybackIndicatorTemporarily();
+  }
+
+  // 显示播放/暂停指示器并自动隐藏
+  void _showPlaybackIndicatorTemporarily() {
+    setState(() {
+      _showPlaybackIndicator = true;
+    });
+
+    // 1秒后自动隐藏
+    Future.delayed(const Duration(seconds: 1), () {
+      if (mounted) {
+        setState(() {
+          _showPlaybackIndicator = false;
+        });
+      }
+    });
   }
 
   void _onHorizontalDragStart(DragStartDetails details) {
@@ -133,6 +156,7 @@ class _ControlsPageState extends State<ControlsPage> {
         Positioned.fill(
           child: GestureDetector(
             onTap: _toggleControls,
+            onDoubleTap: _togglePlayback,
             onHorizontalDragStart: _onHorizontalDragStart,
             onHorizontalDragUpdate: (details) => _onHorizontalDragUpdate(details, context),
             onHorizontalDragEnd: _onHorizontalDragEnd,
@@ -333,9 +357,23 @@ class _ControlsPageState extends State<ControlsPage> {
           },
         ),
         ///滑动进度指示器
-        SeekIndicator(visible: _showSeekIndicator,
-            currentPosition: _currentPosition,
-            seekPosition: _seekPosition,
+        SeekIndicator(
+          visible: _showSeekIndicator,
+          currentPosition: _currentPosition,
+          seekPosition: _seekPosition,
+        ),
+
+        ///播放/暂停指示器
+        StreamBuilder<bool>(
+          stream: widget.player.stream.playing,
+          initialData: widget.player.state.playing,
+          builder: (context, snapshot) {
+            final isPlaying = snapshot.data ?? false;
+            return PlaybackToggleIndicator(
+              visible: _showPlaybackIndicator,
+              isPlaying: isPlaying,
+            );
+          },
         ),
       ],
     );
