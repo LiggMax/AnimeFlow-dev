@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:battery_plus/battery_plus.dart';
 import 'dart:async';
 
-/// 简洁的电池电量显示组件
+/// 电池电量显示组件
 class BatteryIndicator extends StatefulWidget {
   const BatteryIndicator({super.key});
 

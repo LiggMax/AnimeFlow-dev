@@ -245,7 +245,7 @@ class _ControlsPageState extends State<ControlsPage> {
                       child: Row(
                         children: [
                           // 左侧区域：返回按钮和动漫名称
-                          Expanded(
+                           Expanded(
                             flex: 1,
                             child: Row(
                               mainAxisSize: MainAxisSize.min,

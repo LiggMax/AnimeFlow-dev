@@ -56,6 +56,7 @@ class VideoPageState extends State<VideoPage> {
 
   @override
   Widget build(BuildContext context) {
+    //TODO 后续播放器布局需要优化，不要填充整个区域，应该保持16/9比例
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.width * 9.0 / 16.0,
@@ -63,6 +64,7 @@ class VideoPageState extends State<VideoPage> {
       child: Video(
         controller: controller,
         controls: (state) {
+          //TODO 需要将剧集名称传入给控件ui
           return ControlsPage(player: player, animeName: widget.animeName);
         },
       ),

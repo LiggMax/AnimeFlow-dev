@@ -126,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage>
 
   Widget _buildLoadingHeader() {
     return Container(
-      height: 270,
+      height: 200,
       alignment: Alignment.center,
       child: const Padding(
         padding: EdgeInsets.all(16.0),
@@ -210,8 +210,16 @@ class _ProfileDetailAppBar extends StatelessWidget {
                 ),
               ],
             )
-          : null,
+          : const Text('个人中心'),
       automaticallyImplyLeading: false,
+      scrolledUnderElevation: 0.0,
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: Theme.of(context).colorScheme.surface,
+        systemNavigationBarIconBrightness: context.isDarkMode
+            ? Brightness.light
+            : Brightness.dark,
+      ),
       actions: [
         if (persistedToken != null)
           IconButton(onPressed: onLogout, icon: const Icon(Icons.logout)),
@@ -220,7 +228,7 @@ class _ProfileDetailAppBar extends StatelessWidget {
       stretch: true,
       centerTitle: false,
       // 高度设置
-      expandedHeight: 240 + kToolbarHeight,
+      expandedHeight: 225 + kToolbarHeight,
       collapsedHeight:
           kTextTabBarHeight +
           kToolbarHeight +
@@ -264,6 +272,15 @@ class _ProfileDetailTabBar extends StatelessWidget
         isScrollable: true,
         tabAlignment: TabAlignment.start,
         dividerHeight: 0,
+        labelColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.white
+            : Colors.black,
+        unselectedLabelColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.grey[400]
+            : Colors.grey[600],
+        indicatorColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.blue
+            : Theme.of(context).primaryColor,
         tabs: tabs.map((name) => Tab(text: name)).toList(),
       ),
     );
@@ -279,6 +296,7 @@ class _ProfileTabView extends StatefulWidget {
   final List<String> tabs;
 
   const _ProfileTabView({
+    super.key,
     required this.tabController,
     required this.tabs,
   });

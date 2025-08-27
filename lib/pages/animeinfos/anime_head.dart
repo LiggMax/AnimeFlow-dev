@@ -47,7 +47,7 @@ class AnimeDetailAppBar extends StatelessWidget {
       // 添加滚动时的不透明背景
       leading: IconButton(
         onPressed: () => context.pop(),
-        icon: const Icon(Icons.arrow_back_ios),
+        icon: const Icon(Icons.arrow_back_ios_rounded),
       ),
       actions: [
         if (innerBoxIsScrolled)
