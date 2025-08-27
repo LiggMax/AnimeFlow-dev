@@ -5,6 +5,7 @@ library;
 
 import 'package:flutter/material.dart';
 
+/// 快进后退指示器
 class SeekIndicator extends StatelessWidget {
   final bool visible;
   final Duration currentPosition;
@@ -59,6 +60,7 @@ class SeekIndicator extends StatelessWidget {
   }
 }
 
+///播放暂停按钮指示器
 class PlaybackToggleIndicator extends StatelessWidget {
   final bool visible;
   final bool isPlaying;
@@ -95,10 +97,8 @@ class PlaybackToggleIndicator extends StatelessWidget {
 ///缓冲指示器
 class BufferingIndicator extends StatelessWidget {
   final bool isBuffering;
-  const BufferingIndicator({
-    super.key,
-    required this.isBuffering,
-  });
+
+  const BufferingIndicator({super.key, required this.isBuffering});
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +109,7 @@ class BufferingIndicator extends StatelessWidget {
           child: SizedBox(
             width: 120,
             height: 100,
-            child:  Center(
+            child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -127,6 +127,130 @@ class BufferingIndicator extends StatelessWidget {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+// 亮度指示器组件
+class BrightnessIndicator extends StatelessWidget {
+  final bool visible;
+  final double brightness;
+
+  const BrightnessIndicator({
+    super.key,
+    required this.visible,
+    required this.brightness,
+  });
+
+  IconData _getBrightnessIcon(brightness) {
+    if (brightness == 0) {
+      return Icons.brightness_5_rounded;
+    } else if (brightness < 0.5) {
+      return Icons.brightness_6_rounded;
+    } else if(brightness < 0.8){
+      return Icons.brightness_4_rounded;
+    } else {
+      return Icons.brightness_7_rounded;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!visible) return const SizedBox.shrink();
+
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.7),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(_getBrightnessIcon(brightness), color: Colors.white, size: 24),
+            const SizedBox(width: 12),
+            SizedBox(
+              width: 100,
+              child: LinearProgressIndicator(
+                value: brightness,
+                backgroundColor: Colors.white.withValues(alpha: 0.3),
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              '${(brightness * 100).round()}%',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// 音量指示器组件
+class VolumeIndicator extends StatelessWidget {
+  final bool visible;
+  final double volume;
+
+  const VolumeIndicator({
+    super.key,
+    required this.visible,
+    required this.volume,
+  });
+
+  IconData _getVolumeIcon(double volume) {
+    if (volume == 0) {
+      return Icons.volume_off;
+    } else if (volume < 0.5) {
+      return Icons.volume_down;
+    } else {
+      return Icons.volume_up;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!visible) return const SizedBox.shrink();
+
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.7),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(_getVolumeIcon(volume), color: Colors.white, size: 24),
+            const SizedBox(width: 12),
+            SizedBox(
+              width: 100,
+              child: LinearProgressIndicator(
+                value: volume,
+                backgroundColor: Colors.white.withValues(alpha: 0.3),
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              '${(volume * 100).round()}%',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
         ),
       ),
     );

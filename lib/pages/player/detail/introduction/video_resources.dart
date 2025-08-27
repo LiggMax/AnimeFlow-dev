@@ -74,8 +74,7 @@ class _ResourcesState extends State<Resources> {
               final episode = episodes[episodeIndex];
               // 比较episode.number和episodeNumber，episode.number中个位数是0开头补全
               if (int.tryParse(episode.number) == episodeNumber ||
-                  episode.number == episodeNumber.toString().padLeft(2, '0') ||
-                  episode.number == episodeNumber.toString().padLeft(3, '0')) {
+                  episode.number == episodeNumber.toString().padLeft(2, '0')) {
                 setState(() {
                   _selectedSourceIndex = sourceIndex;
                   _selectedRouteIndex = routeIndex;
