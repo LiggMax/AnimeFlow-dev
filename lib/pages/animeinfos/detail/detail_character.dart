@@ -5,7 +5,6 @@
 import 'package:AnimeFlow/request/bangumi/bangumi.dart';
 import 'package:AnimeFlow/modules/bangumi/character_data.dart';
 import 'package:flutter/material.dart';
-import '../../../utils/fullscreen_utils.dart';
 import 'detail_info.dart';
 
 class AnimeCharacter extends StatefulWidget {

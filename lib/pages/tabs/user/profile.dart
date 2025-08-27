@@ -296,7 +296,6 @@ class _ProfileTabView extends StatefulWidget {
   final List<String> tabs;
 
   const _ProfileTabView({
-    super.key,
     required this.tabController,
     required this.tabs,
   });

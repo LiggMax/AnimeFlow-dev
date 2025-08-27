@@ -122,7 +122,9 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
           _searchData = null;
         });
       }
-      print('搜索失败: $e');
+      if (kDebugMode) {
+        print('搜索失败: $e');
+      }
     }
   }
 

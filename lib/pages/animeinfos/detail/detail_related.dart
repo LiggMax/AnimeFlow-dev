@@ -68,7 +68,7 @@ class _AnimeRelatedSectionState extends State<AnimeRelatedSection> {
 class _RelatedItemCard extends StatelessWidget {
   final RelatedItem item;
 
-  const _RelatedItemCard({super.key, required this.item});
+  const _RelatedItemCard({required this.item});
 
   @override
   Widget build(BuildContext context) {
