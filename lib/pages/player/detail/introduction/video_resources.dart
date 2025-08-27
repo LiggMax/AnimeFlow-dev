@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:AnimeFlow/request/video/video_service.dart';
+import 'package:AnimeFlow/modules/video/episode_source.dart';
 
 class Resources extends StatefulWidget {
   final String? animeName;
@@ -21,21 +22,22 @@ class Resources extends StatefulWidget {
 
 class _ResourcesState extends State<Resources> {
   bool _isAutoSelecting = true;
-  List<Map<String, dynamic>> _episodes = [];
+  EpisodeSourceList? _episodeSourceList;
   int _selectedSourceIndex = 0; // 选中的数据源索引
   int _selectedRouteIndex = 0; // 选中的线路索引
   int _selectedEpisodeIndex = 0; // 选中的剧集索引
 
   ///获取剧集列表
   Future<void> _getEpisodes() async {
-    final response = await VideoService.getEpisodeSource(
-      widget.animeName ?? '败犬女主',
-      widget.episodeNumber ?? 1,
-    );
-    setState(() {
-      _episodes = response ?? [];
-      _isAutoSelecting = false;
-    });
+    if (widget.episodeNumber != null) {
+      final response = await VideoService.getEpisodeSource(
+        widget.animeName ?? '',
+      );
+      setState(() {
+        _episodeSourceList = response;
+        _isAutoSelecting = false;
+      });
+    }
   }
 
   ///获取视频源Url
@@ -102,7 +104,7 @@ class _ResourcesState extends State<Resources> {
                       ),
 
                       // 数据源选择
-                      if (_episodes.isNotEmpty) ...[
+                      if (_episodeSourceList?.hasValidData == true) ...[
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Column(
@@ -123,16 +125,16 @@ class _ResourcesState extends State<Resources> {
                                 height: 40,
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: _episodes.length,
+                                  itemCount: _episodeSourceList?.sourceCount ?? 0,
                                   itemBuilder: (context, index) {
-                                    final source = _episodes[index];
+                                    final source = _episodeSourceList!.sources[index];
                                     final isSelected =
                                         _selectedSourceIndex == index;
                                     return Container(
                                       margin: const EdgeInsets.only(right: 8),
                                       child: ChoiceChip(
                                         label: Text(
-                                          source['title'] ?? '未知源',
+                                          source.title.isNotEmpty ? source.title : '未知源',
                                           style: TextStyle(
                                             color: isSelected
                                                 ? Theme.of(
@@ -169,8 +171,9 @@ class _ResourcesState extends State<Resources> {
                         const SizedBox(height: 16),
 
                         // 线路选择
-                        if (_episodes[_selectedSourceIndex]['routes'] !=
-                            null) ...[
+                        if (_episodeSourceList != null && 
+                            _selectedSourceIndex < _episodeSourceList!.sourceCount &&
+                            _episodeSourceList!.sources[_selectedSourceIndex].routes.isNotEmpty) ...[
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Column(
@@ -191,20 +194,20 @@ class _ResourcesState extends State<Resources> {
                                   height: 40,
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    itemCount:
-                                        (_episodes[_selectedSourceIndex]['routes']
-                                                as List)
-                                            .length,
+                                    itemCount: _episodeSourceList!
+                                        .sources[_selectedSourceIndex]
+                                        .routes.length,
                                     itemBuilder: (context, index) {
-                                      final route =
-                                          _episodes[_selectedSourceIndex]['routes'][index];
+                                      final route = _episodeSourceList!
+                                          .sources[_selectedSourceIndex]
+                                          .routes[index];
                                       final isSelected =
                                           _selectedRouteIndex == index;
                                       return Container(
                                         margin: const EdgeInsets.only(right: 8),
                                         child: ChoiceChip(
                                           label: Text(
-                                            route['name'] ?? '未知线路',
+                                            route.displayName,
                                             style: TextStyle(
                                               color: isSelected
                                                   ? Theme.of(
@@ -330,16 +333,13 @@ class _ResourcesState extends State<Resources> {
 
   /// 构建剧集列表
   Widget _buildEpisodeList([StateSetter? setModalState]) {
-    if (_episodes.isEmpty) return const SizedBox.shrink();
+    if (_episodeSourceList?.hasValidData != true) return const SizedBox.shrink();
 
-    final selectedSource = _episodes[_selectedSourceIndex];
-    final routes = selectedSource['routes'] as List?;
-    final episodes = selectedSource['episodes'] as List?;
+    final selectedSource = _episodeSourceList!.sources[_selectedSourceIndex];
+    final routes = selectedSource.routes;
+    final episodes = selectedSource.episodes;
 
-    if (routes == null ||
-        episodes == null ||
-        routes.isEmpty ||
-        episodes.isEmpty) {
+    if (routes.isEmpty || episodes.isEmpty) {
       return Center(
         child: Text(
           '暂无剧集数据',
@@ -358,7 +358,7 @@ class _ResourcesState extends State<Resources> {
       );
     }
 
-    final routeEpisodes = episodes[_selectedRouteIndex] as List;
+    final routeEpisodes = episodes[_selectedRouteIndex];
 
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -414,7 +414,7 @@ class _ResourcesState extends State<Resources> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    episode['episode'] ?? '${index + 1}',
+                    episode.number.isNotEmpty ? episode.number : '${index + 1}',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -435,26 +435,26 @@ class _ResourcesState extends State<Resources> {
   /// 选中的剧集
   /// 传递选中的播放剧集链接获取实际的播放地址
   void _selectedEpisode() async {
-    if (_episodes.isEmpty) return;
+    if (_episodeSourceList?.hasValidData != true) return;
 
-    final selectedSource = _episodes[_selectedSourceIndex];
-    final routes = selectedSource['routes'] as List?;
-    final episodes = selectedSource['episodes'] as List?;
+    final selectedSource = _episodeSourceList!.sources[_selectedSourceIndex];
+    final routes = selectedSource.routes;
+    final episodes = selectedSource.episodes;
 
-    if (routes == null ||
-        episodes == null ||
+    if (routes.isEmpty ||
+        episodes.isEmpty ||
         _selectedRouteIndex >= routes.length ||
         _selectedRouteIndex >= episodes.length) {
       return;
     }
 
-    final routeEpisodes = episodes[_selectedRouteIndex] as List;
+    final routeEpisodes = episodes[_selectedRouteIndex];
     if (_selectedEpisodeIndex >= routeEpisodes.length) return;
 
     final episode = routeEpisodes[_selectedEpisodeIndex];
-    final episodeUrl = episode['url'];
+    final episodeUrl = episode.url;
 
-    if (episodeUrl != null && episodeUrl.isNotEmpty) {
+    if (episodeUrl.isNotEmpty) {
       final playUrl = await _getPlayUrl(episodeUrl);
       if (playUrl != null && widget.onVideoUrlReceived != null) {
         // 调用回调函数，将播放URL传递给父组件
@@ -464,7 +464,7 @@ class _ResourcesState extends State<Resources> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '已选择播放源: ${episode['title'] ?? '第${episode['episode']}集'}',
+              '已选择播放源: ${episode.displayTitle}',
             ),
           ),
         );

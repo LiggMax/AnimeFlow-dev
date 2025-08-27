@@ -264,7 +264,6 @@ class _EpisodeItemState extends State<EpisodeItem> {
         onTap: () {
           // 处理剧集选择
           _selectEpisode(episode, episode.ep!.toInt());
-          print('剧集编号${episode.ep}');
           Navigator.pop(context); // 关闭弹窗
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

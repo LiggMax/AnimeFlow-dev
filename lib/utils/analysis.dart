@@ -93,16 +93,12 @@ class VideoAnalysis {
           panelEpisodes.add({
             'title': episodeTitle,
             'url': episodeUrl,
-            'episode': episodeNumber,
+            'number': episodeNumber,
           });
         }
 
         episodes.add(panelEpisodes);
       }
-
-      _log.info('解析到 ${routes.length} 个线路');
-      _log.info('解析到 ${episodes.length} 个剧集面板');
-
       return {'routes': routes, 'episodes': episodes};
     } catch (e) {
       _log.severe('剧集解析错误: $e');

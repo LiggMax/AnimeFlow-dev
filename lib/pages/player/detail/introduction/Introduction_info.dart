@@ -11,7 +11,7 @@ class Introduction extends StatefulWidget {
   final String? animeName;
   final int? animeId;
   final Function(String)? onVideoUrlReceived; //URL回调
-  final Function(int)? onEpisodeIdReceived; //剧集回调
+  final Function(int)? onEpisodeIdReceived; //剧集Id
 
   const Introduction({
     super.key,
@@ -28,6 +28,7 @@ class Introduction extends StatefulWidget {
 class _IntroductionState extends State<Introduction>
     with AutomaticKeepAliveClientMixin {
   bool _isBottomSheetOpen = false;
+  int? _currentEpisodeNumber;
 
   @override
   bool get wantKeepAlive => true;
@@ -144,14 +145,18 @@ class _IntroductionState extends State<Introduction>
           animeId: widget.animeId,
           animeName: widget.animeName,
           onEpisodeIdReceived: widget.onEpisodeIdReceived,
-
+          currentEpisodeNumber: (int episodeNumber) {
+            setState(() {
+              _currentEpisodeNumber = episodeNumber;
+            });
+          },
         ),
 
         ///视频资源组件
         Resources(
+          key: ValueKey(_currentEpisodeNumber),
           animeName: widget.animeName,
-          //TODO 临时写死静态数据，后需要需要传递回调回来的数据
-          episodeNumber: 1,
+          episodeNumber: _currentEpisodeNumber,
           onVideoUrlReceived: widget.onVideoUrlReceived,
         ),
       ],

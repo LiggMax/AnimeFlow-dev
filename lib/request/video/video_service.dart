@@ -7,6 +7,7 @@ import 'package:logging/logging.dart';
 import '../request.dart';
 import 'package:AnimeFlow/utils/analysis.dart';
 import '../api/common_api.dart';
+import 'package:AnimeFlow/modules/video/episode_source.dart';
 
 class VideoService {
   static final Logger _log = Logger('VideoService');
@@ -16,10 +17,7 @@ class VideoService {
   static const int requestInterval = 1;
 
   ///  获取剧集源
-  static Future<List<Map<String, dynamic>>?> getEpisodeSource(
-    String keyword,
-    int ep,
-  ) async {
+  static Future<EpisodeSourceList?> getEpisodeSource(String keyword) async {
     try {
       _log.info('搜索关键词: $keyword');
 
@@ -35,7 +33,7 @@ class VideoService {
           response.data.toString(),
         );
 
-        // 收集所有的剧集数据
+        // 搜索条目数据
         final episodeDataList = <Map<String, dynamic>>[];
         final titles = parseResult['titles'] ?? [];
         final links = parseResult['links'] ?? [];
@@ -70,7 +68,7 @@ class VideoService {
           }
         }
 
-        return episodeDataList;
+        return EpisodeSourceList.fromJsonList(episodeDataList);
       }
 
       return null;
