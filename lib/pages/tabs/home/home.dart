@@ -32,13 +32,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            onPressed: () => context.pushNamed(
-              AppRouter.playInfo,
-              extra: {'animeName': 'name', 'animeId': 123},
-            ),
-            icon: const Icon(Icons.video_collection),
-          ),
-          IconButton(
             onPressed: () => context.pushNamed(AppRouter.search),
             icon: const Icon(Icons.search),
           ),
@@ -71,7 +64,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 fontWeight: FontWeight.bold,
               ),
               unselectedLabelStyle: const TextStyle(
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: FontWeight.normal,
               ),
             ),

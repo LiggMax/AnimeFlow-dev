@@ -1,7 +1,6 @@
-/*
-  @Author Ligg
-  @Time 2025/8/7
- */
+///@Author Ligg
+///@Time 2025/8/7
+library;
 
 class BangumiToken {
   final int code;

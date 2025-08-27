@@ -210,9 +210,9 @@ class AnimeCommentsList extends StatelessWidget {
         (hasMore ? 1 : 1); // +1 for header, +1 for footer
 
     return ListView.builder(
+      padding: EdgeInsets.zero,
       shrinkWrap: true,
-      physics:
-          const NeverScrollableScrollPhysics(), // 禁用内部滚动，由父级CustomScrollView处理
+      physics: const NeverScrollableScrollPhysics(), // 禁用内部滚动，由父级CustomScrollView处理
       itemCount: totalItems,
       itemBuilder: (context, index) {
         // 标题

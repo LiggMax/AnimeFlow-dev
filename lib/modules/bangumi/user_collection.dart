@@ -1,7 +1,6 @@
-/*
-  @Author Ligg
-  @Time 2025/8/8
- */
+///@Author Ligg
+///@Time 2025/8/8
+library;
 
 class UserCollection {
   final List<UserCollectionItem> data;

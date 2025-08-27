@@ -80,7 +80,7 @@ jobs:
 
   # 构建Android版本
   build-android:
-    needs: [get-version, get-app-info]
+    needs: [ get-version, get-app-info ]
     if: ${{ github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all' || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
@@ -110,13 +110,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.get-app-info.outputs.app_name_version }}-android
-          path: |
-            build/app/outputs/flutter-apk/*.apk
+          path: "${{ needs.get-app-info.outputs.app_name_version }}.apk"
           if-no-files-found: error
 
   # 构建Linux版本
   build-linux:
-    needs: [get-version, get-app-info]
+    needs: [ get-version, get-app-info ]
     if: ${{ github.event.inputs.platform == 'linux' || github.event.inputs.platform == 'all' || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
@@ -197,7 +196,7 @@ jobs:
 
   # 构建Windows版本
   build-windows:
-    needs: [get-version, get-app-info]
+    needs: [ get-version, get-app-info ]
     if: ${{ github.event.inputs.platform == 'windows' || github.event.inputs.platform == 'all' || github.event_name == 'push' }}
     runs-on: windows-latest
     steps:
@@ -233,7 +232,7 @@ jobs:
 
   # 构建macOS版本
   build-macos:
-    needs: [get-version, get-app-info]
+    needs: [ get-version, get-app-info ]
     if: ${{ github.event.inputs.platform == 'macos' || github.event.inputs.platform == 'all' || github.event_name == 'push' }}
     runs-on: macos-14
     steps:
@@ -265,12 +264,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.get-app-info.outputs.app_name_version }}-macos
-          path: ${{ needs.get-app-info.outputs.app_name_version }}.dmg
+          path: ${{ needs.get-app-info.outputs.app_name_version }}-macos.dmg
           if-no-files-found: error
 
   # 构建iOS版本
   build-ios:
-    needs: [get-version, get-app-info]
+    needs: [ get-version, get-app-info ]
     if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all' || github.event_name == 'push' }}
     runs-on: macos-14
     steps:
@@ -306,7 +305,7 @@ jobs:
 
   # 创建GitHub Release
   create-release:
-    needs: [get-version, get-app-info, build-android, build-linux, build-windows, build-macos, build-ios]
+    needs: [ get-version, get-app-info, build-android, build-linux, build-windows, build-macos, build-ios ]
     if: ${{ github.event.inputs.create_release != 'false' && github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     permissions:
@@ -362,7 +361,7 @@ jobs:
 
   # 自动创建Release（当推送tag时）
   auto-create-release:
-    needs: [get-version, get-app-info, build-android, build-linux, build-windows, build-macos, build-ios]
+    needs: [ get-version, get-app-info, build-android, build-linux, build-windows, build-macos, build-ios ]
     if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     permissions:
