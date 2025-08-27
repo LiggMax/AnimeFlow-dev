@@ -7,9 +7,9 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/material.dart';
 import 'package:intl/intl.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-// ignore: depend_on_referenced_packages
-import 'package:volume_controller/volume_controller.dart';
-import '../../../utils/fullscreen_utils.dart';
+
+// 使用media_kit内置的音量控制，无需额外依赖
+import 'package:AnimeFlow/utils/fullscreen_utils.dart';
 import 'battery_indicator.dart';
 import 'custom_seek_bar.dart';
 import 'seek_indicator.dart';
@@ -38,11 +38,16 @@ class _ControlsPageState extends State<ControlsPage> {
 
   // 亮度和音量控制相关
   double _currentBrightness = 0.5;
-  double _currentVolume = 0.5;
+  double _currentVolume = 50.0; // media_kit音量范围0-100
+  double _originalBrightness = 0.5; // 记录进入播放器时的原始亮度
+  double _originalVolume = 50.0; // 记录进入播放器时的原始音量(media_kit范围0-100)
   bool _showBrightnessIndicator = false;
   bool _showVolumeIndicator = false;
   Timer? _brightnessIndicatorTimer;
   Timer? _volumeIndicatorTimer;
+
+  // 防抖相关
+  Timer? _volumeDebounceTimer;
 
   // 统一的指示器管理方法
   void _showIndicator(String indicatorType) {
@@ -209,11 +214,39 @@ class _ControlsPageState extends State<ControlsPage> {
   Future<void> _initBrightnessAndVolume() async {
     try {
       _currentBrightness = await ScreenBrightness().application;
-      _currentVolume = await VolumeController.instance.getVolume();
+
+      // 使用media_kit获取当前播放器音量(范围0-100)
+      _currentVolume = widget.player.state.volume;
+
+      // 记录原始值，用于退出时恢复
+      _originalBrightness = _currentBrightness;
+      _originalVolume = _currentVolume;
     } catch (e) {
       // 如果获取失败，使用默认值
       _currentBrightness = 0.5;
-      _currentVolume = 0.5;
+      _currentVolume = 50.0; // media_kit默认音量
+      _originalBrightness = 0.5;
+      _originalVolume = 50.0;
+      debugPrint('初始化亮度和音量失败: $e');
+    }
+  }
+
+  // 恢复原始亮度和音量设置
+  Future<void> _restoreOriginalSettings() async {
+    try {
+      // 恢复原始亮度
+      if (!FullscreenUtils.isDesktop()) {
+        await ScreenBrightness().setApplicationScreenBrightness(
+          _originalBrightness,
+        );
+        debugPrint('恢复原始亮度: $_originalBrightness');
+      }
+
+      // 恢复原始音量(使用media_kit)
+      await widget.player.setVolume(_originalVolume);
+      debugPrint('恢复原始音量: $_originalVolume');
+    } catch (e) {
+      debugPrint('恢复原始设置失败: $e');
     }
   }
 
@@ -244,25 +277,29 @@ class _ControlsPageState extends State<ControlsPage> {
 
   // 调节音量
   Future<void> _adjustVolume(double delta) async {
-    final newVolume = (_currentVolume + delta).clamp(0.0, 1.0);
-    try {
-      await VolumeController.instance.setVolume(newVolume);
+    final deltaVolume = delta * 100;
+    final newVolume = (_currentVolume + deltaVolume).clamp(0.0, 100.0);
 
+    // 立即更新UI显示
+    setState(() {
       _currentVolume = newVolume;
-      _showIndicator('volume');
+    });
+    _showIndicator('volume');
 
-      // 设置自动隐藏定时器
-      _volumeIndicatorTimer = Timer(const Duration(seconds: 2), () {
-        if (mounted) {
-          setState(() {
-            _showVolumeIndicator = false;
-          });
-        }
-      });
-    } catch (e) {
-      // 处理错误
-      debugPrint('调节音量失败: $e');
-    }
+    // 取消之前的防抖定时器
+    _volumeDebounceTimer?.cancel();
+
+    // 使用media_kit设置音量
+    await widget.player.setVolume(_currentVolume);
+
+    // 设置自动隐藏定时器
+    _volumeIndicatorTimer = Timer(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          _showVolumeIndicator = false;
+        });
+      }
+    });
   }
 
   // 垂直滑动处理（亮度和音量调节）
@@ -301,10 +338,15 @@ class _ControlsPageState extends State<ControlsPage> {
 
   @override
   void dispose() {
+    // 清理定时器
     _hideTimer?.cancel();
     _batteryUpdateTimer?.cancel();
     _brightnessIndicatorTimer?.cancel();
     _volumeIndicatorTimer?.cancel();
+    _volumeDebounceTimer?.cancel();
+
+    // 恢复原始设置（异步执行）
+    _restoreOriginalSettings();
     super.dispose();
   }
 
@@ -577,7 +619,7 @@ class _ControlsPageState extends State<ControlsPage> {
           /// 音量指示器
           VolumeIndicator(
             visible: _showVolumeIndicator,
-            volume: _currentVolume,
+            volume: _currentVolume / 100.0, // 转换为0-1范围用于UI显示
           ),
         ],
       ),
