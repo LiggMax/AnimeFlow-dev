@@ -10,13 +10,15 @@ import 'package:lottie/lottie.dart';
 class EpisodeItem extends StatefulWidget {
   final int? animeId;
   final String? animeName;
-  final Function(int)? onEpisodeIdReceived;
+  final Function(int)? onEpisodeIdReceived; //剧集id
+  final Function(int)? currentEpisodeNumber; //剧集编号
 
   const EpisodeItem({
     super.key,
     required this.animeId,
     this.animeName,
     this.onEpisodeIdReceived,
+    this.currentEpisodeNumber,
   });
 
   @override
@@ -42,6 +44,14 @@ class _EpisodeItemState extends State<EpisodeItem> {
         if (res?.data?.isNotEmpty == true) {
           _selectedEpisode = res!.data!.first;
           _currentEpisodeNumber = 1;
+
+          // 回调剧集ID和剧集编号(临时方案)
+          if (widget.onEpisodeIdReceived != null) {
+            widget.onEpisodeIdReceived!(res.data!.first.id!.toInt());
+          }
+          if (widget.currentEpisodeNumber != null) {
+            widget.currentEpisodeNumber!(1);
+          }
         }
       });
     } catch (_) {
@@ -57,7 +67,12 @@ class _EpisodeItemState extends State<EpisodeItem> {
     setState(() {
       _selectedEpisode = episode;
       _currentEpisodeNumber = episodeNumber;
-      widget.onEpisodeIdReceived!(episode.id!.toInt());
+      if (widget.onEpisodeIdReceived != null) {
+        widget.onEpisodeIdReceived!(episode.id!.toInt());
+      }
+      if (widget.currentEpisodeNumber != null) {
+        widget.currentEpisodeNumber!(episodeNumber);
+      }
     });
   }
 
@@ -69,9 +84,12 @@ class _EpisodeItemState extends State<EpisodeItem> {
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
         return DraggableScrollableSheet(
-          initialChildSize: 0.7, // 初始显示
-          minChildSize: 0.4, // 最小
-          maxChildSize: 0.95, // 最大
+          initialChildSize: 0.7,
+          // 初始显示
+          minChildSize: 0.4,
+          // 最小
+          maxChildSize: 0.95,
+          // 最大
           expand: false,
           builder: (BuildContext context, ScrollController scrollController) {
             return Container(
@@ -133,7 +151,6 @@ class _EpisodeItemState extends State<EpisodeItem> {
                               return _buildEpisodeItem(
                                 context,
                                 episode,
-                                index + 1,
                               );
                             },
                           )
@@ -152,7 +169,6 @@ class _EpisodeItemState extends State<EpisodeItem> {
   Widget _buildEpisodeItem(
     BuildContext context,
     Data episode,
-    int episodeNumber,
   ) {
     final isSelected = _selectedEpisode?.id == episode.id;
     return Container(
@@ -177,7 +193,7 @@ class _EpisodeItemState extends State<EpisodeItem> {
           height: 40,
           child: Center(
             child: Text(
-              '第$episodeNumber集',
+              '第${episode.ep}集',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
@@ -247,12 +263,13 @@ class _EpisodeItemState extends State<EpisodeItem> {
         ),
         onTap: () {
           // 处理剧集选择
-          _selectEpisode(episode, episodeNumber);
+          _selectEpisode(episode, episode.ep!.toInt());
+          print('剧集编号${episode.ep}');
           Navigator.pop(context); // 关闭弹窗
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                '选择了第$episodeNumber集: ${(episode.nameCn?.isNotEmpty == true)
+                '选择了第${episode.ep}集: ${(episode.nameCn?.isNotEmpty == true)
                     ? episode.nameCn!
                     : (episode.name?.isNotEmpty == true)
                     ? episode.name!

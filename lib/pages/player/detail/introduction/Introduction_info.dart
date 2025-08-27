@@ -144,6 +144,7 @@ class _IntroductionState extends State<Introduction>
           animeId: widget.animeId,
           animeName: widget.animeName,
           onEpisodeIdReceived: widget.onEpisodeIdReceived,
+
         ),
 
         ///视频资源组件
