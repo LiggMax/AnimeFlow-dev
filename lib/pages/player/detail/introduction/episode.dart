@@ -265,17 +265,6 @@ class _EpisodeItemState extends State<EpisodeItem> {
           // 处理剧集选择
           _selectEpisode(episode, episode.ep!.toInt());
           Navigator.pop(context); // 关闭弹窗
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                '选择了第${episode.ep}集: ${(episode.nameCn?.isNotEmpty == true)
-                    ? episode.nameCn!
-                    : (episode.name?.isNotEmpty == true)
-                    ? episode.name!
-                    : "未知剧集"}',
-              ),
-            ),
-          );
         },
       ),
     );

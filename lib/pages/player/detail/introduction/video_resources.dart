@@ -569,11 +569,6 @@ class _ResourcesState extends State<Resources> {
       if (playUrl != null && widget.onVideoUrlReceived != null) {
         // 调用回调函数，将播放URL传递给父组件
         widget.onVideoUrlReceived!(playUrl);
-
-        // 显示提示信息
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('已选择播放源: ${episode.displayTitle}')),
-        );
       }
     }
   }
