@@ -1,6 +1,6 @@
 ///@Author Ligg
 ///@Time 2025/8/26
-///滑动进度指示器
+///指示器
 library;
 
 import 'package:flutter/material.dart';
@@ -84,6 +84,47 @@ class PlaybackToggleIndicator extends StatelessWidget {
               isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
               color: Colors.white70,
               size: 60,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+///缓冲指示器
+class BufferingIndicator extends StatelessWidget {
+  final bool isBuffering;
+  const BufferingIndicator({
+    super.key,
+    required this.isBuffering,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Center(
+        child: Visibility(
+          visible: isBuffering,
+          child: SizedBox(
+            width: 120,
+            height: 100,
+            child:  Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 10),
+                  Text(
+                    '缓冲中...',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
