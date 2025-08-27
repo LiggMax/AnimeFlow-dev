@@ -413,34 +413,7 @@ class _ControlsPageState extends State<ControlsPage> {
           initialData: widget.player.state.buffering,
           builder: (context, snapshot) {
             final isBuffering = snapshot.data ?? false;
-            return IgnorePointer(
-              child: Center(
-                child: Visibility(
-                  visible: isBuffering,
-                  child: SizedBox(
-                    width: 120,
-                    height: 100,
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircularProgressIndicator(),
-                          SizedBox(height: 10),
-                          Text(
-                            '缓冲中...',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
+            return BufferingIndicator(isBuffering: isBuffering);
           },
         ),
 
