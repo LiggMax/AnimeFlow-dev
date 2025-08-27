@@ -149,7 +149,7 @@ class BrightnessIndicator extends StatelessWidget {
       return Icons.brightness_5_rounded;
     } else if (brightness < 0.5) {
       return Icons.brightness_6_rounded;
-    } else if(brightness < 0.8){
+    } else if (brightness < 0.8) {
       return Icons.brightness_4_rounded;
     } else {
       return Icons.brightness_7_rounded;
@@ -162,7 +162,7 @@ class BrightnessIndicator extends StatelessWidget {
 
     return Center(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
         decoration: BoxDecoration(
           color: Colors.black.withValues(alpha: 0.7),
           borderRadius: BorderRadius.circular(8),
@@ -181,12 +181,15 @@ class BrightnessIndicator extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            Text(
-              '${(brightness * 100).round()}%',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+            SizedBox(
+              width: 50,
+              child: Text(
+                '${(brightness * 100).round()}%',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],
@@ -223,7 +226,7 @@ class VolumeIndicator extends StatelessWidget {
 
     return Center(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
         decoration: BoxDecoration(
           color: Colors.black.withValues(alpha: 0.7),
           borderRadius: BorderRadius.circular(8),
@@ -242,12 +245,15 @@ class VolumeIndicator extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            Text(
-              '${(volume * 100).round()}%',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+            SizedBox(
+              width: 50,
+              child: Text(
+                '${(volume * 100).round()}%',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],

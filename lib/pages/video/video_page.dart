@@ -32,9 +32,10 @@ class VideoPageState extends State<VideoPage> {
   void initState() {
     super.initState();
     // 播放[媒体]或[播放列表]。
-    if (widget.url != null && widget.url!.isNotEmpty) {
-      player.open(Media(widget.url!));
-    }
+    // if (widget.url != null && widget.url!.isNotEmpty) {
+    //   player.open(Media(widget.url!));
+    // }
+      player.open(Media("https://p3-dcd-sign.byteimg.com/tos-cn-i-f042mdwyw7/beee3dd9ec804f73b03a042dab782e52~tplv-jxcbcipi3j-image.image?lk3s=13ddc783&x-expires=1756316870&x-signature=80WOr4W5rTw62pb9goT%2FS3cPiTI%3D"));
   }
 
   @override
