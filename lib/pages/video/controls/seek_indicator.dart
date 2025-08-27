@@ -160,9 +160,11 @@ class BrightnessIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!visible) return const SizedBox.shrink();
 
-    return Center(
+    return Align(
+      alignment: Alignment.topCenter,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+        margin: const EdgeInsets.only(top: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.black.withValues(alpha: 0.7),
           borderRadius: BorderRadius.circular(8),
@@ -171,16 +173,21 @@ class BrightnessIndicator extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(_getBrightnessIcon(brightness), color: Colors.white, size: 24),
-            const SizedBox(width: 12),
+            const SizedBox(width: 5),
             SizedBox(
-              width: 100,
+              width: 80,
+              height: 5,
+              //圆角
               child: LinearProgressIndicator(
+                borderRadius: BorderRadius.circular(5),
                 value: brightness,
                 backgroundColor: Colors.white.withValues(alpha: 0.3),
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).primaryColor,
+                ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 5),
             SizedBox(
               width: 50,
               child: Text(
@@ -224,9 +231,11 @@ class VolumeIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!visible) return const SizedBox.shrink();
 
-    return Center(
+    return Align(
+      alignment: Alignment.topCenter,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+        margin: const EdgeInsets.only(top: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.black.withValues(alpha: 0.7),
           borderRadius: BorderRadius.circular(8),
@@ -235,16 +244,16 @@ class VolumeIndicator extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(_getVolumeIcon(volume), color: Colors.white, size: 24),
-            const SizedBox(width: 12),
+            const SizedBox(width: 5),
             SizedBox(
-              width: 100,
+              width: 80,
               child: LinearProgressIndicator(
                 value: volume,
                 backgroundColor: Colors.white.withValues(alpha: 0.3),
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 5),
             SizedBox(
               width: 50,
               child: Text(

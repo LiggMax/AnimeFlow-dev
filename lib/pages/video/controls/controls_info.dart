@@ -7,8 +7,6 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/material.dart';
 import 'package:intl/intl.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-
-// 使用media_kit内置的音量控制，无需额外依赖
 import 'package:AnimeFlow/utils/fullscreen_utils.dart';
 import 'battery_indicator.dart';
 import 'custom_seek_bar.dart';
@@ -285,9 +283,6 @@ class _ControlsPageState extends State<ControlsPage> {
       _currentVolume = newVolume;
     });
     _showIndicator('volume');
-
-    // 取消之前的防抖定时器
-    _volumeDebounceTimer?.cancel();
 
     // 使用media_kit设置音量
     await widget.player.setVolume(_currentVolume);
