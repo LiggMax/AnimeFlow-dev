@@ -105,7 +105,7 @@ jobs:
   build-windows:
     needs: get-app-info
     if: ${{ github.event.inputs.platform == 'windows' || github.event.inputs.platform == 'all'}}
-    runs-on: windows-latest
+    runs-on: windows-2025
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

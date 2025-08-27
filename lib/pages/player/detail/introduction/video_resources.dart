@@ -219,7 +219,6 @@ class _ResourcesState extends State<Resources> {
                                               setModalState(() {
                                                 _selectedSourceIndex = index;
                                                 _selectedRouteIndex = 0;
-                                                _selectedEpisodeIndex = 0;
                                               });
                                             },
                                             backgroundColor: Theme.of(context)
@@ -300,7 +299,6 @@ class _ResourcesState extends State<Resources> {
                                               onSelected: (selected) {
                                                 setModalState(() {
                                                   _selectedRouteIndex = index;
-                                                  _selectedEpisodeIndex = 0;
                                                 });
                                               },
                                               backgroundColor: Theme.of(context)

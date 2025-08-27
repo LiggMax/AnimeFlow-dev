@@ -53,13 +53,13 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       child: Column(
         children: [
           TabBar(
+            tabAlignment: TabAlignment.start,
             controller: _tabController,
+            isScrollable: true,
             tabs: [
               Tab(text: '简介'),
               Tab(text: '评论'),
             ],
-            isScrollable: true,
-            tabAlignment: TabAlignment.start, //左对齐
           ),
           Expanded(
             child: TabBarView(

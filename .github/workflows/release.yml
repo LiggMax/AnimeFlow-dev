@@ -334,7 +334,7 @@ jobs:
           body: |
             ## 🎉 Release ${{ needs.get-version.outputs.version_name }}
             
-            ### 正式发布第一个版本${{ needs.get-version.outputs.version }}
+            ### 发布版本${{ needs.get-version.outputs.version }}
             ### 📱 支持的平台
             - Android (apk)
             - iOS (ipa)
@@ -390,7 +390,7 @@ jobs:
           body: |
             ## 🎉 Release ${{ needs.get-version.outputs.version_name }}
             
-            ### 正式发布第一个版本${{ needs.get-version.outputs.version }}
+            ### 发布版本${{ needs.get-version.outputs.version }}
             ### 📱 支持的平台
             - Android (apk)
             - iOS (ipa)
@@ -403,8 +403,9 @@ jobs:
             
             ### 🔄 更新内容
             - ${{ needs.get-version.outputs.version }}版本正式发布
-            - 初步实现番剧信息展示，番剧播放
-            - 这是一个里程碑版本，实现了基本的流媒体功能，但功能依旧有很多不完善需要等待后续的叠氮更新
+            - 进度播放页自动播放选择剧集的对应视频资源
+            - 播放器添加更多功能效果以及快捷手势(双击暂停播放、左右滑动快速跳转、显示设备电量、系统时间)
+            - 更多的ui优化
           files: |
             artifacts/${{ needs.get-app-info.outputs.app_name_version }}-android/*.apk
             artifacts/${{ needs.get-app-info.outputs.app_name_version }}-ios/*.ipa
