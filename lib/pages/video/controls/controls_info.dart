@@ -36,9 +36,9 @@ class _ControlsPageState extends State<ControlsPage> {
 
   // 亮度和音量控制相关
   double _currentBrightness = 0.5;
-  double _currentVolume = 50.0; // media_kit音量范围0-100
-  double _originalBrightness = 0.5; // 记录进入播放器时的原始亮度
-  double _originalVolume = 50.0; // 记录进入播放器时的原始音量(media_kit范围0-100)
+  double _currentVolume = 50.0;
+  double _originalBrightness = 0.5;
+  double _originalVolume = 50.0;
   bool _showBrightnessIndicator = false;
   bool _showVolumeIndicator = false;
   Timer? _brightnessIndicatorTimer;
@@ -213,7 +213,6 @@ class _ControlsPageState extends State<ControlsPage> {
     try {
       _currentBrightness = await ScreenBrightness().application;
 
-      // 使用media_kit获取当前播放器音量(范围0-100)
       _currentVolume = widget.player.state.volume;
 
       // 记录原始值，用于退出时恢复
@@ -222,7 +221,7 @@ class _ControlsPageState extends State<ControlsPage> {
     } catch (e) {
       // 如果获取失败，使用默认值
       _currentBrightness = 0.5;
-      _currentVolume = 50.0; // media_kit默认音量
+      _currentVolume = 50.0;
       _originalBrightness = 0.5;
       _originalVolume = 50.0;
       debugPrint('初始化亮度和音量失败: $e');
@@ -232,7 +231,6 @@ class _ControlsPageState extends State<ControlsPage> {
   // 恢复原始亮度和音量设置
   Future<void> _restoreOriginalSettings() async {
     try {
-      // 恢复原始亮度
       if (!FullscreenUtils.isDesktop()) {
         await ScreenBrightness().setApplicationScreenBrightness(
           _originalBrightness,
@@ -240,7 +238,6 @@ class _ControlsPageState extends State<ControlsPage> {
         debugPrint('恢复原始亮度: $_originalBrightness');
       }
 
-      // 恢复原始音量(使用media_kit)
       await widget.player.setVolume(_originalVolume);
       debugPrint('恢复原始音量: $_originalVolume');
     } catch (e) {
@@ -614,7 +611,7 @@ class _ControlsPageState extends State<ControlsPage> {
           /// 音量指示器
           VolumeIndicator(
             visible: _showVolumeIndicator,
-            volume: _currentVolume / 100.0, // 转换为0-1范围用于UI显示
+            volume: _currentVolume / 100.0,
           ),
         ],
       ),
