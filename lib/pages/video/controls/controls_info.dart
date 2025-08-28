@@ -260,6 +260,12 @@ class _ControlsPageState extends State<ControlsPage> {
                                 //弹幕输入框
                                 BarrageInput(),
 
+                                //视频播放速度组件
+                                VideoSpeedButton(
+                                  onSpeedChanged: _videoService.adjustPlaybackSpeed,
+                                  currentSpeed: _videoService.playbackSpeed,
+                                ),
+
                                 MaterialFullscreenButton(
                                   iconSize: 30,
                                 ),
@@ -297,6 +303,12 @@ class _ControlsPageState extends State<ControlsPage> {
                                 child: CustomSeekBar(
                                   player: widget.player,
                                 ),
+                              ),
+
+                              //视频播放速度组件
+                              VideoSpeedButton(
+                                onSpeedChanged: _videoService.adjustPlaybackSpeed,
+                                currentSpeed: _videoService.playbackSpeed,
                               ),
 
                               const SizedBox(width: 8),
