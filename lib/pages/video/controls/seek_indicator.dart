@@ -27,7 +27,8 @@ class SeekIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
-      child: Center(
+      child: Align(
+        alignment: Alignment.topCenter,
         child: Visibility(
           visible: visible,
           child: Container(
@@ -75,32 +76,31 @@ class PlaybackToggleIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-      StreamBuilder<bool>(
-        stream: stream,
-        initialData: initialData,
-        builder: (context, snapshot) {
-          final isPlaying = snapshot.data ?? false;
-          return IgnorePointer(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Visibility(
-                visible: visible,
-                child: Container(
-                  margin: const EdgeInsets.only(top: 5),
-                  width: 100,
-                  height: 100,
-                  child: Icon(
-                    isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                    color: Colors.white70,
-                    size: 60,
-                  ),
+    return StreamBuilder<bool>(
+      stream: stream,
+      initialData: initialData,
+      builder: (context, snapshot) {
+        final isPlaying = snapshot.data ?? false;
+        return IgnorePointer(
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: Visibility(
+              visible: visible,
+              child: Container(
+                margin: const EdgeInsets.only(top: 5),
+                width: 100,
+                height: 100,
+                child: Icon(
+                  isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                  color: Colors.white70,
+                  size: 60,
                 ),
               ),
             ),
-          );
-        },
-      );
+          ),
+        );
+      },
+    );
   }
 }
 

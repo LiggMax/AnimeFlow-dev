@@ -300,7 +300,7 @@ class VideoSpeedButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            icon: const Icon(Icons.speed, color: Colors.white, size: 25),
+            icon: const Icon(Icons.speed, color: Colors.white, size: 30),
             onPressed: () {
               showGeneralDialog(
                 context: context,
