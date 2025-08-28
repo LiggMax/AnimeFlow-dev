@@ -9,7 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:AnimeFlow/pages/video/controller/video_service.dart';
 import 'battery_indicator.dart';
 import 'controls_bottom.dart';
-import 'custom_seek_bar.dart';
 import 'seek_indicator.dart';
 
 class ControlsPage extends StatefulWidget {
