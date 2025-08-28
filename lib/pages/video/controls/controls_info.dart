@@ -36,13 +36,9 @@ class _ControlsPageState extends State<ControlsPage> {
   @override
   void initState() {
     super.initState();
-
     _videoService = VideoControllerService(widget.player);
     _videoService.onStateChanged = _onServiceStateChanged;
-
-    // 初始化服务
     _videoService.initialize();
-
     _timeStream = _videoService.createTimeStream();
   }
 

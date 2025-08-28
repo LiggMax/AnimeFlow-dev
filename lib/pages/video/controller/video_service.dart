@@ -1,6 +1,3 @@
-///视频控制器服务类
-library;
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
@@ -245,6 +242,11 @@ class VideoControllerService {
     } catch (e) {
       debugPrint('恢复原始设置失败: $e');
     }
+  }
+
+  ///调节播放倍速
+  Future<void> adjustPlaybackSpeed(double delta) async {
+    await player.setRate(delta);
   }
 
   /// 调节亮度
