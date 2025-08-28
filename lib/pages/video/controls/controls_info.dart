@@ -75,6 +75,8 @@ class _ControlsPageState extends State<ControlsPage> {
               onHorizontalDragEnd: _videoService.onHorizontalDragEnd,
               onVerticalDragUpdate: (details) =>
                   _videoService.onVerticalDragUpdate(details, context),
+              onLongPressStart: (_) => _videoService.onLongPressStart(),
+              onLongPressEnd: (_) => _videoService.onLongPressEnd(),
               behavior: HitTestBehavior.opaque,
               child: Container(color: Colors.transparent),
             ),
@@ -322,6 +324,12 @@ class _ControlsPageState extends State<ControlsPage> {
           VolumeIndicator(
             visible: _videoService.showVolumeIndicator,
             volume: _videoService.currentVolume / 100.0,
+          ),
+
+          /// 快进/快退指示器
+          PlaybackSpeedIndicator(
+            visible: _videoService.showPlaybackSpeedIndicator,
+            speed: _videoService.playbackSpeed,
           ),
         ],
       ),

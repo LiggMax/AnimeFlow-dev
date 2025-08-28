@@ -271,3 +271,48 @@ class VolumeIndicator extends StatelessWidget {
     );
   }
 }
+
+/// 播放速度指示器
+class PlaybackSpeedIndicator extends StatelessWidget {
+  final bool visible;
+  final double speed;
+
+  const PlaybackSpeedIndicator({
+    super.key,
+    required this.visible,
+    required this.speed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Visibility(
+          visible: visible,
+          child: Container(
+            margin: const EdgeInsets.only(top: 30),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.fast_forward_rounded,
+                  color: Colors.white,
+                  size: 60,
+                ),
+                Text(
+                  '${speed.toStringAsFixed(1)}x',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

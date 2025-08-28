@@ -31,6 +31,13 @@ class VideoControllerService {
   Timer? _brightnessIndicatorTimer;
   Timer? _volumeIndicatorTimer;
 
+  // 播放速度控制
+  double _playbackSpeed = 1.0;
+  double _originalPlaybackSpeed = 1.0; // 记录长按前的原始速度
+  bool _showPlaybackSpeedIndicator = false;
+  Timer? _playbackSpeedIndicatorTimer;
+  Timer? _longPressTimer;
+
   // 回调函数
   VoidCallback? onStateChanged;
 
@@ -42,12 +49,14 @@ class VideoControllerService {
   bool get showSeekIndicator => _showSeekIndicator;
   bool get showPlaybackIndicator => _showPlaybackIndicator;
   bool get showBrightnessIndicator => _showBrightnessIndicator;
+  bool get showPlaybackSpeedIndicator => _showPlaybackSpeedIndicator;
   bool get showVolumeIndicator => _showVolumeIndicator;
   Duration get seekPosition => _seekPosition;
   Duration get currentPosition => _currentPosition;
   Duration get duration => _duration;
   double get currentBrightness => _currentBrightness;
   double get currentVolume => _currentVolume;
+  double get playbackSpeed => _playbackSpeed;
 
   /// 时间格式化方法
   String formatTime(Duration duration) {
@@ -89,6 +98,9 @@ class VideoControllerService {
         break;
       case 'playback':
         _showPlaybackIndicator = true;
+        break;
+      case 'speed':
+        _showPlaybackSpeedIndicator = true;
         break;
     }
 
@@ -244,9 +256,43 @@ class VideoControllerService {
     }
   }
 
+  /// 显示播放速度指示器并自动隐藏
+  void showPlaybackSpeedIndicatorTemporarily() {
+    _showIndicator('speed');
+
+    _playbackSpeedIndicatorTimer?.cancel();
+  }
+
+  /// 处理长按开始事件
+  void onLongPressStart() {
+    // 记录当前播放速度作为原始速度
+    _originalPlaybackSpeed = _playbackSpeed;
+    adjustPlaybackSpeed(2.0);
+  }
+
+  /// 处理长按结束事件
+  void onLongPressEnd() {
+    _longPressTimer?.cancel();
+    _playbackSpeedIndicatorTimer?.cancel();
+
+    // 恢复到长按前的原始播放速度
+    _playbackSpeed = _originalPlaybackSpeed;
+    player.setRate(_originalPlaybackSpeed);
+
+    // 立即关闭指示器
+    _showPlaybackSpeedIndicator = false;
+    _notifyStateChanged();
+  }
+
   ///调节播放倍速
-  Future<void> adjustPlaybackSpeed(double delta) async {
-    await player.setRate(delta);
+  Future<void> adjustPlaybackSpeed(double speed) async {
+    _playbackSpeed = speed;
+    await player.setRate(speed);
+
+    // 只有在长按时才显示指示器（speed > 1.0时）
+    if (speed > 1.0) {
+      showPlaybackSpeedIndicatorTemporarily();
+    }
   }
 
   /// 调节亮度
@@ -324,6 +370,7 @@ class VideoControllerService {
     _hideTimer?.cancel();
     _brightnessIndicatorTimer?.cancel();
     _volumeIndicatorTimer?.cancel();
+    _playbackSpeedIndicatorTimer?.cancel();
 
     // 恢复原始设置（异步执行）
     restoreOriginalSettings();
