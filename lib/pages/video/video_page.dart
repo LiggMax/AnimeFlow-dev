@@ -5,7 +5,6 @@ library;
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'controller/video_service.dart';
 import 'controls/controls_info.dart';
 
 class VideoPage extends StatefulWidget {
@@ -58,9 +57,8 @@ class VideoPageState extends State<VideoPage> {
   @override
   Widget build(BuildContext context) {
     //TODO 后续播放器布局需要优化，不要填充整个区域，应该保持16/9比例
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width * 9.0 / 16.0,
+    return AspectRatio(
+      aspectRatio: 16 / 9,
       // 使用[Video]小部件显示视频输出.
       child: Video(
         controller: controller,

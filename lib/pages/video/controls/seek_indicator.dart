@@ -38,8 +38,8 @@ class SeekIndicator extends StatelessWidget {
               children: [
                 Icon(
                   seekPosition > currentPosition
-                      ? Icons.fast_forward
-                      : Icons.fast_rewind,
+                      ? Icons.fast_forward_rounded
+                      : Icons.fast_rewind_rounded,
                   color: Colors.white,
                   size: 50,
                 ),
