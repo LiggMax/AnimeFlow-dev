@@ -190,6 +190,4 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
       },
     );
   }
-
-  // ... existing code ...
 }

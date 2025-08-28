@@ -64,42 +64,46 @@ class BarrageInput extends StatelessWidget {
     return Expanded(
       child: Container(
         height: 40,
-        margin:
-        const EdgeInsets.symmetric(
-          horizontal: 8,
-        ),
+        margin: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
-          color: Colors.black
-              .withValues(alpha: 0.5),
-          borderRadius:
-          BorderRadius.circular(20),
+          color: Colors.black.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(20),
         ),
-        child: TextField(
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-          ),
-          decoration:
-          const InputDecoration(
-            contentPadding:
-            EdgeInsets.symmetric(
-              horizontal: 16,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(left: 12, right: 8),
+              child: Icon(
+                Icons.comment,
+                color: Colors.white70,
+                size: 20,
+              ),
             ),
-            border:
-            InputBorder.none,
-            hintText: '发送一条不为人知的秘密...',
-            hintStyle: TextStyle(
-              color: Colors.white70,
-              fontSize: 14,
+            Expanded(
+              child: TextField(
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintText: '发送弹幕动能施工中...',
+                  hintStyle: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
+                  ),
+                ),
+                onSubmitted: (value) {
+                  /// 实现弹幕发送功能
+                  if (value.isNotEmpty) {
+                    // 发送弹幕的代码
+                    print('发送弹幕: $value');
+                  }
+                },
+              ),
             ),
-          ),
-          onSubmitted: (value) {
-            /// 实现弹幕发送功能
-            if (value.isNotEmpty) {
-              // 发送弹幕的代码
-              print('发送弹幕: $value');
-            }
-          },
+          ],
         ),
       ),
     );
