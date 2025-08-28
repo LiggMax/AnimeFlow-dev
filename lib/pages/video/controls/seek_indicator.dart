@@ -63,72 +63,93 @@ class SeekIndicator extends StatelessWidget {
 ///播放暂停按钮指示器
 class PlaybackToggleIndicator extends StatelessWidget {
   final bool visible;
-  final bool isPlaying;
+  final Stream<bool> stream;
+  final bool initialData;
 
   const PlaybackToggleIndicator({
     super.key,
     required this.visible,
-    required this.isPlaying,
+    required this.stream,
+    required this.initialData,
   });
 
   @override
   Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: Visibility(
-          visible: visible,
-          child: Container(
-            margin: const EdgeInsets.only(top: 5),
-            width: 100,
-            height: 100,
-            child: Icon(
-              isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-              color: Colors.white70,
-              size: 60,
+    return
+      StreamBuilder<bool>(
+        stream: stream,
+        initialData: initialData,
+        builder: (context, snapshot) {
+          final isPlaying = snapshot.data ?? false;
+          return IgnorePointer(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Visibility(
+                visible: visible,
+                child: Container(
+                  margin: const EdgeInsets.only(top: 5),
+                  width: 100,
+                  height: 100,
+                  child: Icon(
+                    isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                    color: Colors.white70,
+                    size: 60,
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
-    );
+          );
+        },
+      );
   }
 }
 
 ///缓冲指示器
 class BufferingIndicator extends StatelessWidget {
-  final bool isBuffering;
+  final Stream<bool> stream;
+  final bool initialData;
 
-  const BufferingIndicator({super.key, required this.isBuffering});
+  const BufferingIndicator({
+    super.key,
+    required this.stream,
+    required this.initialData,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Center(
-        child: Visibility(
-          visible: isBuffering,
-          child: SizedBox(
-            width: 120,
-            height: 100,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 10),
-                  Text(
-                    '缓冲中...',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
+    return StreamBuilder<bool>(
+      stream: stream,
+      initialData: initialData,
+      builder: (context, snapshot) {
+        return IgnorePointer(
+          child: Center(
+            child: Visibility(
+              visible: snapshot.data ?? false,
+              child: SizedBox(
+                width: 120,
+                height: 100,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 10),
+                      Text(
+                        '缓冲中...',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -250,7 +271,9 @@ class VolumeIndicator extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: volume,
                 backgroundColor: Colors.white.withValues(alpha: 0.3),
-                valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).primaryColor,
+                ),
               ),
             ),
             const SizedBox(width: 5),

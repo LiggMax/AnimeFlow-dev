@@ -8,6 +8,7 @@ import 'package:media_kit_video/media_kit_video_controls/src/controls/material.d
 import 'package:intl/intl.dart';
 import 'package:AnimeFlow/pages/video/controller/video_service.dart';
 import 'battery_indicator.dart';
+import 'controls_bottom.dart';
 import 'custom_seek_bar.dart';
 import 'seek_indicator.dart';
 
@@ -220,39 +221,6 @@ class _ControlsPageState extends State<ControlsPage> {
                         ),
                       ),
 
-                      //视频时间信息
-                      Positioned(
-                        bottom: 40,
-                        left: 10,
-                        right: 0,
-                        child: StreamBuilder<Duration>(
-                          stream: widget.player.stream.position,
-                          initialData: widget.player.state.position,
-                          builder: (context, positionSnapshot) {
-                            return StreamBuilder<Duration>(
-                              stream: widget.player.stream.duration,
-                              initialData: widget.player.state.duration,
-                              builder: (context, durationSnapshot) {
-                                final position =
-                                    positionSnapshot.data ?? Duration.zero;
-                                final duration =
-                                    durationSnapshot.data ?? Duration.zero;
-                                Duration actualDuration = duration;
-
-                                return Text(
-                                  '${_videoService.formatTime(position)}/${_videoService.formatTime(actualDuration)}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-
                       // 底部控件栏
                       Positioned(
                         bottom: -5,
@@ -260,21 +228,76 @@ class _ControlsPageState extends State<ControlsPage> {
                         right: 5,
                         child: Column(
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                MaterialPlayOrPauseButton(iconSize: 30),
-                                const SizedBox(width: 8),
+                            isFullscreen
+                                ?
+                                  /// 全屏/宽屏模式下的底部控件ui
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 30,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: VideoTimeInfo(
+                                            //视频时间信息
+                                            player: widget.player,
+                                            videoService: _videoService,
+                                          ),
+                                        ),
 
-                                // 进度条
-                                Expanded(
-                                  child: CustomSeekBar(player: widget.player),
-                                ),
+                                        // 进度条
+                                        CustomSeekBar(player: widget.player),
+                                        Row(
+                                          children: [
+                                            MaterialPlayOrPauseButton(
+                                              iconSize: 30,
+                                            ),
 
-                                const SizedBox(width: 8),
-                                MaterialFullscreenButton(iconSize: 30),
-                              ],
-                            ),
+                                            MaterialFullscreenButton(
+                                              iconSize: 30,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                :
+                                  /// 非全屏/宽屏模式下的底部控件ui
+                                  Column(
+                                    children: [
+                                      //视频时间信息
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: VideoTimeInfo(
+                                          player: widget.player,
+                                          videoService: _videoService,
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          MaterialPlayOrPauseButton(
+                                            iconSize: 30,
+                                          ),
+                                          const SizedBox(width: 8),
+
+                                          // 进度条
+                                          Expanded(
+                                            child: CustomSeekBar(
+                                              player: widget.player,
+                                            ),
+                                          ),
+
+                                          const SizedBox(width: 8),
+                                          MaterialFullscreenButton(
+                                            iconSize: 30,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                           ],
                         ),
                       ),
@@ -284,13 +307,9 @@ class _ControlsPageState extends State<ControlsPage> {
           ),
 
           /// 添加缓冲动画指示器
-          StreamBuilder<bool>(
+          BufferingIndicator(
             stream: widget.player.stream.buffering,
             initialData: widget.player.state.buffering,
-            builder: (context, snapshot) {
-              final isBuffering = snapshot.data ?? false;
-              return BufferingIndicator(isBuffering: isBuffering);
-            },
           ),
 
           ///滑动进度指示器
@@ -301,16 +320,10 @@ class _ControlsPageState extends State<ControlsPage> {
           ),
 
           ///播放/暂停指示器
-          StreamBuilder<bool>(
+          PlaybackToggleIndicator(
+            visible: _videoService.showPlaybackIndicator,
             stream: widget.player.stream.playing,
             initialData: widget.player.state.playing,
-            builder: (context, snapshot) {
-              final isPlaying = snapshot.data ?? false;
-              return PlaybackToggleIndicator(
-                visible: _videoService.showPlaybackIndicator,
-                isPlaying: isPlaying,
-              );
-            },
           ),
 
           /// 亮度指示器
