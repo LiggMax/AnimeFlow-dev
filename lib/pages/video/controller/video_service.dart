@@ -240,6 +240,7 @@ class VideoControllerService {
   }
 
   /// 恢复原始亮度和音量设置
+  /// TODO 暂时还未使用，后续需要在退出播放页(销毁player)时调用
   Future<void> restoreOriginalSettings() async {
     try {
       if (!FullscreenUtils.isDesktop()) {
@@ -265,6 +266,11 @@ class VideoControllerService {
 
   /// 处理长按开始事件
   void onLongPressStart() {
+    // 未播放时不处理
+    if (!player.state.playing) {
+      return;
+    }
+
     // 记录当前播放速度作为原始速度
     _originalPlaybackSpeed = _playbackSpeed;
     adjustPlaybackSpeed(2.0);
@@ -274,6 +280,11 @@ class VideoControllerService {
   void onLongPressEnd() {
     _longPressTimer?.cancel();
     _playbackSpeedIndicatorTimer?.cancel();
+
+    // 只在播放时才处理速度恢复
+    if (!player.state.playing) {
+      return;
+    }
 
     // 恢复到长按前的原始播放速度
     _playbackSpeed = _originalPlaybackSpeed;
@@ -288,11 +299,8 @@ class VideoControllerService {
   Future<void> adjustPlaybackSpeed(double speed) async {
     _playbackSpeed = speed;
     await player.setRate(speed);
-
-    // 只有在长按时才显示指示器（speed > 1.0时）
-    if (speed > 1.0) {
-      showPlaybackSpeedIndicatorTemporarily();
-    }
+    // 显示播放速度指示器
+    showPlaybackSpeedIndicatorTemporarily();
   }
 
   /// 调节亮度
@@ -371,9 +379,6 @@ class VideoControllerService {
     _brightnessIndicatorTimer?.cancel();
     _volumeIndicatorTimer?.cancel();
     _playbackSpeedIndicatorTimer?.cancel();
-
-    // 恢复原始设置（异步执行）
-    restoreOriginalSettings();
   }
 
   /// 通知状态变化

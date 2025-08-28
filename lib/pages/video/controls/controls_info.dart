@@ -46,7 +46,6 @@ class _ControlsPageState extends State<ControlsPage> {
   void dispose() {
     // 清理定时器
     _batteryUpdateTimer?.cancel();
-
     // 释放视频服务资源
     _videoService.dispose();
     super.dispose();
