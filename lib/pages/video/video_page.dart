@@ -10,11 +10,13 @@ import 'controls/controls_info.dart';
 class VideoPage extends StatefulWidget {
   final String? animeName;
   final String? url;
+  final VoidCallback? onToggleDetailVisibility;
 
   const VideoPage({
     super.key,
     this.animeName,
     this.url,
+    this.onToggleDetailVisibility,
   });
 
   @override
@@ -64,7 +66,11 @@ class VideoPageState extends State<VideoPage> {
         controller: controller,
         controls: (state) {
           //TODO 需要将剧集名称传入给控件ui
-          return ControlsPage(player: player, animeName: widget.animeName);
+          return ControlsPage(
+            player: player,
+            animeName: widget.animeName,
+            onToggleDetailVisibility: widget.onToggleDetailVisibility,
+          );
         },
       ),
     );

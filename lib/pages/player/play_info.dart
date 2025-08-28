@@ -17,6 +17,7 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
   String? _currentVideoUrl; // 添加视频URL状态
   final GlobalKey _videoKey = GlobalKey();
   final GlobalKey _detailKey = GlobalKey();
+  bool _isDetailVisible = true;
 
   @override
   void initState() {
@@ -27,6 +28,13 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
   void _handleVideoUrlReceived(String videoUrl) {
     setState(() {
       _currentVideoUrl = videoUrl;
+    });
+  }
+
+  /// 切换详情区域可见性
+  void _toggleDetailVisibility() {
+    setState(() {
+      _isDetailVisible = !_isDetailVisible;
     });
   }
 
@@ -60,26 +68,28 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
                     left: 0,
                     top: 0,
                     bottom: 0,
-                    right: detailWidth,
+                    right: _isDetailVisible ? detailWidth : 0,
                     child: VideoPage(
                       key: _videoKey,
                       animeName: widget.animeName,
                       url: _currentVideoUrl,
+                      onToggleDetailVisibility: _toggleDetailVisibility, // 传递回调函数
                     ),
                   ),
                   // 内容区域
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                    width: detailWidth,
-                    child: DetailPage(
-                      key: _detailKey,
-                      animeName: widget.animeName,
-                      animeId: widget.animeId,
-                      onVideoUrlReceived: _handleVideoUrlReceived,
+                  if (_isDetailVisible)
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: detailWidth,
+                      child: DetailPage(
+                        key: _detailKey,
+                        animeName: widget.animeName,
+                        animeId: widget.animeId,
+                        onVideoUrlReceived: _handleVideoUrlReceived,
+                      ),
                     ),
-                  ),
                 ],
               );
             } else {

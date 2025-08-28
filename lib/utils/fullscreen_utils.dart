@@ -68,48 +68,6 @@ class FullscreenUtils {
     }
   }
 
-  // 退出全屏显示
-  static Future<void> exitFullScreen({bool lockOrientation = true}) async {
-    print('退出全屏 - 平台: ${Platform.operatingSystem}');
-
-    if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
-      print('桌面端：退出窗口全屏');
-      await windowManager.setFullScreen(false);
-    }
-
-    late SystemUiMode mode = SystemUiMode.edgeToEdge;
-    try {
-      if (Platform.isAndroid || Platform.isIOS) {
-        print('移动端：恢复UI模式');
-        if (Platform.isAndroid) {
-          final androidInfo = await DeviceInfoPlugin().androidInfo;
-          if (androidInfo.version.sdkInt < 29) {
-            mode = SystemUiMode.manual;
-          }
-        }
-        await SystemChrome.setEnabledSystemUIMode(
-          mode,
-          overlays: SystemUiOverlay.values,
-        );
-        if (FullscreenUtils.isCompact() && lockOrientation) {
-          if (Platform.isAndroid) {
-            bool isInMultiWindowMode =
-                await FullscreenUtils.isInMultiWindowMode();
-            if (isInMultiWindowMode) {
-              print('Android分屏模式，跳过方向恢复');
-              return;
-            }
-          }
-          print('恢复竖屏方向');
-          verticalScreen();
-        }
-      }
-    } catch (exception, stacktrace) {
-      print('Fullscreen exit error: $exception');
-      print('Stack trace: $stacktrace');
-    }
-  }
-
   // 横屏
   static Future<void> landScape() async {
     dynamic document;

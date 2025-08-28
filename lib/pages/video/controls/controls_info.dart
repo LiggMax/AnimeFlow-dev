@@ -7,6 +7,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/material.dart';
 import 'package:intl/intl.dart';
 import 'package:AnimeFlow/pages/video/controller/video_service.dart';
+import 'package:AnimeFlow/utils/fullscreen_utils.dart';
 import 'battery_indicator.dart';
 import 'controls_bottom.dart';
 import 'seek_indicator.dart';
@@ -14,8 +15,9 @@ import 'seek_indicator.dart';
 class ControlsPage extends StatefulWidget {
   final String? animeName;
   final Player player;
+  final VoidCallback? onToggleDetailVisibility;
 
-  const ControlsPage({super.key, required this.player, this.animeName});
+  const ControlsPage({super.key, required this.player, this.animeName, this.onToggleDetailVisibility});
 
   @override
   State<ControlsPage> createState() => _ControlsPageState();
@@ -58,6 +60,7 @@ class _ControlsPageState extends State<ControlsPage> {
         .of(context)
         .orientation;
     final isFullscreen = orientation == Orientation.landscape;
+    final bool isDesktop = FullscreenUtils.isDesktop();
 
     return MouseRegion(
       onEnter: (event) => _videoService.onMouseEnter(),
@@ -194,6 +197,12 @@ class _ControlsPageState extends State<ControlsPage> {
                                     ),
                                   ),
                             ),
+
+                            //隐藏右侧内容区域
+                            if(isDesktop)
+                            IconButton(onPressed: widget.onToggleDetailVisibility, icon:
+                             Icon(Icons.chevron_right,color: Colors.white,size: 30)
+                            )
                           ],
                         ),
                       ),
