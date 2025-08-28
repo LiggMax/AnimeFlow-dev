@@ -23,7 +23,7 @@ class ThemeController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 浅色主题 - 使用 Material 3 自动管理
+  // 浅色主题
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(
@@ -47,7 +47,7 @@ class ThemeController extends ChangeNotifier {
     ),
   );
 
-  // 深色主题 - 使用 Material 3 自动管理
+  // 深色主题
   static final ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(
