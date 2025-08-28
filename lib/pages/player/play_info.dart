@@ -51,7 +51,8 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
         child: LayoutBuilder(
           builder: (context, constraints) {
             if (isLandscape) {
-              // 横屏模式：播放器在左侧，内容区域在右侧
+              // 横屏模式
+              const double detailWidth = 350;
               return Stack(
                 children: [
                   // 视频播放器
@@ -59,7 +60,7 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
                     left: 0,
                     top: 0,
                     bottom: 0,
-                    width: constraints.maxWidth * 0.6,
+                    right: detailWidth,
                     child: VideoPage(
                       key: _videoKey,
                       animeName: widget.animeName,
@@ -71,7 +72,7 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
                     right: 0,
                     top: 0,
                     bottom: 0,
-                    width: constraints.maxWidth * 0.4,
+                    width: detailWidth,
                     child: DetailPage(
                       key: _detailKey,
                       animeName: widget.animeName,
@@ -82,15 +83,11 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
                 ],
               );
             } else {
-              // 竖屏模式：播放器在上方，内容区域在下方
-              return Stack(
+              // 竖屏模式
+              return Column(
                 children: [
-                  // 视频播放器
-                  Positioned(
-                    left: 0,
-                    top: 0,
-                    right: 0,
-                    height: constraints.maxHeight * 0.4,
+                  AspectRatio(
+                    aspectRatio: 16 / 9,
                     child: VideoPage(
                       key: _videoKey,
                       animeName: widget.animeName,
@@ -98,11 +95,7 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
                     ),
                   ),
                   // 内容区域
-                  Positioned(
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    height: constraints.maxHeight * 0.6,
+                  Expanded(
                     child: DetailPage(
                       key: _detailKey,
                       animeName: widget.animeName,
