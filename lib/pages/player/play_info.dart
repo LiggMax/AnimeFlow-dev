@@ -7,7 +7,7 @@ class PlayInfo extends StatefulWidget {
   final String? animeName;
   final int? animeId;
 
-  const PlayInfo({Key? key, this.animeName, this.animeId}) : super(key: key);
+  const PlayInfo({super.key, this.animeName, this.animeId});
 
   @override
   State<PlayInfo> createState() => _PlayInfoState();
@@ -73,23 +73,24 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
                       key: _videoKey,
                       animeName: widget.animeName,
                       url: _currentVideoUrl,
-                      onToggleDetailVisibility: _toggleDetailVisibility, // 传递回调函数
+                      onToggleDetailVisibility:
+                          _toggleDetailVisibility, // 传递回调函数
                     ),
                   ),
                   // 内容区域
-                  if (_isDetailVisible)
-                    Positioned(
-                      right: 0,
-                      top: 0,
-                      bottom: 0,
-                      width: detailWidth,
-                      child: DetailPage(
-                        key: _detailKey,
-                        animeName: widget.animeName,
-                        animeId: widget.animeId,
-                        onVideoUrlReceived: _handleVideoUrlReceived,
-                      ),
+                  Positioned(
+                    right: _isDetailVisible ? 0 : -detailWidth,
+                    // 通过调整right值实现显示/隐藏
+                    top: 0,
+                    bottom: 0,
+                    width: detailWidth,
+                    child: DetailPage(
+                      key: _detailKey,
+                      animeName: widget.animeName,
+                      animeId: widget.animeId,
+                      onVideoUrlReceived: _handleVideoUrlReceived,
                     ),
+                  ),
                 ],
               );
             } else {
