@@ -201,7 +201,7 @@ class _ControlsPageState extends State<ControlsPage> {
                   ),
                 ),
 
-                //底部模板
+                //底部控件蒙版
                 Positioned(
                   bottom: 0,
                   left: 0,
@@ -303,12 +303,6 @@ class _ControlsPageState extends State<ControlsPage> {
                                 child: CustomSeekBar(
                                   player: widget.player,
                                 ),
-                              ),
-
-                              //视频播放速度组件
-                              VideoSpeedButton(
-                                onSpeedChanged: _videoService.adjustPlaybackSpeed,
-                                currentSpeed: _videoService.playbackSpeed,
                               ),
 
                               const SizedBox(width: 8),

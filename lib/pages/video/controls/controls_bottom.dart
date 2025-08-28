@@ -295,41 +295,45 @@ class VideoSpeedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: IconButton(
-        icon: const Icon(Icons.speed, color: Colors.white, size: 25),
-        onPressed: () {
-          showGeneralDialog(
-            context: context,
-            barrierDismissible: true,
-            barrierLabel: MaterialLocalizations.of(
-              context,
-            ).modalBarrierDismissLabel,
-            barrierColor: Colors.black.withValues(alpha: 0.3),
-            transitionDuration: const Duration(milliseconds: 300),
-            pageBuilder: (context, animation, secondaryAnimation) {
-              return Align(
-                alignment: Alignment.centerRight,
-                child: SlideTransition(
-                  position:
-                      Tween<Offset>(
-                        begin: const Offset(1.0, 0.0),
-                        end: Offset.zero,
-                      ).animate(
-                        CurvedAnimation(
-                          parent: animation,
-                          curve: Curves.easeInOut,
-                        ),
+      padding: const EdgeInsets.symmetric(horizontal: 1),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.speed, color: Colors.white, size: 25),
+            onPressed: () {
+              showGeneralDialog(
+                context: context,
+                barrierDismissible: true,
+                barrierLabel: MaterialLocalizations.of(
+                  context,
+                ).modalBarrierDismissLabel,
+                transitionDuration: const Duration(milliseconds: 300),
+                pageBuilder: (context, animation, secondaryAnimation) {
+                  return Align(
+                    alignment: Alignment.centerRight,
+                    child: SlideTransition(
+                      position:
+                          Tween<Offset>(
+                            begin: const Offset(1.0, 0.0),
+                            end: Offset.zero,
+                          ).animate(
+                            CurvedAnimation(
+                              parent: animation,
+                              curve: Curves.easeInOut,
+                            ),
+                          ),
+                      child: VideoSpeedDrawer(
+                        onSpeedChanged: onSpeedChanged,
+                        currentSpeed: currentSpeed,
                       ),
-                  child: VideoSpeedDrawer(
-                    onSpeedChanged: onSpeedChanged,
-                    currentSpeed: currentSpeed,
-                  ),
-                ),
+                    ),
+                  );
+                },
               );
             },
-          );
-        },
+          ),
+        ],
       ),
     );
   }

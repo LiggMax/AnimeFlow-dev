@@ -49,7 +49,7 @@ class VideoControllerService {
   bool get showSeekIndicator => _showSeekIndicator;
   bool get showPlaybackIndicator => _showPlaybackIndicator;
   bool get showBrightnessIndicator => _showBrightnessIndicator;
-  bool get showPlaybackSpeedIndicator => _showPlaybackSpeedIndicator;
+  bool get  showPlaybackSpeedIndicator => _showPlaybackSpeedIndicator;
   bool get showVolumeIndicator => _showVolumeIndicator;
   Duration get seekPosition => _seekPosition;
   Duration get currentPosition => _currentPosition;
@@ -274,6 +274,8 @@ class VideoControllerService {
     // 记录当前播放速度作为原始速度
     _originalPlaybackSpeed = _playbackSpeed;
     adjustPlaybackSpeed(2.0);
+    // 显示播放速度指示器
+    showPlaybackSpeedIndicatorTemporarily();
   }
 
   /// 处理长按结束事件
@@ -299,8 +301,7 @@ class VideoControllerService {
   Future<void> adjustPlaybackSpeed(double speed) async {
     _playbackSpeed = speed;
     await player.setRate(speed);
-    // 显示播放速度指示器
-    showPlaybackSpeedIndicatorTemporarily();
+
   }
 
   /// 调节亮度
