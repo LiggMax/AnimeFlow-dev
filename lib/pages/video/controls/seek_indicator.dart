@@ -208,18 +208,6 @@ class BrightnessIndicator extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 5),
-            SizedBox(
-              width: 50,
-              child: Text(
-                '${(brightness * 100).round()}%',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
           ],
         ),
       ),
@@ -273,18 +261,6 @@ class VolumeIndicator extends StatelessWidget {
                 backgroundColor: Colors.white.withValues(alpha: 0.3),
                 valueColor: AlwaysStoppedAnimation<Color>(
                   Theme.of(context).primaryColor,
-                ),
-              ),
-            ),
-            const SizedBox(width: 5),
-            SizedBox(
-              width: 50,
-              child: Text(
-                '${(volume * 100).round()}%',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),

@@ -44,15 +44,6 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
     final orientation = MediaQuery.of(context).orientation;
     final isLandscape = orientation == Orientation.landscape;
 
-    // 设置状态栏为深色
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.black,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-      ),
-    );
-
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
@@ -79,8 +70,8 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
                   ),
                   // 内容区域
                   Positioned(
-                    right: _isDetailVisible ? 0 : -detailWidth,
                     // 通过调整right值实现显示/隐藏
+                    right: _isDetailVisible ? 0 : -detailWidth,
                     top: 0,
                     bottom: 0,
                     width: detailWidth,
