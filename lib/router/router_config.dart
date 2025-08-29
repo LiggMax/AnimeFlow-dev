@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:AnimeFlow/pages/animeinfos/anime_info.dart';
 import 'package:AnimeFlow/pages/search/search_page.dart';
-import 'package:AnimeFlow/pages/tabs.dart';
+import 'package:AnimeFlow/pages/tabs/tabs.dart';
 
 class AppRouter {
   static const String home = '/';

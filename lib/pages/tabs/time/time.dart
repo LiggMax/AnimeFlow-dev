@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:AnimeFlow/request/bangumi/bangumi.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../utils/fullscreen_utils.dart';
+import '../../../utils/fullscreen_utils.dart';
 
 // 数据状态类
 class CalendarState {
