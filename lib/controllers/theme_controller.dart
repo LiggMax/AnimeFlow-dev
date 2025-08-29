@@ -32,18 +32,19 @@ class ThemeController extends ChangeNotifier {
     ),
     appBarTheme: AppBarTheme(
       systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
+        // statusBarColor: Colors.transparent,
+        // statusBarIconBrightness: Brightness.dark,
+        // statusBarBrightness: Brightness.light,
         /// 确保浅色主题下系统导航条颜色正确
         systemNavigationBarColor: ColorScheme.fromSeed(
           seedColor: Color(0xFF5CDCF6),
           brightness: Brightness.light,
         ).surface,
-        systemNavigationBarIconBrightness: Brightness.dark,
-        systemNavigationBarDividerColor: Colors.transparent,
+        // systemNavigationBarIconBrightness: Brightness.dark,
+        // systemNavigationBarDividerColor: Colors.transparent,
       ),
-      scrolledUnderElevation: 0,
+      // scrolledUnderElevation: 0,
+      // surfaceTintColor: Colors.transparent,
     ),
   );
 
@@ -56,19 +57,19 @@ class ThemeController extends ChangeNotifier {
     ),
     appBarTheme: AppBarTheme(
       systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
+        // statusBarColor: Colors.transparent,
+        // statusBarIconBrightness: Brightness.light,
+        // statusBarBrightness: Brightness.dark,
         /// 确保深色主题下系统导航条颜色正确
         systemNavigationBarColor: ColorScheme.fromSeed(
           seedColor: Color(0xFF5CDCF6),
           brightness: Brightness.dark,
         ).surface,
-        systemNavigationBarIconBrightness: Brightness.light,
-        systemNavigationBarDividerColor: Colors.transparent,
+        // systemNavigationBarIconBrightness: Brightness.light,
+        // systemNavigationBarDividerColor: Colors.transparent,
       ),
-      scrolledUnderElevation: 0,
-      surfaceTintColor: Colors.transparent,
+      // scrolledUnderElevation: 0,
+      // surfaceTintColor: Colors.transparent,
     ),
   );
 
