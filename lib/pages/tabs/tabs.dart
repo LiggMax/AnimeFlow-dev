@@ -86,7 +86,7 @@ class _TabsState extends State<Tabs> {
           : NavigationBar(
               selectedIndex: _currentIndex,
               onDestinationSelected: _navigateTo,
-              backgroundColor: theme.colorScheme.surface,
+              backgroundColor: theme.colorScheme.surfaceDim,
               indicatorColor: theme.colorScheme.primaryContainer,
               destinations: _buildNavigationDestinations(),
             ),
@@ -98,28 +98,35 @@ class _TabsState extends State<Tabs> {
     return NavigationRail(
       selectedIndex: _currentIndex,
       onDestinationSelected: _navigateTo,
-      backgroundColor: theme.colorScheme.surface,
+      backgroundColor: theme.colorScheme.surfaceDim,
       indicatorColor: theme.colorScheme.primaryContainer,
       labelType: NavigationRailLabelType.all,
       useIndicator: true,
       // 将导航项对齐
-      groupAlignment: 1.0, // -1.0 表示顶部对齐，1.0 表示底部部对齐，0.0 表示居中
+      groupAlignment: 1.0,
+      // -1.0 表示顶部对齐，1.0 表示底部部对齐，0.0 表示居中
       // 添加底部间距
       trailing: const SizedBox(height: 32),
       destinations: [
         NavigationRailDestination(
           icon: const Icon(Icons.home_outlined),
-          selectedIcon: const Icon(Icons.home),
+          selectedIcon: Icon(Icons.home, color: Theme.of(context).primaryColor),
           label: Text(_pageTitles[0]),
         ),
         NavigationRailDestination(
           icon: const Icon(Icons.timeline_outlined),
-          selectedIcon: const Icon(Icons.timeline),
+          selectedIcon: Icon(
+            Icons.timeline,
+            color: Theme.of(context).primaryColor,
+          ),
           label: Text(_pageTitles[1]),
         ),
         NavigationRailDestination(
           icon: const Icon(Icons.person_outline),
-          selectedIcon: const Icon(Icons.person),
+          selectedIcon: Icon(
+            Icons.person,
+            color: Theme.of(context).primaryColor,
+          ),
           label: Text(_pageTitles[2]),
         ),
       ],
