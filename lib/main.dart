@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:AnimeFlow/router/router_config.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:media_kit/media_kit.dart';
@@ -13,6 +14,9 @@ import 'package:AnimeFlow/request/bangumi/bangumi_oauth.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
+
+  // 设置系统UI模式为边缘到边缘
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   // 初始化Hive
   await Hive.initFlutter();
@@ -132,3 +136,56 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+
+
+// void main() {
+//   WidgetsFlutterBinding.ensureInitialized();
+//
+//   // 设置系统 UI 样式
+//   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+//     systemNavigationBarColor: Colors.transparent, // Android 底部导航栏透明
+//     systemNavigationBarIconBrightness: Brightness.dark,
+//     statusBarColor: Colors.transparent, // 顶部状态栏透明
+//     statusBarIconBrightness: Brightness.dark,
+//   ));
+//
+//   // 让内容延伸到底部（覆盖 home indicator 背景）
+//   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+//
+//   runApp(const MyApp());
+// }
+//
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: Scaffold(
+//         backgroundColor: Colors.blueGrey[50],
+//         body: AnnotatedRegion<SystemUiOverlayStyle>(
+//           value: const SystemUiOverlayStyle(
+//             systemNavigationBarColor: Colors.transparent,
+//             systemNavigationBarIconBrightness: Brightness.dark,
+//             statusBarColor: Colors.transparent,
+//             statusBarIconBrightness: Brightness.dark,
+//           ),
+//           child: SafeArea(
+//             bottom: false, // 允许内容延伸到 iPad/iPhone 的 home indicator 区域
+//             child: Column(
+//               children: [
+//                 const Text("顶部透明状态栏"),
+//                 Expanded(
+//                   child: Container(
+//                     child: const Center(child: Text("内容延伸到底部 🚀")),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+

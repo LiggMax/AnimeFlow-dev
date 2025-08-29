@@ -32,19 +32,17 @@ class ThemeController extends ChangeNotifier {
     ),
     appBarTheme: AppBarTheme(
       systemOverlayStyle: SystemUiOverlayStyle(
-        // statusBarColor: Colors.transparent,
-        // statusBarIconBrightness: Brightness.dark,
-        // statusBarBrightness: Brightness.light,
-        /// 确保浅色主题下系统导航条颜色正确
-        systemNavigationBarColor: ColorScheme.fromSeed(
-          seedColor: Color(0xFF5CDCF6),
-          brightness: Brightness.light,
-        ).surface,
-        // systemNavigationBarIconBrightness: Brightness.dark,
-        // systemNavigationBarDividerColor: Colors.transparent,
+        statusBarColor: Colors.transparent, // 状态栏透明
+        statusBarIconBrightness: Brightness.dark, // 浅色主题下状态栏图标为深色
+        statusBarBrightness: Brightness.light,
+
+        /// 确保浅色主题下系统导航条透明
+        systemNavigationBarColor: Colors.transparent, // Android底部导航条透明
+        systemNavigationBarIconBrightness: Brightness.dark, // 浅色主题下导航条图标为深色
+        systemNavigationBarDividerColor: Colors.transparent,
       ),
-      // scrolledUnderElevation: 0,
-      // surfaceTintColor: Colors.transparent,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
     ),
   );
 
@@ -57,19 +55,17 @@ class ThemeController extends ChangeNotifier {
     ),
     appBarTheme: AppBarTheme(
       systemOverlayStyle: SystemUiOverlayStyle(
-        // statusBarColor: Colors.transparent,
-        // statusBarIconBrightness: Brightness.light,
-        // statusBarBrightness: Brightness.dark,
-        /// 确保深色主题下系统导航条颜色正确
-        systemNavigationBarColor: ColorScheme.fromSeed(
-          seedColor: Color(0xFF5CDCF6),
-          brightness: Brightness.dark,
-        ).surface,
-        // systemNavigationBarIconBrightness: Brightness.light,
-        // systemNavigationBarDividerColor: Colors.transparent,
+        statusBarColor: Colors.transparent, // 状态栏透明
+        statusBarIconBrightness: Brightness.light, // 深色主题下状态栏图标为浅色
+        statusBarBrightness: Brightness.dark,
+
+        /// 确保深色主题下系统导航条透明
+        systemNavigationBarColor: Colors.transparent, // Android底部导航条透明
+        systemNavigationBarIconBrightness: Brightness.light, // 深色主题下导航条图标为浅色
+        systemNavigationBarDividerColor: Colors.transparent,
       ),
-      // scrolledUnderElevation: 0,
-      // surfaceTintColor: Colors.transparent,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
     ),
   );
 

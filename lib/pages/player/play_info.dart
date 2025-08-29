@@ -1,7 +1,6 @@
 import 'package:AnimeFlow/pages/player/detail/details_info.dart';
 import 'package:AnimeFlow/pages/video/video_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class PlayInfo extends StatefulWidget {
   final String? animeName;
@@ -47,6 +46,7 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
+        bottom: false, // 让内容延伸到底部
         child: LayoutBuilder(
           builder: (context, constraints) {
             if (isLandscape) {

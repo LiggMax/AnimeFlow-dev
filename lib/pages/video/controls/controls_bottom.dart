@@ -395,7 +395,7 @@ class VideoSpeedDrawer extends StatelessWidget {
                       color: isSelected
                           ? Theme.of(
                               context,
-                            ).primaryColor.withValues(alpha: 0.1)
+                            ).canvasColor.withValues(alpha: 0.2)
                           : null,
                     ),
                     child: InkWell(
@@ -419,16 +419,13 @@ class VideoSpeedDrawer extends StatelessWidget {
                                   fontWeight: isSelected
                                       ? FontWeight.bold
                                       : FontWeight.normal,
-                                  color: isSelected
-                                      ? Theme.of(context).primaryColor
-                                      : null,
                                 ),
                               ),
                             ),
                             if (isSelected)
                               Icon(
                                 Icons.check,
-                                color: Theme.of(context).primaryColor,
+                                color: Theme.of(context).canvasColor,
                                 size: 18,
                               ),
                           ],

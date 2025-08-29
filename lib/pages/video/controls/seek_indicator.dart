@@ -300,7 +300,7 @@ class PlaybackSpeedIndicator extends StatelessWidget {
                   size: 60,
                 ),
                 Text(
-                  '${speed.toStringAsFixed(1)}x',
+                  speed.toStringAsFixed(1),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
