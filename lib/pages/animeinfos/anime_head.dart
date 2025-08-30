@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:AnimeFlow/router/router_config.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:AnimeFlow/modules/bangumi/data.dart';
@@ -184,30 +185,11 @@ class AnimeDetailBackground extends StatelessWidget {
 
   /// 网络图片构建
   Widget _buildNetworkImage(String imageUrl, double width, double height) {
-    if (imageUrl.isEmpty) {
-      return Container(
-        width: width,
-        height: height,
-        color: Colors.grey[800],
-        child: const Center(
-          child: Icon(Icons.movie, size: 80, color: Colors.white24),
-        ),
-      );
-    }
-
-    return Image.network(
-      imageUrl,
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
       width: width,
       height: height,
       fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) => Container(
-        width: width,
-        height: height,
-        color: Colors.grey[800],
-        child: const Center(
-          child: Icon(Icons.movie, size: 80, color: Colors.white24),
-        ),
-      ),
     );
   }
 }
@@ -234,15 +216,6 @@ class AnimeDetailTabBar extends StatelessWidget implements PreferredSizeWidget {
         isScrollable: false,
         tabAlignment: TabAlignment.center,
         dividerHeight: 0,
-        labelColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.white
-            : Colors.black,
-        unselectedLabelColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.grey[400]
-            : Colors.grey[600],
-        indicatorColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.blue
-            : Theme.of(context).primaryColor,
         tabs: tabs.map((name) => Tab(text: name)).toList(),
       ),
     );
@@ -272,9 +245,6 @@ class BangumiInfoCard extends StatelessWidget {
     }
 
     return Container(
-      width: MediaQuery.sizeOf(context).width > maxWidth
-          ? maxWidth
-          : MediaQuery.sizeOf(context).width - 32,
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,21 +279,13 @@ class BangumiInfoCard extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: Container(
+        child: SizedBox(
           width: 140,
           height: 230,
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(12),
+          child: CachedNetworkImage(
+            imageUrl: bangumiItem.images.bestUrl,
+            fit: BoxFit.cover,
           ),
-          child: bangumiItem.images.bestUrl.isNotEmpty
-              ? Image.network(
-                  bangumiItem.images.bestUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) =>
-                      _buildPlaceholderIcon(),
-                )
-              : _buildPlaceholderIcon(),
         ),
       ),
     );
@@ -405,15 +367,6 @@ class BangumiInfoCard extends StatelessWidget {
       ],
     );
   }
-
-  Widget _buildPlaceholderIcon() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      color: Colors.grey[400],
-      child: const Icon(Icons.movie, size: 40, color: Colors.white),
-    );
-  }
 }
 
 /// 按钮组件
@@ -437,11 +390,12 @@ class AnimePlayButton extends StatelessWidget {
     if (isLoading) {
       return const AnimePlayButtonSkeleton();
     }
+    final primaryColor = Theme.of(context).colorScheme.primary;
 
     return SizedBox(
       width: double.infinity,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // 追番按钮
           SizedBox(
@@ -451,7 +405,7 @@ class AnimePlayButton extends StatelessWidget {
                 // TODO: 处理追番功能
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey,
+                backgroundColor: primaryColor,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 9),
                 shape: RoundedRectangleBorder(
@@ -481,7 +435,7 @@ class AnimePlayButton extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey,
+                backgroundColor: primaryColor,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 9),
                 shape: RoundedRectangleBorder(
