@@ -39,7 +39,12 @@ class _ProfilePageState extends State<ProfilePage>
   BangumiToken? _persistedToken;
   UserInfo? _userInfo;
   late TabController _tabController;
+
+  // 使用Collections类型存储收藏数据
   final Map<int, Collections?> _collectionsByType = {};
+
+  // 添加加载状态管理
+  final Map<int, bool> _loadingStates = {};
 
   @override
   void initState() {
@@ -113,17 +118,31 @@ class _ProfilePageState extends State<ProfilePage>
   /// 获取用户收藏（想看1、在看2、看过3、搁置4、抛弃5）
   Future<void> _loadUserCollections(int type) async {
     if (_persistedToken == null) {
+      print('Token为空，无法发送请求');
       return;
     }
+
+    // 设置加载状态
+    if (mounted) {
+      setState(() {
+        _loadingStates[type] = true;
+      });
+    }
+
     try {
       final res = await BangumiUser.getUserCollection(_persistedToken!, type);
       if (mounted) {
         setState(() {
           _collectionsByType[type] = res;
+          _loadingStates[type] = false; // 加载完成
         });
       }
     } catch (e) {
+      print('❌ 加载类型 $type 的收藏数据失败: $e');
       if (mounted) {
+        setState(() {
+          _loadingStates[type] = false; // 加载失败也要重置状态
+        });
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('获取收藏数据失败: $e')));
@@ -200,6 +219,7 @@ class _ProfilePageState extends State<ProfilePage>
         tabs: tabs,
         userInfo: _userInfo,
         collectionsByType: _collectionsByType,
+        loadingStates: _loadingStates,
       ),
     );
   }
@@ -375,16 +395,29 @@ class _ProfileDetailTabBar extends StatelessWidget
         isScrollable: true,
         tabAlignment: TabAlignment.start,
         dividerHeight: 0,
-        labelColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.white
-            : Colors.black,
-        unselectedLabelColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.grey[400]
-            : Colors.grey[600],
-        indicatorColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.blue
-            : Theme.of(context).primaryColor,
-        tabs: tabWidgets,
+        tabs: tabWidgets.asMap().entries.map((entry) {
+          final index = entry.key;
+          final tab = entry.value;
+
+          // 获取tab名称和对应的type值
+          String tabName;
+          if (collectionItems.isNotEmpty) {
+            tabName = collectionItems[index]['label'] as String;
+          } else {
+            final defaultTabs = ['想看', '在看', '看过', '搁置', '抛弃'];
+            tabName = defaultTabs[index];
+          }
+
+          final int type = getTypeFromTabName(tabName);
+          final bool _ =
+              tabController.index == index &&
+              (context
+                      .findAncestorStateOfType<_ProfilePageState>()
+                      ?._loadingStates[type] ==
+                  true);
+
+          return Tab(child: Center(child: tab));
+        }).toList(),
         onTap: (index) {
           onTabTapped(index);
         },
@@ -402,12 +435,14 @@ class _ProfileTabView extends StatefulWidget {
   final List<String> tabs;
   final UserInfo? userInfo;
   final Map<int, Collections?> collectionsByType;
+  final Map<int, bool> loadingStates;
 
   const _ProfileTabView({
     required this.tabController,
     required this.tabs,
     required this.userInfo,
     required this.collectionsByType,
+    required this.loadingStates,
   });
 
   @override
@@ -464,6 +499,33 @@ class _ProfileTabViewState extends State<_ProfileTabView> {
     // 获取对应类型的收藏数据
     final Collections? collection = widget.collectionsByType[type];
     final List<Data> items = collection?.data ?? [];
+
+    // 检查是否正在加载
+    final bool isLoading = widget.loadingStates[type] == true;
+
+    // 如果正在加载，显示加载指示器
+    if (isLoading) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 40,
+                height: 40,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     if (items.isEmpty) {
       return Padding(
