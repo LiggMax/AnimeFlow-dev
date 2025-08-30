@@ -7,7 +7,9 @@ import 'package:AnimeFlow/modules/bangumi/data.dart';
 import 'skeleton/head_skeleton.dart';
 
 /// 自定义AppBar组件
-class AnimeDetailAppBar extends StatelessWidget {
+// ... existing code ...
+/// 自定义AppBar组件
+class AnimeDetailAppBar extends StatefulWidget {
   final int id;
   final String title;
   final bool innerBoxIsScrolled;
@@ -26,12 +28,19 @@ class AnimeDetailAppBar extends StatelessWidget {
   });
 
   @override
+  State<AnimeDetailAppBar> createState() => _AnimeDetailAppBarState();
+}
+
+class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
+  late final GlobalKey _shareButtonKey = GlobalKey();
+
+  @override
   Widget build(BuildContext context) {
     return SliverAppBar.medium(
       title: Container(
         width: double.infinity,
         alignment: Alignment.centerLeft,
-        child: Text(title),
+        child: Text(widget.title),
       ),
       automaticallyImplyLeading: false,
       scrolledUnderElevation: 0.0,
@@ -42,7 +51,7 @@ class AnimeDetailAppBar extends StatelessWidget {
         icon: const Icon(Icons.arrow_back_ios_rounded),
       ),
       actions: [
-        if (innerBoxIsScrolled)
+        if (widget.innerBoxIsScrolled)
           IconButton(
             onPressed: () {
               // TODO: 实现收藏功能
@@ -50,8 +59,10 @@ class AnimeDetailAppBar extends StatelessWidget {
             icon: const Icon(Icons.favorite_border),
           ),
         IconButton(
+          key: _shareButtonKey,
           onPressed: () {
-            // TODO: 实现分享功能
+            // 显示分享下拉菜单
+            _showShareMenu();
           },
           icon: const Icon(Icons.share),
         ),
@@ -62,22 +73,121 @@ class AnimeDetailAppBar extends StatelessWidget {
       // 高度设置
       expandedHeight: 300 + kTextTabBarHeight + kToolbarHeight,
       collapsedHeight:
-          kTextTabBarHeight +
+      kTextTabBarHeight +
           kToolbarHeight +
           MediaQuery.paddingOf(context).top,
       flexibleSpace: FlexibleSpaceBar(
         collapseMode: CollapseMode.pin,
-        background: background,
+        background: widget.background,
       ),
-      forceElevated: innerBoxIsScrolled,
+      forceElevated: widget.innerBoxIsScrolled,
       bottom: AnimeDetailTabBar(
-        tabController: tabController,
-        tabs: tabs,
-        innerBoxIsScrolled: innerBoxIsScrolled,
+        tabController: widget.tabController,
+        tabs: widget.tabs,
+        innerBoxIsScrolled: widget.innerBoxIsScrolled,
       ),
     );
   }
+
+  /// 显示分享菜单
+  void _showShareMenu() {
+    final RenderBox? button = _shareButtonKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    if (button == null) return;
+
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(Offset.zero, ancestor: overlay),
+        button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showMenu(
+      context: context,
+      position: position,
+      items: [
+        PopupMenuItem(
+          value: 'wechat',
+          child: Row(
+            children: [
+              Icon(Icons.chat, color: Colors.green),
+              const SizedBox(width: 12),
+              const Text('微信'),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'qq',
+          child: Row(
+            children: [
+              Icon(Icons.message, color: Colors.blue),
+              const SizedBox(width: 12),
+              const Text('QQ'),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'weibo',
+          child: Row(
+            children: [
+              Icon(Icons.share, color: Colors.red),
+              const SizedBox(width: 12),
+              const Text('微博'),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'copy_link',
+          child: Row(
+            children: [
+              Icon(Icons.link, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(width: 12),
+              const Text('复制链接'),
+            ],
+          ),
+        ),
+      ],
+    ).then((value) {
+      if (value != null) {
+        _handleShareOption(value);
+      }
+    });
+  }
+
+  /// 处理分享选项
+  void _handleShareOption(String option) {
+    switch (option) {
+      case 'wechat':
+      // TODO: 实现微信分享
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('微信分享功能待实现')),
+        );
+        break;
+      case 'qq':
+      // TODO: 实现QQ分享
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('QQ分享功能待实现')),
+        );
+        break;
+      case 'weibo':
+      // TODO: 实现微博分享
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('微博分享功能待实现')),
+        );
+        break;
+      case 'copy_link':
+      // TODO: 实现复制链接
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('链接已复制')),
+        );
+        break;
+    }
+  }
 }
+// ... existing code ...
+
 
 /// 头部组件
 class AnimeDetailHeader extends StatelessWidget {
