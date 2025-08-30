@@ -2,6 +2,7 @@
 ///@Time 2025/8/30
 library;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:AnimeFlow/modules/bangumi/collections.dart';
 import 'package:AnimeFlow/modules/bangumi/user_info.dart';
@@ -129,7 +130,10 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                 child: CircularProgressIndicator(
                   strokeWidth: 3,
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).colorScheme.primary,
+                    Theme
+                        .of(context)
+                        .colorScheme
+                        .primary,
                   ),
                 ),
               ),
@@ -138,7 +142,10 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                 '正在加载$tabName的动漫...',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: Theme
+                      .of(context)
+                      .colorScheme
+                      .onSurfaceVariant,
                 ),
               ),
             ],
@@ -157,14 +164,20 @@ class _UserCollectionViewState extends State<UserCollectionView> {
               Icon(
                 Icons.inbox_outlined,
                 size: 48,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color: Theme
+                    .of(context)
+                    .colorScheme
+                    .onSurfaceVariant,
               ),
               const SizedBox(height: 16),
               Text(
                 '暂无$tabName的动漫',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: Theme
+                      .of(context)
+                      .colorScheme
+                      .onSurfaceVariant,
                 ),
               ),
             ],
@@ -207,42 +220,15 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                     ),
                   ),
                   child: ClipRRect(
-                    borderRadius: const BorderRadius.horizontal(
-                      left: Radius.circular(12.0),
-                    ),
-                    child: item.images?.large?.isNotEmpty == true
-                        ? Image.network(
-                            item.images!.large!,
-                            width: double.infinity,
-                            height: double.infinity,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.surfaceContainerHighest,
-                                child: Icon(
-                                  Icons.movie,
-                                  size: 32,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
-                                ),
-                              );
-                            },
-                          )
-                        : Container(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerHighest,
-                            child: Icon(
-                              Icons.movie,
-                              size: 32,
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onSurfaceVariant,
-                            ),
-                          ),
+                      borderRadius: const BorderRadius.horizontal(
+                        left: Radius.circular(12.0),
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl: item.images!.large!,
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
+                      )
                   ),
                 ),
               ),
@@ -266,7 +252,10 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Theme.of(context).colorScheme.onSurface,
+                          color: Theme
+                              .of(context)
+                              .colorScheme
+                              .onSurface,
                         ),
                       ),
 
@@ -282,7 +271,10 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                                 Icon(
                                   Icons.star,
                                   size: 14,
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color: Theme
+                                      .of(context)
+                                      .colorScheme
+                                      .primary,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
@@ -290,9 +282,12 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
-                                    color: Theme.of(
+                                    color: Theme
+                                        .of(
                                       context,
-                                    ).colorScheme.primary,
+                                    )
+                                        .colorScheme
+                                        .primary,
                                   ),
                                 ),
                               ],
@@ -315,9 +310,12 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                                 style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w500,
-                                  color: Theme.of(
+                                  color: Theme
+                                      .of(
                                     context,
-                                  ).colorScheme.onPrimaryContainer,
+                                  )
+                                      .colorScheme
+                                      .onPrimaryContainer,
                                 ),
                               ),
                             ),
@@ -330,14 +328,20 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                           TextButton(
                             onPressed: () => {},
                             style: TextButton.styleFrom(
-                              backgroundColor: Theme.of(
+                              backgroundColor: Theme
+                                  .of(
                                 context,
-                              ).colorScheme.primary,
+                              )
+                                  .colorScheme
+                                  .primary,
                             ),
                             child: Text(
                               '播放',
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary,
+                                color: Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .onPrimary,
                               ),
                             ),
                           ),
@@ -356,7 +360,10 @@ class _UserCollectionViewState extends State<UserCollectionView> {
 
   /// 根据屏幕宽度获取列数
   int _getCrossAxisCount(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final width = MediaQuery
+        .of(context)
+        .size
+        .width;
     if (width < 600) {
       return 1;
     } else if (width < 900) {
