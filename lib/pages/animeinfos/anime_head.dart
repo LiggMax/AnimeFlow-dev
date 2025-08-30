@@ -73,7 +73,7 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
       // 高度设置
       expandedHeight: 300 + kTextTabBarHeight + kToolbarHeight,
       collapsedHeight:
-      kTextTabBarHeight +
+          kTextTabBarHeight +
           kToolbarHeight +
           MediaQuery.paddingOf(context).top,
       flexibleSpace: FlexibleSpaceBar(
@@ -91,15 +91,20 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
 
   /// 显示分享菜单
   void _showShareMenu() {
-    final RenderBox? button = _shareButtonKey.currentContext?.findRenderObject() as RenderBox?;
-    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final RenderBox? button =
+        _shareButtonKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
 
     if (button == null) return;
 
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
         button.localToGlobal(Offset.zero, ancestor: overlay),
-        button.localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
+        button.localToGlobal(
+          button.size.bottomRight(Offset.zero),
+          ancestor: overlay,
+        ),
       ),
       Offset.zero & overlay.size,
     );
@@ -109,32 +114,12 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
       position: position,
       items: [
         PopupMenuItem(
-          value: 'wechat',
+          value: 'copyLink',
           child: Row(
             children: [
-              Icon(Icons.chat, color: Colors.green),
+              Icon(Icons.copy_all),
               const SizedBox(width: 12),
-              const Text('微信'),
-            ],
-          ),
-        ),
-        PopupMenuItem(
-          value: 'qq',
-          child: Row(
-            children: [
-              Icon(Icons.message, color: Colors.blue),
-              const SizedBox(width: 12),
-              const Text('QQ'),
-            ],
-          ),
-        ),
-        PopupMenuItem(
-          value: 'weibo',
-          child: Row(
-            children: [
-              Icon(Icons.share, color: Colors.red),
-              const SizedBox(width: 12),
-              const Text('微博'),
+              const Text('复制网址'),
             ],
           ),
         ),
@@ -144,7 +129,7 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
             children: [
               Icon(Icons.link, color: Theme.of(context).colorScheme.primary),
               const SizedBox(width: 12),
-              const Text('前往网页'),
+              Text('浏览器查看'),
             ],
           ),
         ),
@@ -159,23 +144,27 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
   /// 处理分享选项
   void _handleShareOption(String option) {
     switch (option) {
-      case 'wechat':
-      // TODO: 实现微信分享
+      case 'copyLink':
+        CommonUtil.copyLink('${CommonApi.bgmTv}/subject/${widget.id}');
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('微信分享功能待实现')),
-        );
-        break;
-      case 'qq':
-      // TODO: 实现QQ分享
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('QQ分享功能待实现')),
+          SnackBar(
+            content: Row(
+              children: [
+                Text('已复制:'),
+                Text(
+                  '${CommonApi.bgmTv}/subject/${widget.id}',
+                  style: TextStyle(color: Colors.cyanAccent),
+                ),
+              ],
+            ),
+          ),
         );
         break;
       case 'weibo':
-      // TODO: 实现微博分享
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('微博分享功能待实现')),
-        );
+        // TODO: 实现微博分享
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('微博分享功能待实现')));
         break;
       case 'goToWebsite':
         CommonUtil.toLaunchUrl('${CommonApi.bgmTv}/subject/${widget.id}');
@@ -183,7 +172,6 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
     }
   }
 }
-
 
 /// 头部组件
 class AnimeDetailHeader extends StatelessWidget {
