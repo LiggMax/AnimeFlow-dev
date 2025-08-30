@@ -11,16 +11,16 @@ int getTypeFromTabName(String tabName) {
   switch (tabName) {
     case '想看':
       return 1;
-    case '在看':
-      return 2;
     case '看过':
+      return 2;
+    case '在看':
       return 3;
     case '搁置':
       return 4;
     case '抛弃':
       return 5;
     default:
-      return 2; // 默认为"在看"
+      return 3; // 默认为"在看"
   }
 }
 
@@ -32,7 +32,7 @@ class UserCollectionView extends StatefulWidget {
   final Map<int, Collections?> collectionsByType;
   final Map<int, bool> loadingStates;
   final Function(int) onTabChanged;
-  final Function(int) onRefresh; // 添加刷新回调
+  final Function(int) onRefresh;
 
   const UserCollectionView({
     super.key,
@@ -42,7 +42,7 @@ class UserCollectionView extends StatefulWidget {
     required this.collectionsByType,
     required this.loadingStates,
     required this.onTabChanged,
-    required this.onRefresh, // 添加刷新回调
+    required this.onRefresh,
   });
 
   @override
@@ -76,7 +76,7 @@ class _UserCollectionViewState extends State<UserCollectionView> {
           onRefresh: () async {
             // 获取当前tab的type值
             final int type = getTypeFromTabName(tabName);
-            print('🔄 下拉刷新类型 $type 的数据');
+            print('🔄 下拉刷新$tabName类型 $type 的数据');
 
             // 调用父组件的方法刷新数据
             widget.onRefresh(type);
@@ -253,6 +253,7 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // 标题
@@ -260,10 +261,10 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                         item.nameCN?.isNotEmpty == true
                             ? item.nameCN!
                             : item.name ?? '未知标题',
-                        maxLines: 2,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
@@ -309,12 +310,6 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                                 horizontal: 6,
                                 vertical: 2,
                               ),
-                              decoration: BoxDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.primaryContainer,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
                               child: Text(
                                 '排名: ${item.rating!.rank}',
                                 style: TextStyle(
@@ -326,6 +321,26 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                                 ),
                               ),
                             ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () => {},
+                            style: TextButton.styleFrom(
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
+                            ),
+                            child: Text(
+                              '播放',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ],

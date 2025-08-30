@@ -84,8 +84,6 @@ class _ProfilePageState extends State<ProfilePage>
             _tabController.index = 1;
           }
         });
-
-        _loadUserCollections(2);
       }
     } catch (e) {
       if (mounted) {
@@ -150,7 +148,6 @@ class _ProfilePageState extends State<ProfilePage>
     if (_loadingStates[type] == true) {
       return;
     }
-
     _loadUserCollections(type);
   }
 
