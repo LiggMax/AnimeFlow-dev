@@ -70,20 +70,25 @@ class _ProfilePageState extends State<ProfilePage>
       );
 
       if (mounted) {
+        // 根据实际的收藏统计条目数量计算tabs长度
+        final collectionItems = userInfo?.collectionItems ?? [];
+        final tabsLength = collectionItems.isNotEmpty
+            ? collectionItems.length
+            : 5;
+
         setState(() {
           _userInfo = userInfo;
-          // 根据实际的收藏统计条目数量重新初始化TabController
-          final collectionItems = userInfo?.collectionItems ?? [];
-          final tabsLength = collectionItems.isNotEmpty
-              ? collectionItems.length
-              : 5;
           _tabController.dispose();
           _tabController = TabController(length: tabsLength, vsync: this);
 
           if (tabsLength >= 2) {
-            _tabController.index = 1;
+            _tabController.index = 1; // 默认选择标签为"在看"
           }
         });
+
+        if (tabsLength >= 2) {
+          await _loadUserCollections(3);
+        }
       }
     } catch (e) {
       if (mounted) {
