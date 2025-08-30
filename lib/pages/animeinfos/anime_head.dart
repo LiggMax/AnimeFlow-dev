@@ -1,13 +1,14 @@
 import 'dart:ui';
 import 'package:AnimeFlow/router/router_config.dart';
+import 'package:AnimeFlow/utils/common_util.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:AnimeFlow/modules/bangumi/data.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../request/api/common_api.dart';
 import 'skeleton/head_skeleton.dart';
 
-/// 自定义AppBar组件
-// ... existing code ...
 /// 自定义AppBar组件
 class AnimeDetailAppBar extends StatefulWidget {
   final int id;
@@ -61,7 +62,6 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
         IconButton(
           key: _shareButtonKey,
           onPressed: () {
-            // 显示分享下拉菜单
             _showShareMenu();
           },
           icon: const Icon(Icons.share),
@@ -139,12 +139,12 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
           ),
         ),
         PopupMenuItem(
-          value: 'copy_link',
+          value: 'goToWebsite',
           child: Row(
             children: [
               Icon(Icons.link, color: Theme.of(context).colorScheme.primary),
               const SizedBox(width: 12),
-              const Text('复制链接'),
+              const Text('前往网页'),
             ],
           ),
         ),
@@ -177,16 +177,12 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
           const SnackBar(content: Text('微博分享功能待实现')),
         );
         break;
-      case 'copy_link':
-      // TODO: 实现复制链接
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('链接已复制')),
-        );
+      case 'goToWebsite':
+        CommonUtil.toLaunchUrl('${CommonApi.bgmTv}/subject/${widget.id}');
         break;
     }
   }
 }
-// ... existing code ...
 
 
 /// 头部组件

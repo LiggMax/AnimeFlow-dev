@@ -6,6 +6,8 @@
 /// BBCode标签解析工具类
 library;
 
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -328,7 +330,7 @@ class BBCodeParser {
 
     if (iconData is String) {
       // 返回网络图片
-      final heroTag = 'emoji_${iconData.hashCode}';
+      final heroTag = 'emoji_${iconData.hashCode}_${Random().nextInt(10000)}';
 
       return Container(
         margin: const EdgeInsets.symmetric(horizontal: 2),
