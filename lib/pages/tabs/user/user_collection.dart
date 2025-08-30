@@ -68,7 +68,7 @@ class _UserCollectionViewState extends State<UserCollectionView> {
     );
   }
 
-  /// 构建tab标签页内容
+  /// tab标签页内容
   Widget _buildTabContent(String tabName) {
     return Builder(
       builder: (BuildContext context) {
@@ -103,7 +103,7 @@ class _UserCollectionViewState extends State<UserCollectionView> {
     );
   }
 
-  /// 构建标签页列表内容
+  /// 标签页列表内容
   Widget _buildTabContentList(String tabName, UserInfo? userInfo) {
     // 根据tab名称确定type值
     int type = getTypeFromTabName(tabName);
@@ -173,111 +173,183 @@ class _UserCollectionViewState extends State<UserCollectionView> {
       );
     }
 
-    return ListView.builder(
+    // 使用GridView.builder渲染内容
+    return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(16.0),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: _getCrossAxisCount(context),
+        childAspectRatio: 2.3,
+        crossAxisSpacing: 12.0,
+        mainAxisSpacing: 12.0,
+      ),
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
 
         return Card(
-          margin: const EdgeInsets.only(bottom: 8.0),
-          child: ListTile(
-            leading: Container(
-              width: 50,
-              height: 70,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: item.images?.large?.isNotEmpty == true
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: Image.network(
-                        item.images!.large!,
-                        width: 50,
-                        height: 70,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(
-                            Icons.movie,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurfaceVariant,
-                          );
-                        },
-                      ),
-                    )
-                  : Icon(
-                      Icons.movie,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-            ),
-            title: Text(
-              item.nameCN?.isNotEmpty == true
-                  ? item.nameCN!
-                  : item.name ?? '未知标题',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (item.info?.isNotEmpty == true)
-                  Text(
-                    item.info!,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 封面图片 - 占据左侧3分之一
+              Expanded(
+                flex: 1,
+                child: Container(
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.horizontal(
+                      left: Radius.circular(12.0),
                     ),
                   ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    if (item.rating?.score != null && item.rating!.score! > 0)
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.star,
-                            size: 16,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            item.rating!.score!.toStringAsFixed(1),
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Theme.of(context).colorScheme.primary,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.horizontal(
+                      left: Radius.circular(12.0),
+                    ),
+                    child: item.images?.large?.isNotEmpty == true
+                        ? Image.network(
+                            item.images!.large!,
+                            width: double.infinity,
+                            height: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainerHighest,
+                                child: Icon(
+                                  Icons.movie,
+                                  size: 32,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
+                              );
+                            },
+                          )
+                        : Container(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainerHighest,
+                            child: Icon(
+                              Icons.movie,
+                              size: 32,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
                             ),
                           ),
-                        ],
-                      ),
-                    if (item.rating?.score != null &&
-                        item.rating!.score! > 0 &&
-                        item.rating?.rank != null)
-                      const SizedBox(width: 16),
-                    if (item.rating?.rank != null && item.rating!.rank! > 0)
+                  ),
+                ),
+              ),
+
+              // 内容信息 - 占据右侧3分之二
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 标题
                       Text(
-                        '排名: ${item.rating!.rank}',
+                        item.nameCN?.isNotEmpty == true
+                            ? item.nameCN!
+                            : item.name ?? '未知标题',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 12,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
-                  ],
+
+                      const SizedBox(height: 8),
+
+                      // 评分和排名
+                      Row(
+                        children: [
+                          if (item.rating?.score != null &&
+                              item.rating!.score! > 0)
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.star,
+                                  size: 14,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  item.rating!.score!.toStringAsFixed(1),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                          if (item.rating?.score != null &&
+                              item.rating!.score! > 0 &&
+                              item.rating?.rank != null)
+                            const SizedBox(width: 8),
+
+                          if (item.rating?.rank != null &&
+                              item.rating!.rank! > 0)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.primaryContainer,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                '排名: ${item.rating!.rank}',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimaryContainer,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
-            trailing: Icon(
-              Icons.chevron_right,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
+              ),
+            ],
           ),
         );
       },
     );
+  }
+
+  /// 根据屏幕宽度获取列数
+  int _getCrossAxisCount(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width < 600) {
+      return 1;
+    } else if (width < 900) {
+      return 2;
+    } else if (width < 1200) {
+      return 3;
+    } else {
+      return 4;
+    }
   }
 }
