@@ -37,8 +37,7 @@ class ThemeController extends ChangeNotifier {
         statusBarBrightness: Brightness.light,
 
         /// 确保浅色主题下系统导航条透明
-        systemNavigationBarColor: Colors.transparent, // Android底部导航条透明
-        systemNavigationBarIconBrightness: Brightness.dark, // 浅色主题下导航条图标为深色
+        systemNavigationBarColor: Colors.transparent,
         systemNavigationBarDividerColor: Colors.transparent,
       ),
       scrolledUnderElevation: 0,
@@ -60,8 +59,7 @@ class ThemeController extends ChangeNotifier {
         statusBarBrightness: Brightness.dark,
 
         /// 确保深色主题下系统导航条透明
-        systemNavigationBarColor: Colors.transparent, // Android底部导航条透明
-        systemNavigationBarIconBrightness: Brightness.light, // 深色主题下导航条图标为浅色
+        systemNavigationBarColor: Colors.transparent,
         systemNavigationBarDividerColor: Colors.transparent,
       ),
       scrolledUnderElevation: 0,

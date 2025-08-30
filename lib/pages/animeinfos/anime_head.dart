@@ -1,9 +1,7 @@
 import 'dart:ui';
 import 'package:AnimeFlow/router/router_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import '../../utils/theme_extensions.dart';
 import 'package:AnimeFlow/modules/bangumi/data.dart';
 import 'skeleton/head_skeleton.dart';
 
@@ -36,13 +34,6 @@ class AnimeDetailAppBar extends StatelessWidget {
       ),
       automaticallyImplyLeading: false,
       scrolledUnderElevation: 0.0,
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        systemNavigationBarColor: Theme.of(context).colorScheme.surface,
-        systemNavigationBarIconBrightness: context.isDarkMode
-            ? Brightness.light
-            : Brightness.dark,
-      ),
 
       // 添加滚动时的不透明背景
       leading: IconButton(

@@ -2,10 +2,12 @@
 ///@Time 2025/8/30
 library;
 
+import 'package:AnimeFlow/router/router_config.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:AnimeFlow/modules/bangumi/collections.dart';
 import 'package:AnimeFlow/modules/bangumi/user_info.dart';
+import 'package:go_router/go_router.dart';
 
 /// 根据tab名称获取对应的type值
 int getTypeFromTabName(String tabName) {
@@ -51,9 +53,6 @@ class UserCollectionView extends StatefulWidget {
 }
 
 class _UserCollectionViewState extends State<UserCollectionView> {
-  // 存储每个tab的滚动位置
-  final Map<int, double> _savedScrollOffsets = {};
-
   @override
   void initState() {
     super.initState();
@@ -88,7 +87,8 @@ class _UserCollectionViewState extends State<UserCollectionView> {
           child: NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification notification) {
               // 检查是否滚动接近底部
-              if (notification.metrics.pixels >= notification.metrics.maxScrollExtent - 100) {
+              if (notification.metrics.pixels >=
+                  notification.metrics.maxScrollExtent - 100) {
                 final int type = getTypeFromTabName(tabName);
                 _loadMoreData(type);
                 return true;
@@ -162,10 +162,7 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                 child: CircularProgressIndicator(
                   strokeWidth: 3,
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme
-                        .of(context)
-                        .colorScheme
-                        .primary,
+                    Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),
@@ -185,20 +182,14 @@ class _UserCollectionViewState extends State<UserCollectionView> {
               Icon(
                 Icons.inbox_outlined,
                 size: 48,
-                color: Theme
-                    .of(context)
-                    .colorScheme
-                    .onSurfaceVariant,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
               const SizedBox(height: 16),
               Text(
-                '暂无$tabName的动漫',
+                '未收藏$tabName的动漫',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Theme
-                      .of(context)
-                      .colorScheme
-                      .onSurfaceVariant,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -207,7 +198,6 @@ class _UserCollectionViewState extends State<UserCollectionView> {
       );
     }
 
-    // 使用GridView.builder渲染内容
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -218,7 +208,8 @@ class _UserCollectionViewState extends State<UserCollectionView> {
         crossAxisSpacing: 12.0,
         mainAxisSpacing: 12.0,
       ),
-      itemCount: items.length + (isLoading ? 1 : 0), // 如果正在加载，增加一个加载指示器
+      itemCount: items.length + (isLoading ? 1 : 0),
+      // 如果正在加载，增加一个加载指示器
       itemBuilder: (context, index) {
         // 如果是最后一个项目且正在加载，显示加载指示器
         if (index == items.length && isLoading) {
@@ -226,8 +217,8 @@ class _UserCollectionViewState extends State<UserCollectionView> {
             padding: const EdgeInsets.all(16.0),
             child: Center(
               child: SizedBox(
-                width: 24,
-                height: 24,
+                width: 30,
+                height: 30,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation<Color>(
@@ -239,28 +230,35 @@ class _UserCollectionViewState extends State<UserCollectionView> {
           );
         }
 
-        // 正常项目
         final item = items[index];
-
+        // 当前项目
         return Card(
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 封面图片 - 占据左侧3分之一
-              Expanded(
-                flex: 1,
-                child: Container(
-                  height: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.horizontal(
-                      left: Radius.circular(12.0),
+          child: InkWell(
+            onTap: () {
+              context.pushNamed(
+                AppRouter.animeData,
+                pathParameters: {'animeId': '${item.id}'},
+              );
+            },
+            borderRadius: BorderRadius.circular(12.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 封面图片
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.horizontal(
+                        left: Radius.circular(12.0),
+                      ),
                     ),
-                  ),
-                  child: ClipRRect(
+                    child: ClipRRect(
                       borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(12.0),
                       ),
@@ -269,136 +267,115 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                         width: double.infinity,
                         height: double.infinity,
                         fit: BoxFit.cover,
-                      )
+                      ),
+                    ),
                   ),
                 ),
-              ),
 
-              // 内容信息
-              Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // 标题
-                      Text(
-                        item.nameCN?.isNotEmpty == true
-                            ? item.nameCN!
-                            : item.name ?? '未知标题',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Theme
-                              .of(context)
-                              .colorScheme
-                              .onSurface,
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      // 评分和排名
-                      Row(
-                        children: [
-                          if (item.rating?.score != null &&
-                              item.rating!.score! > 0)
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.star,
-                                  size: 14,
-                                  color: Theme
-                                      .of(context)
-                                      .colorScheme
-                                      .primary,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  item.rating!.score!.toStringAsFixed(1),
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Theme
-                                        .of(
-                                      context,
-                                    )
-                                        .colorScheme
-                                        .primary,
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                          if (item.rating?.score != null &&
-                              item.rating!.score! > 0 &&
-                              item.rating?.rank != null)
-                            const SizedBox(width: 8),
-
-                          if (item.rating?.rank != null &&
-                              item.rating!.rank! > 0)
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primaryContainer,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
+                // 内容信息
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // 上
+                        Row(
+                          children: [
+                            Expanded(
                               child: Text(
+                                item.nameCN?.isNotEmpty == true
+                                    ? item.nameCN!
+                                    : item.name ?? '未知标题',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                            ),
+                            if (item.rating?.score != null &&
+                                item.rating!.score! > 0) ...[
+                              const SizedBox(width: 8),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.star,
+                                    size: 14,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    item.rating!.score!.toStringAsFixed(1),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        // 中
+                        Row(
+                          children: [
+                              Text(
                                 '排名: ${item.rating!.rank}',
                                 style: TextStyle(
                                   fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                  color: Theme
-                                      .of(
+                                  color: Theme.of(
                                     context,
-                                  )
-                                      .colorScheme
-                                      .onPrimaryContainer,
+                                  ).colorScheme.onPrimaryContainer,
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        // 下
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed: () => {},
+                              style: TextButton.styleFrom(
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.primary,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
+                              ),
+                              child: Text(
+                                '播放',
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                  fontSize: 14,
                                 ),
                               ),
                             ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            onPressed: () => {},
-                            style: TextButton.styleFrom(
-                              backgroundColor: Theme
-                                  .of(
-                                context,
-                              )
-                                  .colorScheme
-                                  .primary,
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            ),
-                            child: Text(
-                              '播放',
-                              style: TextStyle(
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .onPrimary,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -407,10 +384,7 @@ class _UserCollectionViewState extends State<UserCollectionView> {
 
   /// 根据屏幕宽度获取列数
   int _getCrossAxisCount(BuildContext context) {
-    final width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final width = MediaQuery.of(context).size.width;
     if (width < 600) {
       return 1;
     } else if (width < 900) {

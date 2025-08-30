@@ -146,7 +146,7 @@ class AnimeCommentsContentState extends State<AnimeCommentsContent> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error, size: 80, color: Colors.red),
+            Icon(Icons.error, size: 80, color: Theme.of(context).primaryColor),
             const SizedBox(height: 20),
             const Text(
               '加载评论失败',
@@ -212,7 +212,8 @@ class AnimeCommentsList extends StatelessWidget {
     return ListView.builder(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(), // 禁用内部滚动，由父级CustomScrollView处理
+      physics: const NeverScrollableScrollPhysics(),
+      // 禁用内部滚动，由父级CustomScrollView处理
       itemCount: totalItems,
       itemBuilder: (context, index) {
         // 标题
@@ -274,6 +275,7 @@ class _CommentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 0,
       margin: const EdgeInsets.only(bottom: 15, left: 16, right: 16),
       child: Padding(
         padding: const EdgeInsets.all(12.0),

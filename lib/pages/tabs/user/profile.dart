@@ -3,10 +3,8 @@ import 'package:AnimeFlow/request/bangumi/bangumi_user.dart';
 import 'package:AnimeFlow/modules/bangumi/token.dart';
 import 'package:AnimeFlow/modules/bangumi/user_info.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:AnimeFlow/pages/tabs/user/header.dart';
 import 'package:AnimeFlow/pages/tabs/user/no_login.dart';
-import 'package:AnimeFlow/utils/theme_extensions.dart';
 import 'package:AnimeFlow/modules/bangumi/collections.dart';
 import 'package:AnimeFlow/pages/tabs/user/user_collection.dart';
 
@@ -345,13 +343,6 @@ class _ProfileDetailAppBar extends StatelessWidget {
           : const Text('个人中心'),
       automaticallyImplyLeading: false,
       scrolledUnderElevation: 0.0,
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        systemNavigationBarColor: Theme.of(context).colorScheme.surface,
-        systemNavigationBarIconBrightness: context.isDarkMode
-            ? Brightness.light
-            : Brightness.dark,
-      ),
       actions: [
         if (persistedToken != null)
           IconButton(onPressed: onLogout, icon: const Icon(Icons.logout)),
