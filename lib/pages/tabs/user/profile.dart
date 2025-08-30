@@ -100,7 +100,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   /// 获取用户收藏（想看1、在看2、看过3、搁置4、抛弃5）
-  Future<void> _loadUserCollections(int type) async {
+  Future<void> _loadUserCollections(int type, {bool loadMore = false}) async {
     if (_persistedToken == null) {
       return;
     }
@@ -113,17 +113,38 @@ class _ProfilePageState extends State<ProfilePage>
     }
 
     try {
-      final res = await BangumiUser.getUserCollection(_persistedToken!, type);
+      // 计算offset
+      final currentCollection = _collectionsByType[type];
+      final offset = loadMore ? (currentCollection?.data?.length ?? 0) : 0;
+
+      final res = await BangumiUser.getUserCollection(
+        _persistedToken!,
+        type,
+        offset: offset,
+      );
+
       if (mounted) {
         setState(() {
-          _collectionsByType[type] = res;
-          _loadingStates[type] = false; // 加载完成
+          if (loadMore && currentCollection != null) {
+            // 合并新数据
+            final newData = List<Data>.from(currentCollection.data ?? []);
+            newData.addAll(res?.data ?? []);
+
+            _collectionsByType[type] = Collections(
+              data: newData,
+              total: res?.total,
+            );
+          } else {
+            // 替换数据
+            _collectionsByType[type] = res;
+          }
+          _loadingStates[type] = false;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _loadingStates[type] = false; // 加载失败也要重置状态
+          _loadingStates[type] = false;
         });
         ScaffoldMessenger.of(
           context,
@@ -145,7 +166,10 @@ class _ProfilePageState extends State<ProfilePage>
   void _onTabChanged(int type) {
     // 检查是否已有数据，避免重复加载
     if (_collectionsByType.containsKey(type) &&
-        _collectionsByType[type] != null) {
+        _collectionsByType[type] != null &&
+        (_collectionsByType[type]?.data?.isNotEmpty ?? false)) {
+      // 如果已有数据，尝试加载更多
+      _loadUserCollections(type, loadMore: true);
       return;
     }
 
@@ -163,9 +187,10 @@ class _ProfilePageState extends State<ProfilePage>
       _collectionsByType.remove(type);
     });
 
-    // 重新加载数据
+    // 重新加载数据（第一页）
     await _loadUserCollections(type);
   }
+
 
   @override
   Widget build(BuildContext context) {

@@ -51,6 +51,9 @@ class UserCollectionView extends StatefulWidget {
 }
 
 class _UserCollectionViewState extends State<UserCollectionView> {
+  // 存储每个tab的滚动位置
+  final Map<int, double> _savedScrollOffsets = {};
+
   @override
   void initState() {
     super.initState();
@@ -82,26 +85,55 @@ class _UserCollectionViewState extends State<UserCollectionView> {
             // 调用父组件的方法刷新数据
             widget.onRefresh(type);
           },
-          child: CustomScrollView(
-            key: PageStorageKey<String>(tabName),
-            slivers: <Widget>[
-              SliverOverlapInjector(
-                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                  context,
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification notification) {
+              // 检查是否滚动接近底部
+              if (notification.metrics.pixels >= notification.metrics.maxScrollExtent - 100) {
+                final int type = getTypeFromTabName(tabName);
+                _loadMoreData(type);
+                return true;
+              }
+              return false;
+            },
+            child: CustomScrollView(
+              key: PageStorageKey<String>(tabName),
+              slivers: <Widget>[
+                SliverOverlapInjector(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                    context,
+                  ),
                 ),
-              ),
-              SliverToBoxAdapter(
-                child: SafeArea(
-                  top: false,
-                  bottom: false,
-                  child: _buildTabContentList(tabName, widget.userInfo),
+                SliverToBoxAdapter(
+                  child: SafeArea(
+                    top: false,
+                    bottom: false,
+                    child: _buildTabContentList(tabName, widget.userInfo),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
     );
+  }
+
+  // 加载更多数据
+  void _loadMoreData(int type) {
+    final collection = widget.collectionsByType[type];
+    final isLoading = widget.loadingStates[type] ?? false;
+
+    // 如果正在加载或没有更多数据则不加载
+    if (isLoading ||
+        (collection != null &&
+            collection.data != null &&
+            collection.total != null &&
+            collection.data!.length >= collection.total!)) {
+      return;
+    }
+
+    // 调用父组件方法加载更多数据
+    widget.onTabChanged(type);
   }
 
   /// 标签页列表内容
@@ -116,8 +148,8 @@ class _UserCollectionViewState extends State<UserCollectionView> {
     // 检查是否正在加载
     final bool isLoading = widget.loadingStates[type] == true;
 
-    // 如果正在加载，显示加载指示器
-    if (isLoading) {
+    // 如果正在加载且没有数据，显示加载指示器
+    if (isLoading && items.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
@@ -135,17 +167,6 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                         .colorScheme
                         .primary,
                   ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                '正在加载$tabName的动漫...',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Theme
-                      .of(context)
-                      .colorScheme
-                      .onSurfaceVariant,
                 ),
               ),
             ],
@@ -197,8 +218,28 @@ class _UserCollectionViewState extends State<UserCollectionView> {
         crossAxisSpacing: 12.0,
         mainAxisSpacing: 12.0,
       ),
-      itemCount: items.length,
+      itemCount: items.length + (isLoading ? 1 : 0), // 如果正在加载，增加一个加载指示器
       itemBuilder: (context, index) {
+        // 如果是最后一个项目且正在加载，显示加载指示器
+        if (index == items.length && isLoading) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+        // 正常项目
         final item = items[index];
 
         return Card(
@@ -233,7 +274,7 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                 ),
               ),
 
-              // 内容信息 - 占据右侧3分之二
+              // 内容信息
               Expanded(
                 flex: 2,
                 child: Padding(
@@ -305,6 +346,10 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                                 horizontal: 6,
                                 vertical: 2,
                               ),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primaryContainer,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
                               child: Text(
                                 '排名: ${item.rating!.rank}',
                                 style: TextStyle(
@@ -334,6 +379,7 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                               )
                                   .colorScheme
                                   .primary,
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             ),
                             child: Text(
                               '播放',
@@ -342,6 +388,7 @@ class _UserCollectionViewState extends State<UserCollectionView> {
                                     .of(context)
                                     .colorScheme
                                     .onPrimary,
+                                fontSize: 14,
                               ),
                             ),
                           ),

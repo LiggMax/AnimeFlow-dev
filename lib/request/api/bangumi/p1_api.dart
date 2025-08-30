@@ -21,4 +21,7 @@ class BangumiP1Api {
   ///剧集评论
   static const String bangumiEpisodeComment =
       'https://next.bgm.tv/p1/episodes/{episode_id}/comments';
+  ///用户收藏
+  static const String bangumiUserCollection =
+      'https://next.bgm.tv/p1/users/{username}/collections/subjects';
 }

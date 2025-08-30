@@ -8,7 +8,5 @@ class BangumiV0Api {
   static const String bangumiRankSearch = 'https://api.bgm.tv/v0/search/subjects?limit={0}&offset={1}';
   ///相关条目
   static const String bangumiRelated = 'https://api.bgm.tv/v0/subjects/{subject_id}/subjects';
-  ///用户收藏
-  static const String bangumiUserCollection =
-      'https://next.bgm.tv/p1/users/{username}/collections/subjects';
+
 }
