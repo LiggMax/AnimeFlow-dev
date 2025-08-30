@@ -138,17 +138,20 @@ class _TabsState extends State<Tabs> {
     return [
       NavigationDestination(
         icon: const Icon(Icons.home_outlined),
-        selectedIcon: const Icon(Icons.home),
+        selectedIcon: Icon(Icons.home, color: Theme.of(context).primaryColor),
         label: _pageTitles[0],
       ),
       NavigationDestination(
         icon: const Icon(Icons.timeline_outlined),
-        selectedIcon: const Icon(Icons.timeline),
+        selectedIcon: Icon(
+          Icons.timeline,
+          color: Theme.of(context).primaryColor,
+        ),
         label: _pageTitles[1],
       ),
       NavigationDestination(
         icon: const Icon(Icons.person_outline),
-        selectedIcon: const Icon(Icons.person),
+        selectedIcon: Icon(Icons.person, color: Theme.of(context).primaryColor),
         label: _pageTitles[2],
       ),
     ];
