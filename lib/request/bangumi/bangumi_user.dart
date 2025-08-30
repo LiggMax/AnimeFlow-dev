@@ -2,11 +2,11 @@
   @Author Ligg
   @Time 2025/8/7
  */
+import 'package:AnimeFlow/modules/bangumi/collections.dart';
 import 'package:AnimeFlow/modules/bangumi/user_info.dart';
 import 'package:AnimeFlow/request/request.dart';
 import 'package:dio/dio.dart';
 import 'package:AnimeFlow/modules/bangumi/token.dart';
-import 'package:AnimeFlow/modules/bangumi/user_collection.dart';
 import '../api/bangumi/p1_api.dart';
 import '../api/bangumi/v0_api.dart';
 import '../api/common_api.dart';
@@ -22,7 +22,7 @@ class BangumiUser {
   }
 
   ///获取用户收藏
-  static Future<UserCollection?> getUserCollection(
+  static Future<Collections?> getUserCollection(
     BangumiToken token,
     int type, {
     int subjectType = 2,
@@ -47,6 +47,6 @@ class BangumiUser {
         'offset': offset,
       },
     );
-    return UserCollection.fromJson(response.data);
+    return Collections.fromJson(response.data);
   }
 }

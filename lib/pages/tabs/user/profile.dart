@@ -4,11 +4,28 @@ import 'package:AnimeFlow/modules/bangumi/token.dart';
 import 'package:AnimeFlow/modules/bangumi/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:async';
 import 'package:AnimeFlow/pages/tabs/user/header.dart';
 import 'package:AnimeFlow/pages/tabs/user/no_login.dart';
 import 'package:AnimeFlow/utils/theme_extensions.dart';
-import 'package:AnimeFlow/modules/bangumi/user_collection.dart';
+import 'package:AnimeFlow/modules/bangumi/collections.dart';
+
+/// 根据tab名称获取对应的type值
+int getTypeFromTabName(String tabName) {
+  switch (tabName) {
+    case '想看':
+      return 1;
+    case '在看':
+      return 2;
+    case '看过':
+      return 3;
+    case '搁置':
+      return 4;
+    case '抛弃':
+      return 5;
+    default:
+      return 2; // 默认为"在看"
+  }
+}
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -22,13 +39,15 @@ class _ProfilePageState extends State<ProfilePage>
   BangumiToken? _persistedToken;
   UserInfo? _userInfo;
   late TabController _tabController;
-  UserCollection? _userCollections;
+  final Map<int, Collections?> _collectionsByType = {};
 
   @override
   void initState() {
     super.initState();
     // 初始化时使用默认的5个标签长度，后续会根据实际数据动态调整
     _tabController = TabController(length: 5, vsync: this);
+    // 默认选择"在看"tab（index为1）
+    _tabController.index = 1;
     _loadPersistedToken();
   }
 
@@ -74,7 +93,13 @@ class _ProfilePageState extends State<ProfilePage>
               : 5;
           _tabController.dispose();
           _tabController = TabController(length: tabsLength, vsync: this);
+
+          if (tabsLength >= 2) {
+            _tabController.index = 1;
+          }
         });
+
+        _loadUserCollections(2);
       }
     } catch (e) {
       if (mounted) {
@@ -86,9 +111,24 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   /// 获取用户收藏（想看1、在看2、看过3、搁置4、抛弃5）
-  Future<void> _loadUserCollections() async {
-    final res = await BangumiUser.getUserCollection(_persistedToken!, 2);
-    _userCollections = res;
+  Future<void> _loadUserCollections(int type) async {
+    if (_persistedToken == null) {
+      return;
+    }
+    try {
+      final res = await BangumiUser.getUserCollection(_persistedToken!, type);
+      if (mounted) {
+        setState(() {
+          _collectionsByType[type] = res;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('获取收藏数据失败: $e')));
+      }
+    }
   }
 
   /// 接收子组件授权完成后的 Token
@@ -98,6 +138,11 @@ class _ProfilePageState extends State<ProfilePage>
       _persistedToken = token;
     });
     await _loadUserInfo();
+  }
+
+  /// 处理tab切换时的数据加载
+  void _onTabChanged(int type) {
+    _loadUserCollections(type);
   }
 
   @override
@@ -123,6 +168,11 @@ class _ProfilePageState extends State<ProfilePage>
     if (_tabController.length != tabs.length) {
       _tabController.dispose();
       _tabController = TabController(length: tabs.length, vsync: this);
+
+      // 默认选择"在看"tab
+      if (tabs.length >= 2) {
+        _tabController.index = 1; // "在看"tab的index
+      }
     }
 
     return NestedScrollView(
@@ -137,6 +187,7 @@ class _ProfilePageState extends State<ProfilePage>
               tabController: _tabController,
               tabs: tabs,
               onLogout: _handleLogout,
+              onTabChanged: _onTabChanged,
               background: _userInfo != null
                   ? UserHeader(userInfo: _userInfo!, height: 270)
                   : _buildLoadingHeader(),
@@ -148,6 +199,7 @@ class _ProfilePageState extends State<ProfilePage>
         tabController: _tabController,
         tabs: tabs,
         userInfo: _userInfo,
+        collectionsByType: _collectionsByType,
       ),
     );
   }
@@ -198,6 +250,7 @@ class _ProfileDetailAppBar extends StatelessWidget {
   final TabController tabController;
   final List<String> tabs;
   final VoidCallback onLogout;
+  final Function(int) onTabChanged;
   final Widget background;
 
   const _ProfileDetailAppBar({
@@ -207,6 +260,7 @@ class _ProfileDetailAppBar extends StatelessWidget {
     required this.tabController,
     required this.tabs,
     required this.onLogout,
+    required this.onTabChanged,
     required this.background,
   });
 
@@ -273,6 +327,11 @@ class _ProfileDetailAppBar extends StatelessWidget {
         tabController: tabController,
         collectionItems: userInfo?.collectionItems ?? [],
         innerBoxIsScrolled: innerBoxIsScrolled,
+        onTabTapped: (index) {
+          final String tabName = tabs[index];
+          final int type = getTypeFromTabName(tabName);
+          onTabChanged(type);
+        },
       ),
     );
   }
@@ -284,11 +343,13 @@ class _ProfileDetailTabBar extends StatelessWidget
   final TabController tabController;
   final List<Map<String, dynamic>> collectionItems;
   final bool innerBoxIsScrolled;
+  final Function(int) onTabTapped;
 
   const _ProfileDetailTabBar({
     required this.tabController,
     required this.collectionItems,
     required this.innerBoxIsScrolled,
+    required this.onTabTapped,
   });
 
   @override
@@ -324,6 +385,9 @@ class _ProfileDetailTabBar extends StatelessWidget
             ? Colors.blue
             : Theme.of(context).primaryColor,
         tabs: tabWidgets,
+        onTap: (index) {
+          onTabTapped(index);
+        },
       ),
     );
   }
@@ -337,11 +401,13 @@ class _ProfileTabView extends StatefulWidget {
   final TabController tabController;
   final List<String> tabs;
   final UserInfo? userInfo;
+  final Map<int, Collections?> collectionsByType;
 
   const _ProfileTabView({
     required this.tabController,
     required this.tabs,
     required this.userInfo,
+    required this.collectionsByType,
   });
 
   @override
@@ -350,6 +416,16 @@ class _ProfileTabView extends StatefulWidget {
 
 class _ProfileTabViewState extends State<_ProfileTabView> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return TabBarView(
       controller: widget.tabController,
@@ -357,7 +433,7 @@ class _ProfileTabViewState extends State<_ProfileTabView> {
     );
   }
 
-  /// 构建标签页内容
+  /// 构建tab标签页内容
   Widget _buildTabContent(String tabName) {
     return Builder(
       builder: (BuildContext context) {
@@ -382,26 +458,34 @@ class _ProfileTabViewState extends State<_ProfileTabView> {
 
   /// 构建标签页列表内容
   Widget _buildTabContentList(String tabName, UserInfo? userInfo) {
-    final List<Map<String, dynamic>> collectionItems =
-        userInfo?.collectionItems ?? [];
+    // 根据tab名称确定type值
+    int type = getTypeFromTabName(tabName);
 
+    // 获取对应类型的收藏数据
+    final Collections? collection = widget.collectionsByType[type];
+    final List<Data> items = collection?.data ?? [];
 
-    // 查找当前标签对应的收藏类型
-    final Map<String, dynamic> currentTab = collectionItems.firstWhere(
-      (item) => item['label'] == tabName,
-      orElse: () => {'label': tabName, 'count': 0},
-    );
-
-    // 获取当前标签的收藏数量
-    final int itemCount = currentTab['count'] ?? 0;
-
-    if (itemCount == 0) {
+    if (items.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
-          child: Text(
-            '暂无$tabName的动漫',
-            style: const TextStyle(fontSize: 16, color: Colors.grey),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.inbox_outlined,
+                size: 48,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                '暂无$tabName的动漫',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
           ),
         ),
       );
@@ -411,8 +495,10 @@ class _ProfileTabViewState extends State<_ProfileTabView> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(16.0),
-      itemCount: itemCount,
+      itemCount: items.length,
       itemBuilder: (context, index) {
+        final item = items[index];
+
         return Card(
           margin: const EdgeInsets.only(bottom: 8.0),
           child: ListTile(
@@ -423,16 +509,89 @@ class _ProfileTabViewState extends State<_ProfileTabView> {
                 color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: Icon(
-                Icons.movie,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+              child: item.images?.large?.isNotEmpty == true
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: Image.network(
+                        item.images!.large!,
+                        width: 50,
+                        height: 70,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.movie,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                          );
+                        },
+                      ),
+                    )
+                  : Icon(
+                      Icons.movie,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
             ),
-            title: Text('$tabName 动漫 ${index + 1}'),
-            subtitle: const Text('动漫简介描述'),
+            title: Text(
+              item.nameCN?.isNotEmpty == true
+                  ? item.nameCN!
+                  : item.name ?? '未知标题',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (item.info?.isNotEmpty == true)
+                  Text(
+                    item.info!,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    if (item.rating?.score != null && item.rating!.score! > 0)
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.star,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            item.rating!.score!.toStringAsFixed(1),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    if (item.rating?.score != null &&
+                        item.rating!.score! > 0 &&
+                        item.rating?.rank != null)
+                      const SizedBox(width: 16),
+                    if (item.rating?.rank != null && item.rating!.rank! > 0)
+                      Text(
+                        '排名: ${item.rating!.rank}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
             trailing: Icon(
-              Icons.star,
-              color: Theme.of(context).colorScheme.primary,
+              Icons.chevron_right,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         );
