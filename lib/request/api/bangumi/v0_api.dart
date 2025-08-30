@@ -10,5 +10,5 @@ class BangumiV0Api {
   static const String bangumiRelated = 'https://api.bgm.tv/v0/subjects/{subject_id}/subjects';
   ///用户收藏
   static const String bangumiUserCollection =
-      'https://api.bgm.tv/v0/users/{username}/collections';
+      'https://next.bgm.tv/p1/users/{username}/collections/subjects';
 }

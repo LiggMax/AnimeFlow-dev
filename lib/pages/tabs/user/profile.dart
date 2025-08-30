@@ -8,6 +8,7 @@ import 'dart:async';
 import 'package:AnimeFlow/pages/tabs/user/header.dart';
 import 'package:AnimeFlow/pages/tabs/user/no_login.dart';
 import 'package:AnimeFlow/utils/theme_extensions.dart';
+import 'package:AnimeFlow/modules/bangumi/user_collection.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -21,10 +22,12 @@ class _ProfilePageState extends State<ProfilePage>
   BangumiToken? _persistedToken;
   UserInfo? _userInfo;
   late TabController _tabController;
+  UserCollection? _userCollections;
 
   @override
   void initState() {
     super.initState();
+    // 初始化时使用默认的5个标签长度，后续会根据实际数据动态调整
     _tabController = TabController(length: 5, vsync: this);
     _loadPersistedToken();
   }
@@ -42,7 +45,7 @@ class _ProfilePageState extends State<ProfilePage>
       setState(() {
         _persistedToken = token;
       });
-      print('持久化Token已加载: $_persistedToken');
+      print('持久化Token已加载: ${_persistedToken?.accessToken}');
       // 如果有Token，获取用户信息
       if (_persistedToken != null) {
         await _loadUserInfo();
@@ -64,6 +67,13 @@ class _ProfilePageState extends State<ProfilePage>
       if (mounted) {
         setState(() {
           _userInfo = userInfo;
+          // 根据实际的收藏统计条目数量重新初始化TabController
+          final collectionItems = userInfo?.collectionItems ?? [];
+          final tabsLength = collectionItems.isNotEmpty
+              ? collectionItems.length
+              : 5;
+          _tabController.dispose();
+          _tabController = TabController(length: tabsLength, vsync: this);
         });
       }
     } catch (e) {
@@ -76,9 +86,10 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   /// 获取用户收藏（想看1、在看2、看过3、搁置4、抛弃5）
-  // Future<void> _loadUserCollections() async {
-  //       final col = await BangumiUser.getUserCollection(_persistedToken!);
-  // }
+  Future<void> _loadUserCollections() async {
+    final res = await BangumiUser.getUserCollection(_persistedToken!, 2);
+    _userCollections = res;
+  }
 
   /// 接收子组件授权完成后的 Token
   Future<void> _onAuthorized(BangumiToken token) async {
@@ -99,7 +110,20 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Widget _buildUserProfile() {
-    const List<String> tabs = ['想看', '在看', '看过', '搁置', '抛弃'];
+    // 获取收藏统计条目
+    final List<Map<String, dynamic>> collectionItems =
+        _userInfo?.collectionItems ?? [];
+
+    // 如果collectionItems为空，使用默认的标签
+    final List<String> tabs = collectionItems.isNotEmpty
+        ? collectionItems.map((item) => item['label'] as String).toList()
+        : ['想看', '在看', '看过', '搁置', '抛弃'];
+
+    // 确保TabController的length与tabs的长度一致
+    if (_tabController.length != tabs.length) {
+      _tabController.dispose();
+      _tabController = TabController(length: tabs.length, vsync: this);
+    }
 
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -120,7 +144,11 @@ class _ProfilePageState extends State<ProfilePage>
           ),
         ];
       },
-      body: _ProfileTabView(tabController: _tabController, tabs: tabs),
+      body: _ProfileTabView(
+        tabController: _tabController,
+        tabs: tabs,
+        userInfo: _userInfo,
+      ),
     );
   }
 
@@ -243,7 +271,7 @@ class _ProfileDetailAppBar extends StatelessWidget {
       forceElevated: innerBoxIsScrolled,
       bottom: _ProfileDetailTabBar(
         tabController: tabController,
-        tabs: tabs,
+        collectionItems: userInfo?.collectionItems ?? [],
         innerBoxIsScrolled: innerBoxIsScrolled,
       ),
     );
@@ -254,17 +282,31 @@ class _ProfileDetailAppBar extends StatelessWidget {
 class _ProfileDetailTabBar extends StatelessWidget
     implements PreferredSizeWidget {
   final TabController tabController;
-  final List<String> tabs;
+  final List<Map<String, dynamic>> collectionItems;
   final bool innerBoxIsScrolled;
 
   const _ProfileDetailTabBar({
     required this.tabController,
-    required this.tabs,
+    required this.collectionItems,
     required this.innerBoxIsScrolled,
   });
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> tabWidgets = collectionItems.isNotEmpty
+        ? collectionItems.map((item) {
+            final String tabLabel = item['label'];
+            final int itemCount = item['count'] ?? 0;
+            return Tab(text: '$tabLabel ($itemCount)');
+          }).toList()
+        : [
+            const Tab(text: '想看'),
+            const Tab(text: '在看'),
+            const Tab(text: '看过'),
+            const Tab(text: '搁置'),
+            const Tab(text: '抛弃'),
+          ];
+
     return PreferredSize(
       preferredSize: const Size.fromHeight(kTextTabBarHeight),
       child: TabBar(
@@ -281,7 +323,7 @@ class _ProfileDetailTabBar extends StatelessWidget
         indicatorColor: Theme.of(context).brightness == Brightness.dark
             ? Colors.blue
             : Theme.of(context).primaryColor,
-        tabs: tabs.map((name) => Tab(text: name)).toList(),
+        tabs: tabWidgets,
       ),
     );
   }
@@ -294,10 +336,12 @@ class _ProfileDetailTabBar extends StatelessWidget
 class _ProfileTabView extends StatefulWidget {
   final TabController tabController;
   final List<String> tabs;
+  final UserInfo? userInfo;
 
   const _ProfileTabView({
     required this.tabController,
     required this.tabs,
+    required this.userInfo,
   });
 
   @override
@@ -327,7 +371,7 @@ class _ProfileTabViewState extends State<_ProfileTabView> {
               child: SafeArea(
                 top: false,
                 bottom: false,
-                child: _buildTabContentList(tabName),
+                child: _buildTabContentList(tabName, widget.userInfo),
               ),
             ),
           ],
@@ -337,12 +381,37 @@ class _ProfileTabViewState extends State<_ProfileTabView> {
   }
 
   /// 构建标签页列表内容
-  Widget _buildTabContentList(String tabName) {
+  Widget _buildTabContentList(String tabName, UserInfo? userInfo) {
+    final List<Map<String, dynamic>> collectionItems =
+        userInfo?.collectionItems ?? [];
+
+
+    // 查找当前标签对应的收藏类型
+    final Map<String, dynamic> currentTab = collectionItems.firstWhere(
+      (item) => item['label'] == tabName,
+      orElse: () => {'label': tabName, 'count': 0},
+    );
+
+    // 获取当前标签的收藏数量
+    final int itemCount = currentTab['count'] ?? 0;
+
+    if (itemCount == 0) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Text(
+            '暂无$tabName的动漫',
+            style: const TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+        ),
+      );
+    }
+
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(16.0),
-      itemCount: 30,
+      itemCount: itemCount,
       itemBuilder: (context, index) {
         return Card(
           margin: const EdgeInsets.only(bottom: 8.0),
@@ -360,7 +429,7 @@ class _ProfileTabViewState extends State<_ProfileTabView> {
               ),
             ),
             title: Text('$tabName 动漫 ${index + 1}'),
-            subtitle: Text('动漫简介描述'),
+            subtitle: const Text('动漫简介描述'),
             trailing: Icon(
               Icons.star,
               color: Theme.of(context).colorScheme.primary,

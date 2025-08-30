@@ -37,7 +37,7 @@ class _AnimeRelatedSectionState extends State<AnimeRelatedSection> {
   @override
   Widget build(BuildContext context) {
     if (_relatedData == null || _relatedData!.data.isEmpty) {
-      return const SizedBox.shrink(); // 如果没有数据，直接隐藏整个组件
+      return const SizedBox.shrink();
     }
 
     return AnimeInfoSection(
