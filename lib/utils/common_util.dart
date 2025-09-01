@@ -48,7 +48,7 @@ class CommonUtil {
             '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
         await httpRequest.download(url, filePath);
         final bytes = await File(filePath).readAsBytes();
-        await Gal.putImageBytes(bytes);
+        await Gal.putImageBytes(bytes,name: filePath);
         await File(filePath).delete();
       } else {
         //桌面端(保持到下载目录)
