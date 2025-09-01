@@ -13,6 +13,7 @@ import 'skeleton/head_skeleton.dart';
 class AnimeDetailAppBar extends StatefulWidget {
   final int id;
   final String title;
+  final BangumiImages images;
   final bool innerBoxIsScrolled;
   final TabController tabController;
   final List<String> tabs;
@@ -26,6 +27,7 @@ class AnimeDetailAppBar extends StatefulWidget {
     required this.tabController,
     required this.tabs,
     required this.background,
+    required this.images,
   });
 
   @override
@@ -114,6 +116,16 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
       position: position,
       items: [
         PopupMenuItem(
+          value: 'saveImage',
+          child: Row(
+            children: [
+              Icon(Icons.copy_all),
+              const SizedBox(width: 12),
+              const Text('下载封面'),
+            ],
+          ),
+        ),
+        PopupMenuItem(
           value: 'copyLink',
           child: Row(
             children: [
@@ -141,9 +153,15 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
     });
   }
 
-  /// 处理分享选项
+  /// 处理选项
   void _handleShareOption(String option) {
     switch (option) {
+      case 'saveImage':
+        CommonUtil.saveImage(widget.images.bestUrl);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('成功保持封面')));
+        break;
       case 'copyLink':
         CommonUtil.copyLink('${CommonApi.bgmTv}/subject/${widget.id}');
         ScaffoldMessenger.of(context).showSnackBar(
@@ -159,12 +177,6 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
             ),
           ),
         );
-        break;
-      case 'weibo':
-        // TODO: 实现微博分享
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('微博分享功能待实现')));
         break;
       case 'goToWebsite':
         CommonUtil.toLaunchUrl('${CommonApi.bgmTv}/subject/${widget.id}');

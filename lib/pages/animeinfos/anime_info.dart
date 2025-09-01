@@ -103,6 +103,7 @@ class _AnimeDataPageState extends State<AnimeDataPage>
                         title: infoController.bangumiItem.displayName.isEmpty
                             ? (widget.animeName ?? '动漫详情')
                             : infoController.bangumiItem.displayName,
+                        images: infoController.bangumiItem.images,
                         innerBoxIsScrolled: innerBoxIsScrolled,
                         tabController: infoTabController,
                         tabs: tabs,

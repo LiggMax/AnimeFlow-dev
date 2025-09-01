@@ -10,25 +10,31 @@ class HttpRequest {
 
   HttpRequest._internal() {
     // 初始化Dio实例
-    _dio = Dio(BaseOptions(
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-    ));
+    _dio = Dio(
+      BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+      ),
+    );
 
     // 添加日志拦截器
-    _dio.interceptors.add(LogInterceptor(
-      requestBody: true,
-      responseBody: true,
-      logPrint: (log) => debugPrint('🌐 $log'),
-    ));
+    _dio.interceptors.add(
+      LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        logPrint: (log) => debugPrint('🌐 $log'),
+      ),
+    );
 
     // 添加错误处理拦截器
-    _dio.interceptors.add(InterceptorsWrapper(
-      onError: (error, handler) {
-        debugPrint('❌ 请求错误: ${_handleError(error)}');
-        handler.next(error);
-      },
-    ));
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onError: (error, handler) {
+          debugPrint('❌ 请求错误: ${_handleError(error)}');
+          handler.next(error);
+        },
+      ),
+    );
   }
 
   /// GET请求
@@ -154,7 +160,7 @@ class HttpRequest {
       final opts = options ?? Options();
       opts.headers ??= {};
       if (!opts.headers!.containsKey('User-Agent')) {
-        opts.headers!['User-Agent'] = CommonApi.bangumiUserAgent;
+        opts.headers!['User-Agent'] = CommonApi.userAgent;
       }
 
       return await _dio.download(
