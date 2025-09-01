@@ -5,7 +5,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:AnimeFlow/modules/bangumi/data.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../request/api/common_api.dart';
 import 'skeleton/head_skeleton.dart';
 

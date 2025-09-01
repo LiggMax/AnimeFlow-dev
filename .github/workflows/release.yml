@@ -402,8 +402,9 @@ jobs:
             
             ### 🔄 更新内容
             - ${{ needs.get-version.outputs.version }}版本正式发布
-            - 进度播放页自动播放选择剧集的对应视频资源
-            - 播放器添加更多功能效果以及快捷手势(双击暂停播放、左右滑动快速跳转、显示设备电量、系统时间)
+            - 完善Bangumi授权登录
+            - 完善个人中心页收藏番剧展示效果
+            - 番剧详情页添加浏览器阅览、链接复制、封面下载
             - 更多的ui优化
           files: |
             artifacts/${{ needs.get-app-info.outputs.app_name_version }}-android/*.apk
