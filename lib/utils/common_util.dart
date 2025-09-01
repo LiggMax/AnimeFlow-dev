@@ -32,13 +32,23 @@ class CommonUtil {
   static Future<void> saveImage(String url) async {
     try {
       if (!FullscreenUtils.isDesktop()) {
-        //移动端(保持到相册)
+        /*
+          移动端(保持到相册)
+          检查并申请存储权限
+        */
+        final hasAccess = await Gal.hasAccess();
+        if (!hasAccess) {
+          final granted = await Gal.requestAccess();
+          if (!granted) {
+            throw Exception('存储权限被拒绝，无法保存图片');
+          }
+        }
         final tempDir = await getTemporaryDirectory();
         final filePath =
-            '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.png';
+            '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
         await httpRequest.download(url, filePath);
         final bytes = await File(filePath).readAsBytes();
-        await Gal. putImageBytes(bytes);
+        await Gal.putImageBytes(bytes);
         await File(filePath).delete();
       } else {
         //桌面端(保持到下载目录)

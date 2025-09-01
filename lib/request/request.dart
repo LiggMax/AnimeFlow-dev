@@ -150,7 +150,7 @@ class HttpRequest {
   /// 下载文件
   Future<Response> download(
     String urlPath,
-    String savePath, {
+    dynamic savePath, {
     ProgressCallback? onReceiveProgress,
     CancelToken? cancelToken,
     Options? options,
