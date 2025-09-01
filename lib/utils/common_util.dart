@@ -29,8 +29,9 @@ class CommonUtil {
   }
 
   ///下载保持图片
-  static Future<void> saveImage(String url) async {
+  static Future<void> saveImage(String url, String name) async {
     try {
+      final String time = DateTime.now().millisecondsSinceEpoch.toString();
       if (!FullscreenUtils.isDesktop()) {
         /*
           移动端(保持到相册)
@@ -38,23 +39,21 @@ class CommonUtil {
         */
         final hasAccess = await Gal.hasAccess();
         if (!hasAccess) {
-          final granted = await Gal.requestAccess();
+          bool granted = await Gal.requestAccess();
           if (!granted) {
             throw Exception('存储权限被拒绝，无法保存图片');
           }
         }
         final tempDir = await getTemporaryDirectory();
-        final filePath =
-            '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+        final filePath = '${tempDir.path}/$time.jpg';
         await httpRequest.download(url, filePath);
         final bytes = await File(filePath).readAsBytes();
-        await Gal.putImageBytes(bytes,name: filePath);
+        await Gal.putImageBytes(bytes, name: '${name}_$time');
         await File(filePath).delete();
       } else {
         //桌面端(保持到下载目录)
         final dir = await getDownloadsDirectory();
-        final filePath =
-            '${dir?.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+        final filePath = '${dir?.path}/$time.jpg';
         await httpRequest.download(url, filePath);
         debugPrint('图片已保存到:$filePath');
       }

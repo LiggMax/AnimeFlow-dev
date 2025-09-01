@@ -36,6 +36,7 @@ class AnimeDetailAppBar extends StatefulWidget {
 
 class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
   late final GlobalKey _shareButtonKey = GlobalKey();
+  Color get theme => Theme.of(context).colorScheme.primary;
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +120,10 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
           value: 'saveImage',
           child: Row(
             children: [
-              Icon(Icons.copy_all),
+              Icon(
+                Icons.file_download_outlined,
+                color: theme,
+              ),
               const SizedBox(width: 12),
               const Text('下载封面'),
             ],
@@ -129,7 +133,7 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
           value: 'copyLink',
           child: Row(
             children: [
-              Icon(Icons.copy_all),
+              Icon(Icons.copy_all,color: theme),
               const SizedBox(width: 12),
               const Text('复制网址'),
             ],
@@ -139,7 +143,7 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
           value: 'goToWebsite',
           child: Row(
             children: [
-              Icon(Icons.link, color: Theme.of(context).colorScheme.primary),
+              Icon(Icons.link, color: theme),
               const SizedBox(width: 12),
               Text('浏览器查看'),
             ],
@@ -157,7 +161,7 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
   void _handleShareOption(String option) {
     switch (option) {
       case 'saveImage':
-        CommonUtil.saveImage(widget.images.bestUrl);
+        CommonUtil.saveImage(widget.images.bestUrl, widget.title);
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('成功保持封面')));
