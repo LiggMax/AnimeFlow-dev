@@ -1,7 +1,6 @@
-/*
-  @Author Ligg
-  @Time 2025/8/2
- */
+/// @Author Ligg
+///@Time 2025/8/2
+library;
 import 'package:AnimeFlow/request/request.dart';
 import 'package:dio/dio.dart';
 import '../../utils/bangumi_analysis.dart';
@@ -9,7 +8,7 @@ import '../api/common_api.dart';
 
 class BangumiTvService {
 
-  //获取热度榜
+  ///之前没找到排行榜api用的，现在用不上了先放着吧
   static Future<Map<String, dynamic>?> getRank(int count) async {
     final response = await httpRequest.get(
       CommonApi.bangumiTV,

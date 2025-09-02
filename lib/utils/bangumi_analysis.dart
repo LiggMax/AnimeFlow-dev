@@ -13,7 +13,7 @@ class BangumiTvAnalysis {
   //封面
   static const String selectCovers = ".section > ul >li img";
 
-  //解析动漫热度排行榜数据
+  ///之前没找到排行榜api用的爬虫，现在用不上了先放着吧
   static Map<String, dynamic> parseRankData(String htmlData) {
     try {
       final document = parser.parse(htmlData);

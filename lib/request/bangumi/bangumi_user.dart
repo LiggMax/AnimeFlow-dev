@@ -1,7 +1,6 @@
-/*
-  @Author Ligg
-  @Time 2025/8/7
- */
+///@Author Ligg
+///@Time 2025/8/7
+library;
 import 'package:AnimeFlow/modules/bangumi/collections.dart';
 import 'package:AnimeFlow/modules/bangumi/user_info.dart';
 import 'package:AnimeFlow/request/request.dart';

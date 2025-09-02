@@ -1,4 +1,5 @@
-import 'package:AnimeFlow/request/bangumi/bangumi_tv.dart';
+import 'package:AnimeFlow/modules/bangumi/rank.dart';
+import 'package:AnimeFlow/request/bangumi/bangumi.dart';
 import 'package:flutter/material.dart';
 import 'package:AnimeFlow/utils/fullscreen_utils.dart';
 import 'package:go_router/go_router.dart';
@@ -13,7 +14,7 @@ class RankingPage extends StatefulWidget {
 }
 
 class _RankingPageState extends State<RankingPage> {
-  Map<String, dynamic>? _rankData;
+  Rank? _rankData;
   bool _isLoading = true;
   bool _isLoadingMore = false;
   String? _error;
@@ -69,7 +70,7 @@ class _RankingPageState extends State<RankingPage> {
         _error = null;
       });
 
-      final data = await BangumiTvService.getRank(1);
+      final data = await BangumiService.getRank('trends');
 
       if (mounted) {
         setState(() {
@@ -99,52 +100,21 @@ class _RankingPageState extends State<RankingPage> {
       });
 
       final nextPage = _currentPage + 1;
-      final data = await BangumiTvService.getRank(nextPage);
+      final data = await BangumiService.getRank('trends',page: nextPage);
 
       if (mounted) {
         setState(() {
           _isLoadingMore = false;
 
-          if (data == null ||
-              (data['titles'] == null || (data['titles'] as List).isEmpty)) {
+          if (data == null || data.data == null || data.data!.isNotEmpty) {
             _hasMore = false; // 没有更多数据
           } else {
-            // 追加新数据
-            final newTitles = List<String>.from(data['titles'] ?? []);
-            final newCovers = List<String>.from(data['covers'] ?? []);
-            final newIds = List<String>.from(data['id'] ?? []);
 
-            if (newTitles.isEmpty) {
-              _hasMore = false;
-            } else {
-              // 合并数据
-              final currentTitles = List<String>.from(
-                _rankData!['titles'] ?? [],
-              );
-              final currentCovers = List<String>.from(
-                _rankData!['covers'] ?? [],
-              );
-              final currentIds = List<String>.from(_rankData!['id'] ?? []);
-
-              currentTitles.addAll(newTitles);
-              currentCovers.addAll(newCovers);
-              currentIds.addAll(newIds);
-
-              // 确保数据长度一致
-              final minLength = [
-                currentTitles.length,
-                currentCovers.length,
-                currentIds.length,
-              ].reduce((a, b) => a < b ? a : b);
-
-              _rankData = {
-                'titles': currentTitles.take(minLength).toList(),
-                'covers': currentCovers.take(minLength).toList(),
-                'id': currentIds.take(minLength).toList(),
-              };
-
-              _currentPage = nextPage;
-            }
+            //追加数据
+            final currentData = _rankData?.data ?? [];
+            currentData.addAll(data.data!);
+            _rankData = Rank(data: currentData,total: _rankData?.total);
+            _currentPage = nextPage;
           }
         });
       }
@@ -204,11 +174,7 @@ class _RankingPageState extends State<RankingPage> {
       );
     }
 
-    final titles = List<String>.from(_rankData!['titles'] ?? []);
-    final covers = List<String>.from(_rankData!['covers'] ?? []);
-    final id = List<String>.from(
-      _rankData!['id'] ?? [],
-    ).map((s) => int.tryParse(s) ?? 0).toList();
+    final dataList = _rankData?.data ?? [];
 
     return Stack(
       children: [
@@ -232,18 +198,19 @@ class _RankingPageState extends State<RankingPage> {
               childAspectRatio: 0.7,
               crossAxisSpacing: 2,
             ),
-            itemCount: titles.length + (_hasMore ? 1 : 0),
+            itemCount: dataList.length + (_hasMore ? 1 : 0),
             // 添加加载更多指示器
             itemBuilder: (context, index) {
               // 如果是最后一个item且正在加载更多，显示加载指示器
-              if (_hasMore && index == titles.length) {
+              if (_hasMore && index == dataList.length) {
                 return _buildLoadingMoreIndicator();
               }
 
+              final dataItem = dataList[index];
               return _buildRankItem(
-                title: titles[index],
-                coverUrl: index < covers.length ? covers[index] : '',
-                link: index < id.length ? id[index] : 0,
+                title: dataItem.nameCN ?? dataItem.name ?? '',
+                coverUrl: dataItem.images!.bestUrl!,
+                link: dataItem.id?.toInt() ?? 0,
               );
             },
           ),

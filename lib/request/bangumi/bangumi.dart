@@ -1,4 +1,5 @@
 import 'package:AnimeFlow/modules/bangumi/character_data.dart';
+import 'package:AnimeFlow/modules/bangumi/rank.dart';
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
 import 'package:AnimeFlow/modules/bangumi/data.dart';
@@ -151,10 +152,24 @@ class BangumiService {
           .map((json) => EpisodesComments.fromJson(json))
           .toList();
       // 按时间排序
-      comments.sort((a,b) => b.createdAt!.compareTo(a.createdAt!));
+      comments.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
       return comments;
     } catch (e) {
       _log.severe('获取剧集评论失败: $e');
+      return null;
+    }
+  }
+
+  ///排行榜
+   static Future<Rank?> getRank(String sort, {type = 2, page = 1}) async {
+    try {
+      final response = await httpRequest.get(
+        BangumiP1Api.bangumiRank,
+        queryParameters: {'sort': sort, 'type': type},
+      );
+      return Rank.fromJson(response.data);
+    } catch (e) {
+      _log.severe('获取排行榜失败: $e');
       return null;
     }
   }

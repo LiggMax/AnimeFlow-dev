@@ -188,14 +188,17 @@ class _CustomSeekBarState extends State<CustomSeekBar> {
                                 ),
                                 //指示器
                                 Positioned(
-                                  left:
-                                      ((constraints.maxWidth *
-                                                  currentProgress) -
-                                              10)
-                                          .clamp(
-                                            0.0,
-                                            constraints.maxWidth - 20,
-                                          ),
+                                  left: constraints.maxWidth.isFinite
+                                      ? ((constraints.maxWidth *
+                                      currentProgress) -
+                                      10)
+                                      .clamp(
+                                    0.0,
+                                    constraints.maxWidth > 20
+                                        ? constraints.maxWidth - 20
+                                        : 0.0,
+                                  )
+                                      : 0.0,
                                   top: -6,
                                   child: Material(
                                     elevation: 4, // 提升层级
@@ -393,9 +396,7 @@ class VideoSpeedDrawer extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: isSelected
-                          ? Theme.of(
-                              context,
-                            ).canvasColor.withValues(alpha: 0.2)
+                          ? Theme.of(context).canvasColor.withValues(alpha: 0.2)
                           : null,
                     ),
                     child: InkWell(
