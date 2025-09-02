@@ -161,11 +161,11 @@ class BangumiService {
   }
 
   ///排行榜
-   static Future<Rank?> getRank(String sort, {type = 2, page = 1}) async {
+  static Future<Rank?> getRank(String sort, {type = 2, page = 1}) async {
     try {
       final response = await httpRequest.get(
         BangumiP1Api.bangumiRank,
-        queryParameters: {'sort': sort, 'type': type},
+        queryParameters: {'sort': sort, 'type': type, 'page': page},
       );
       return Rank.fromJson(response.data);
     } catch (e) {

@@ -1,5 +1,6 @@
 import 'package:AnimeFlow/modules/bangumi/rank.dart';
 import 'package:AnimeFlow/request/bangumi/bangumi.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:AnimeFlow/utils/fullscreen_utils.dart';
 import 'package:go_router/go_router.dart';
@@ -106,14 +107,13 @@ class _RankingPageState extends State<RankingPage> {
         setState(() {
           _isLoadingMore = false;
 
-          if (data == null || data.data == null || data.data!.isNotEmpty) {
+          if (data == null || data.data == null || data.data!.isEmpty) {
             _hasMore = false; // 没有更多数据
           } else {
-
-            //追加数据
+            // 追加数据
             final currentData = _rankData?.data ?? [];
             currentData.addAll(data.data!);
-            _rankData = Rank(data: currentData,total: _rankData?.total);
+            _rankData = Rank(data: currentData, total: _rankData?.total);
             _currentPage = nextPage;
           }
         });
@@ -314,13 +314,13 @@ class _RankingPageState extends State<RankingPage> {
       );
     }
 
-    return Image.network(
-      coverUrl,
+    return CachedNetworkImage(
+      imageUrl: coverUrl,
       fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) {
+      errorWidget: (context, error, stackTrace){
         return Container(
           color: Colors.grey[300],
-          child: const Icon(Icons.broken_image, color: Colors.grey, size: 40),
+          child: const Icon(Icons.broken_image, size: 40),
         );
       },
     );
