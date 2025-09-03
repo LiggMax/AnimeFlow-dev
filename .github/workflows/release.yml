@@ -108,7 +108,7 @@ jobs:
 
       - name: Rename APK file
         run: |
-          mv build\app\outputs\flutter-apk\app-release.apk "${{ needs.get-app-info.outputs.app_name_version }}-android.apk"
+          mv build/app/outputs/flutter-apk/app-release.apk "${{ needs.get-app-info.outputs.app_name_version }}-android.apk"
 
       - name: Archive Android artifacts
         uses: actions/upload-artifact@v4
