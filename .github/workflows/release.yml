@@ -262,7 +262,7 @@ jobs:
           mkdir -p build/dist
           cp -a build/macos/Build/Products/Release/${{ needs.get-app-info.outputs.app_name }}.app build/dist
           ln -s /Applications build/dist/Applications
-          hdiutil create -fs HFS+ -volname "${{ needs.get-app-info.outputs.app_name_version }}" -srcfolder build/dist "${{ needs.get-app-info.outputs.app_name_version }}.dmg"
+          hdiutil create -fs HFS+ -volname "${{ needs.get-app-info.outputs.app_name_version }}" -srcfolder build/dist "${{ needs.get-app-info.outputs.app_name_version }}-macos.dmg"
 
       - name: Archive macOS artifacts
         uses: actions/upload-artifact@v4
