@@ -65,10 +65,9 @@ dependencies:
   flutter_html: ^3.0.0
   intl: ^0.20.2
   battery_plus: ^6.2.3
-  screen_brightness: ^2.1.7
+  screen_brightness_platform_interface: ^2.1.0
   path_provider: ^2.1.2
   gal: ^2.3.2
-  #permission_handler: ^12.0.1
 
   ##播放器
   media_kit: ^1.2.0 # 主要包装.
@@ -77,6 +76,9 @@ dependencies:
 
   window_manager: ^0.3.8 # 桌面端窗口管理
   device_info_plus: ^9.1.2 # 设备信息获取
+
+  # 获取设备权限库
+  #permission_handler: ^12.0.1
 
 dev_dependencies:
   flutter_test:

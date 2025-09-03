@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
-import 'package:screen_brightness/screen_brightness.dart';
+import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
 import 'package:AnimeFlow/utils/fullscreen_utils.dart';
 import 'package:intl/intl.dart';
 
@@ -45,17 +45,29 @@ class VideoControllerService {
 
   // Getters
   bool get showControls => _showControls;
+
   bool get isMouseHovering => _isMouseHovering;
+
   bool get showSeekIndicator => _showSeekIndicator;
+
   bool get showPlaybackIndicator => _showPlaybackIndicator;
+
   bool get showBrightnessIndicator => _showBrightnessIndicator;
-  bool get  showPlaybackSpeedIndicator => _showPlaybackSpeedIndicator;
+
+  bool get showPlaybackSpeedIndicator => _showPlaybackSpeedIndicator;
+
   bool get showVolumeIndicator => _showVolumeIndicator;
+
   Duration get seekPosition => _seekPosition;
+
   Duration get currentPosition => _currentPosition;
+
   Duration get duration => _duration;
+
   double get currentBrightness => _currentBrightness;
+
   double get currentVolume => _currentVolume;
+
   double get playbackSpeed => _playbackSpeed;
 
   /// 时间格式化方法
@@ -223,7 +235,7 @@ class VideoControllerService {
   /// 初始化亮度和音量
   Future<void> initBrightnessAndVolume() async {
     try {
-      _currentBrightness = await ScreenBrightness().application;
+      _currentBrightness = await ScreenBrightnessPlatform.instance.application;
       _currentVolume = player.state.volume;
 
       // 记录原始值，用于退出时恢复
@@ -244,9 +256,9 @@ class VideoControllerService {
   Future<void> restoreOriginalSettings() async {
     try {
       if (!FullscreenUtils.isDesktop()) {
-        await ScreenBrightness().setApplicationScreenBrightness(
-          _originalBrightness,
-        );
+        // await ScreenBrightness().setApplicationScreenBrightness(
+        //   _originalBrightness,
+        // );
         debugPrint('恢复原始亮度: $_originalBrightness');
       }
 
@@ -301,16 +313,17 @@ class VideoControllerService {
   Future<void> adjustPlaybackSpeed(double speed) async {
     _playbackSpeed = speed;
     await player.setRate(speed);
-
   }
 
   /// 调节亮度
   Future<void> adjustBrightness(double delta) async {
     final newBrightness = (_currentBrightness + delta).clamp(0.0, 1.0);
     try {
-      if (!FullscreenUtils.isDesktop()) {
-        await ScreenBrightness().setApplicationScreenBrightness(newBrightness);
-      }
+      if (FullscreenUtils.isDesktop()) return;
+
+      await ScreenBrightnessPlatform.instance.setApplicationScreenBrightness(
+        newBrightness,
+      );
 
       _currentBrightness = newBrightness;
       _showIndicator('brightness');
