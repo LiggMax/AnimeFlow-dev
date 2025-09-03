@@ -19,11 +19,11 @@ AnimeFlow 是一款基于 Flutter 开发的现代化动漫播放器，专注于�
 
 ## 下载
 
-<div style="display: flex">
-<h4>点击下载—></h4>
-<a href="https://github.com/LiggMax/AnimeFlow/releases">
- <img src="/assets/images/get_it_on_github.svg" style="height: 60px" alt="">
-</a>
+<div style="height:10vh; display: flex; align-items: center">
+   <h4>点击下载—></h4>
+   <a href="https://github.com/LiggMax/AnimeFlow/releases">
+    <img src="/assets/images/get_it_on_github.svg" style="height: 60px" alt="">
+   </a>
 </div>
 
 ## ✨ 主要功能
