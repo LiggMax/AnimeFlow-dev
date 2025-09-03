@@ -406,10 +406,7 @@ jobs:
             
             ### 🔄 更新内容
             - ${{ needs.get-version.outputs.version }}版本正式发布
-            - 完善Bangumi授权登录
-            - 完善个人中心页收藏番剧展示效果
-            - 番剧详情页添加浏览器阅览、链接复制、封面下载
-            - 更多的ui优化
+            - 修复桌面端窗口缩放严重卡顿问题
           files: |
             artifacts/${{ needs.get-app-info.outputs.app_name_version }}-android/*.apk
             artifacts/${{ needs.get-app-info.outputs.app_name_version }}-ios/*.ipa
