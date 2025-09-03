@@ -53,7 +53,7 @@ class CommonUtil {
       } else {
         //桌面端(保持到下载目录)
         final dir = await getDownloadsDirectory();
-        final filePath = '${dir?.path}/$time.jpg';
+        final filePath = '${dir?.path}/${name}_$time.jpg';
         await httpRequest.download(url, filePath);
         debugPrint('图片已保存到:$filePath');
       }
