@@ -106,11 +106,15 @@ jobs:
           flutter build appbundle --release
           echo "Android App Bundle build completed"
 
+      - name: Rename APK file
+        run: |
+          mv build\app\outputs\flutter-apk\app-release.apk "${{ needs.get-app-info.outputs.app_name_version }}-android.apk"
+
       - name: Archive Android artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ needs.get-app-info.outputs.app_name_version }}-android
-          path: "${{ needs.get-app-info.outputs.app_name_version }}.apk"
+          path: "${{ needs.get-app-info.outputs.app_name_version }}-android.apk"
           if-no-files-found: error
 
   # 构建Linux版本
