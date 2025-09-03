@@ -265,7 +265,7 @@ class BarrageInput extends StatelessWidget {
                 style: const TextStyle(color: Colors.white, fontSize: 14),
                 decoration: const InputDecoration(
                   border: InputBorder.none,
-                  hintText: '发送弹幕动能施工中...',
+                  hintText: '发送弹幕功能施工中...',
                   hintStyle: TextStyle(color: Colors.white70, fontSize: 14),
                 ),
                 onSubmitted: (value) {
