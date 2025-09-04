@@ -1,4 +1,5 @@
 import 'package:AnimeFlow/router/router_config.dart';
+import 'package:AnimeFlow/utils/fullscreen_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:AnimeFlow/utils/theme_extensions.dart';
@@ -405,8 +406,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   Widget _buildGridView() {
     return GridView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: FullscreenUtils.getCrossAxisCount(context),
         childAspectRatio: 0.7,
         crossAxisSpacing: 8,
         mainAxisSpacing: 16,

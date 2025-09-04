@@ -63,12 +63,6 @@ class _TabsState extends State<Tabs> {
     final theme = Theme.of(context);
     return LayoutBuilder(
       builder: (context, constraints) {
-        // final orientation = MediaQuery.of(context).orientation;
-        // final screenWidth = MediaQuery.of(context).size.width;
-        // final isLandscape = orientation == Orientation.landscape;
-        // final isWideScreen = screenWidth > 800; // 宽屏判断阈值
-        // final shouldUseSideNavigation = isLandscape || isWideScreen;
-
         final bool isWide = constraints.maxWidth > 800;
         final bool shouldUseSideNavigation = isWide || (constraints.maxWidth > constraints.maxHeight);
 
