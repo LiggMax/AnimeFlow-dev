@@ -61,35 +61,42 @@ class _TabsState extends State<Tabs> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final orientation = MediaQuery.of(context).orientation;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isLandscape = orientation == Orientation.landscape;
-    final isWideScreen = screenWidth > 800; // 宽屏判断阈值
-    final shouldUseSideNavigation = isLandscape || isWideScreen;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // final orientation = MediaQuery.of(context).orientation;
+        // final screenWidth = MediaQuery.of(context).size.width;
+        // final isLandscape = orientation == Orientation.landscape;
+        // final isWideScreen = screenWidth > 800; // 宽屏判断阈值
+        // final shouldUseSideNavigation = isLandscape || isWideScreen;
 
-    return Scaffold(
-      body: Row(
-        children: [
-          // 左侧导航栏
-          if (shouldUseSideNavigation) _buildSideNavigationRail(theme),
-          // 主内容区域
-          Expanded(
-            child: IndexedStack(
-              index: _currentIndex,
-              children: [_buildPage(0), _buildPage(1), _buildPage(2)],
-            ),
+        final bool isWide = constraints.maxWidth > 800;
+        final bool shouldUseSideNavigation = isWide || (constraints.maxWidth > constraints.maxHeight);
+
+        return Scaffold(
+          body: Row(
+            children: [
+              // 左侧导航栏
+              if (shouldUseSideNavigation) _buildSideNavigationRail(theme),
+              // 主内容区域
+              Expanded(
+                child: IndexedStack(
+                  index: _currentIndex,
+                  children: [_buildPage(0), _buildPage(1), _buildPage(2)],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-      bottomNavigationBar: shouldUseSideNavigation
-          ? null
-          : NavigationBar(
-              selectedIndex: _currentIndex,
-              onDestinationSelected: _navigateTo,
-              backgroundColor: theme.colorScheme.surfaceDim,
-              indicatorColor: theme.colorScheme.primaryContainer,
-              destinations: _buildNavigationDestinations(),
-            ),
+          bottomNavigationBar: shouldUseSideNavigation
+              ? null
+              : NavigationBar(
+            selectedIndex: _currentIndex,
+            onDestinationSelected: _navigateTo,
+            backgroundColor: theme.colorScheme.surfaceDim,
+            indicatorColor: theme.colorScheme.primaryContainer,
+            destinations: _buildNavigationDestinations(),
+          ),
+        );
+      },
     );
   }
 
