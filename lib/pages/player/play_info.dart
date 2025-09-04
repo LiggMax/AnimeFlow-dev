@@ -40,18 +40,16 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final orientation = MediaQuery.of(context).orientation;
-    final isLandscape = orientation == Orientation.landscape;
-
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
         bottom: false, // 让内容延伸到底部
         child: LayoutBuilder(
           builder: (context, constraints) {
-            if (isLandscape) {
+            bool isWide = constraints.maxWidth > 600;
+            if (isWide) {
               // 横屏模式
-              const double detailWidth = 350;
+              const double detailWidth = 300;
               return Stack(
                 children: [
                   // 视频播放器
