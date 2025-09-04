@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![AnimeFlow Logo](https://img.shields.io/badge/AnimeFlow-动漫播放器-blue?style=for-the-badge&logo=flutter)
+![AnimeFlow Logo](https://img.shields.io/badge/AnimeFlow-流媒体播放器-blue?style=for-the-badge&logo=flutter)
 
 **结合 "Anime"（动漫）和 "Flow"（流动感），**
 
