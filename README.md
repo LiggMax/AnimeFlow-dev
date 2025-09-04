@@ -7,9 +7,9 @@
 **结合 "Anime"（动漫）和 "Flow"（流动感），**
 
 [![Release](https://img.shields.io/github/v/release/LiggMax/AnimeFlow)](https://github.com/LiggMax/AnimeFlow/releases)
+[![Downloads](https://img.shields.io/github/downloads/LiggMax/AnimeFlow/total)](https://github.com/LiggMax/AnimeFlow/releases)
 [![Flutter](https://img.shields.io/badge/Flutter-3.16.0-blue?style=flat-square&logo=flutter)](https://flutter.dev/)
 [![Dart](https://img.shields.io/badge/Dart-3.2.0-blue?style=flat-square&logo=dart)](https://dart.dev/)
-[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
 </div>
 
