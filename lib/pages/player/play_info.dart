@@ -47,65 +47,62 @@ class _PlayInfoState extends State<PlayInfo> with TickerProviderStateMixin {
         child: LayoutBuilder(
           builder: (context, constraints) {
             bool isWide = constraints.maxWidth > 600;
-            if (isWide) {
-              // 横屏模式
-              const double detailWidth = 300;
-              return Stack(
-                children: [
-                  // 视频播放器
-                  Positioned(
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                    right: _isDetailVisible ? detailWidth : 0,
-                    child: VideoPage(
-                      key: _videoKey,
-                      animeName: widget.animeName,
-                      url: _currentVideoUrl,
-                      onToggleDetailVisibility:
-                          _toggleDetailVisibility, // 传递回调函数
-                    ),
-                  ),
-                  // 内容区域
-                  Positioned(
-                    // 通过调整right值实现显示/隐藏
-                    right: _isDetailVisible ? 0 : -detailWidth,
-                    top: 0,
-                    bottom: 0,
-                    width: detailWidth,
-                    child: DetailPage(
-                      key: _detailKey,
-                      animeName: widget.animeName,
-                      animeId: widget.animeId,
-                      onVideoUrlReceived: _handleVideoUrlReceived,
-                    ),
-                  ),
-                ],
-              );
-            } else {
-              // 竖屏模式
-              return Column(
-                children: [
-                  AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: VideoPage(
-                      key: _videoKey,
-                      animeName: widget.animeName,
-                      url: _currentVideoUrl,
-                    ),
-                  ),
-                  // 内容区域
-                  Expanded(
-                    child: DetailPage(
-                      key: _detailKey,
-                      animeName: widget.animeName,
-                      animeId: widget.animeId,
-                      onVideoUrlReceived: _handleVideoUrlReceived,
-                    ),
-                  ),
-                ],
-              );
-            }
+            const double detailWidth = 300;
+            return isWide
+                ?
+                  // 横屏模式
+                  Stack(
+                    children: [
+                      Positioned(
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        right: _isDetailVisible ? detailWidth : 0,
+                        child: VideoPage(
+                          key: _videoKey,
+                          animeName: widget.animeName,
+                          url: _currentVideoUrl,
+                          onToggleDetailVisibility:
+                              _toggleDetailVisibility, // 传递回调函数
+                        ),
+                      ),
+                      Positioned(
+                        // 通过调整right值实现显示/隐藏
+                        right: _isDetailVisible ? 0 : -detailWidth,
+                        top: 0,
+                        bottom: 0,
+                        width: detailWidth,
+                        child: DetailPage(
+                          key: _detailKey,
+                          animeName: widget.animeName,
+                          animeId: widget.animeId,
+                          onVideoUrlReceived: _handleVideoUrlReceived,
+                        ),
+                      ),
+                    ],
+                  )
+                :
+                  // 竖屏模式
+                  Column(
+                    children: [
+                      AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: VideoPage(
+                          key: _videoKey,
+                          animeName: widget.animeName,
+                          url: _currentVideoUrl,
+                        ),
+                      ),
+                      Expanded(
+                        child: DetailPage(
+                          key: _detailKey,
+                          animeName: widget.animeName,
+                          animeId: widget.animeId,
+                          onVideoUrlReceived: _handleVideoUrlReceived,
+                        ),
+                      ),
+                    ],
+                  );
           },
         ),
       ),
