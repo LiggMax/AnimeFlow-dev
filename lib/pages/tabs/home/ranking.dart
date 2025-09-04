@@ -178,6 +178,9 @@ class _RankingPageState extends State<RankingPage> {
 
     return Stack(
       children: [
+        SizedBox(
+          height: 20,
+        ),
         NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification scrollInfo) {
             // 检查是否滚动到页面底部
