@@ -1,12 +1,11 @@
 import 'dart:ui';
+import 'package:AnimeFlow/pages/animeinfos/menu/menu.dart';
 import 'package:AnimeFlow/router/router_config.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:AnimeFlow/modules/bangumi/data.dart';
-import '../menu/drop_down_menu.dart';
 import '../skeleton/head_skeleton.dart';
-import 'anime_head_service.dart';
 
 /// 自定义AppBar组件
 class AnimeDetailAppBar extends StatefulWidget {
@@ -35,6 +34,7 @@ class AnimeDetailAppBar extends StatefulWidget {
 
 class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
   late final GlobalKey _shareButtonKey = GlobalKey();
+  late final GlobalKey _followButtonKey = GlobalKey();
 
   Color get theme => Theme.of(context).colorScheme.primary;
 
@@ -57,15 +57,28 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
       actions: [
         if (widget.innerBoxIsScrolled)
           IconButton(
+            key: _followButtonKey,
             onPressed: () {
-              // TODO: 实现收藏功能
+              ShareMenu.showFollowMenu(
+                context,
+                _followButtonKey,
+                theme,
+                widget.id,
+              );
             },
             icon: const Icon(Icons.favorite_border),
           ),
         IconButton(
           key: _shareButtonKey,
           onPressed: () {
-            _showShareMenu(context);
+            ShareMenu.showShareMenu(
+              context,
+              _shareButtonKey,
+              theme,
+              widget.images.bestUrl,
+              widget.title,
+              widget.id,
+            );
           },
           icon: const Icon(Icons.share),
         ),
@@ -90,45 +103,6 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
         innerBoxIsScrolled: widget.innerBoxIsScrolled,
       ),
     );
-  }
-
-  /// 显示分享菜单
-  void _showShareMenu(BuildContext context) async {
-    final result = await ReusableDropdownMenu.show<String>(
-      context: context,
-      buttonKey: _shareButtonKey,
-      items: [
-        ReusableDropdownMenu.createIconItem(
-          value: 'goToWebsite',
-          icon: Icons.open_in_browser_rounded,
-          text: '浏览器查看',
-          iconColor: theme,
-        ),
-        ReusableDropdownMenu.createIconItem(
-          value: 'saveImage',
-          icon: Icons.file_download_outlined,
-          text: '下载封面',
-          iconColor: theme,
-        ),
-        ReusableDropdownMenu.createIconItem(
-          value: 'copyLink',
-          icon: Icons.copy_all,
-          text: '复制网址',
-          iconColor: theme,
-        ),
-      ],
-    );
-
-    //选项处理
-    if (result != null && context.mounted) {
-      AnimeHeadService.handleShareOption(
-        context,
-        result,
-        widget.images.bestUrl,
-        widget.title,
-        widget.id,
-      );
-    }
   }
 }
 
@@ -423,7 +397,8 @@ class BangumiInfoCard extends StatelessWidget {
 }
 
 /// 按钮组件
-class AnimePlayButton extends StatelessWidget {
+/// 按钮组件
+class AnimePlayButton extends StatefulWidget {
   final VoidCallback onPressed;
   final int? animeId;
   final String? animeName;
@@ -438,9 +413,16 @@ class AnimePlayButton extends StatelessWidget {
   });
 
   @override
+  State<AnimePlayButton> createState() => _AnimePlayButtonState();
+}
+
+class _AnimePlayButtonState extends State<AnimePlayButton> {
+  late final GlobalKey _followButtonKey = GlobalKey();
+
+  @override
   Widget build(BuildContext context) {
     // 如果正在加载，显示骨架屏
-    if (isLoading) {
+    if (widget.isLoading) {
       return const AnimePlayButtonSkeleton();
     }
     final primaryColor = Theme.of(context).colorScheme.primary;
@@ -454,8 +436,14 @@ class AnimePlayButton extends StatelessWidget {
           SizedBox(
             width: 120,
             child: ElevatedButton.icon(
+              key: _followButtonKey,
               onPressed: () {
-                // TODO: 处理追番功能
+                ShareMenu.showFollowMenu(
+                  context,
+                  _followButtonKey,
+                  primaryColor,
+                  widget.animeId!,
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,
@@ -464,7 +452,6 @@ class AnimePlayButton extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                elevation: 3,
                 shadowColor: Colors.grey.withAlpha(53),
               ),
               icon: const Icon(Icons.add_chart_rounded, size: 20), // 左侧图标
@@ -484,7 +471,7 @@ class AnimePlayButton extends StatelessWidget {
                 // 跳转到播放信息页面
                 context.pushNamed(
                   AppRouter.playInfo,
-                  extra: {'animeName': animeName, 'animeId': animeId},
+                  extra: {'animeName': widget.animeName, 'animeId': widget.animeId},
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -494,7 +481,6 @@ class AnimePlayButton extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                elevation: 3,
               ),
               icon: const Icon(Icons.play_arrow_rounded, size: 24),
               label: const Text(
@@ -508,3 +494,4 @@ class AnimePlayButton extends StatelessWidget {
     );
   }
 }
+
