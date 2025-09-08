@@ -389,7 +389,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.get-version.outputs.version }}
-          name: ${{ needs.get-app-info.outputs.app_name }} ${{ needs.get-version.outputs.version_name }}
+          name: ${{ needs.get-app-info.outputs.app_name }}
           body: |
             ## 🎉 Release ${{ needs.get-version.outputs.version_name }}
             
