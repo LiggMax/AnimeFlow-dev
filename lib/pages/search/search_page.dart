@@ -190,32 +190,17 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(title: const Text('搜索'), centerTitle: true),
-        body: Column(
-          children: [
-            // 搜索框
-            _buildSearchBar(),
+    return Scaffold(
+      appBar: AppBar(title: const Text('搜索'), centerTitle: true),
+      body: Column(
+        children: [
+          // 搜索框
+          _buildSearchBar(),
 
-            // 搜索内容
-            Expanded(child: _buildSearchContent()),
-          ],
-        ),
+          // 搜索内容
+          Expanded(child: _buildSearchContent()),
+        ],
       ),
-      // appBar: AppBar(
-      //   title: const Text('搜索'),
-      //   centerTitle: true,
-      // ),
-      // body: Column(
-      //   children: [
-      //     // 搜索框
-      //     _buildSearchBar(),
-      //
-      //     // 搜索内容
-      //     Expanded(child: _buildSearchContent()),
-      //   ],
-      // ),
     );
   }
 
