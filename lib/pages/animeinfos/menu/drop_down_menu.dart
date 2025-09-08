@@ -27,19 +27,23 @@ class ReusableDropdownMenu {
     Color? iconColor,
   }) async {
     final RenderBox? button =
-        buttonKey.currentContext?.findRenderObject() as RenderBox?;
+    buttonKey.currentContext?.findRenderObject() as RenderBox?;
     final RenderBox overlay =
-        Overlay.of(context).context.findRenderObject() as RenderBox;
+    Overlay.of(context).context.findRenderObject() as RenderBox;
 
     if (button == null) return null;
 
-    final RelativeRect position = RelativeRect.fromRect(
-      Rect.fromPoints(
-        button.localToGlobal(Offset.zero, ancestor: overlay),
-        button.localToGlobal(
-          button.size.bottomRight(Offset.zero),
-          ancestor: overlay,
-        ),
+    // 获取按钮的位置和大小
+    final buttonPosition = button.localToGlobal(Offset.zero, ancestor: overlay);
+    final buttonSize = button.size;
+
+    // 计算菜单显示位置在按钮下方
+    final position = RelativeRect.fromRect(
+      Rect.fromLTWH(
+        buttonPosition.dx,
+        buttonPosition.dy + buttonSize.height,  // Y坐标设置为按钮底部
+        buttonSize.width,
+        0,
       ),
       Offset.zero & overlay.size,
     );
