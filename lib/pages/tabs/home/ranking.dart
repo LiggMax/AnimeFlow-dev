@@ -289,7 +289,7 @@ class _RankingPageState extends State<RankingPage> {
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Color(0xCCFFFFFF),
                     shadows: [
                       Shadow(
                         offset: Offset(1, 1),

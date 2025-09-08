@@ -125,11 +125,11 @@ class AnimeCard extends StatelessWidget {
                 ),
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  name ?? '未知动漫',
+                  name,
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(255, 255, 255, 0.8),
+                    color: Color(0xCCFFFFFF),
                     shadows: [
                       Shadow(
                         offset: Offset(1, 1),

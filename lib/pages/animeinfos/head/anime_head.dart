@@ -1,12 +1,12 @@
 import 'dart:ui';
 import 'package:AnimeFlow/router/router_config.dart';
-import 'package:AnimeFlow/utils/common_util.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:AnimeFlow/modules/bangumi/data.dart';
-import '../../request/api/common_api.dart';
-import 'skeleton/head_skeleton.dart';
+import '../menu/drop_down_menu.dart';
+import '../skeleton/head_skeleton.dart';
+import 'anime_head_service.dart';
 
 /// 自定义AppBar组件
 class AnimeDetailAppBar extends StatefulWidget {
@@ -35,6 +35,7 @@ class AnimeDetailAppBar extends StatefulWidget {
 
 class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
   late final GlobalKey _shareButtonKey = GlobalKey();
+
   Color get theme => Theme.of(context).colorScheme.primary;
 
   @override
@@ -64,7 +65,7 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
         IconButton(
           key: _shareButtonKey,
           onPressed: () {
-            _showShareMenu();
+            _showShareMenu(context);
           },
           icon: const Icon(Icons.share),
         ),
@@ -92,98 +93,41 @@ class _AnimeDetailAppBarState extends State<AnimeDetailAppBar> {
   }
 
   /// 显示分享菜单
-  void _showShareMenu() {
-    final RenderBox? button =
-        _shareButtonKey.currentContext?.findRenderObject() as RenderBox?;
-    final RenderBox overlay =
-        Overlay.of(context).context.findRenderObject() as RenderBox;
-
-    if (button == null) return;
-
-    final RelativeRect position = RelativeRect.fromRect(
-      Rect.fromPoints(
-        button.localToGlobal(Offset.zero, ancestor: overlay),
-        button.localToGlobal(
-          button.size.bottomRight(Offset.zero),
-          ancestor: overlay,
-        ),
-      ),
-      Offset.zero & overlay.size,
-    );
-
-    showMenu(
+  void _showShareMenu(BuildContext context) async {
+    final result = await ReusableDropdownMenu.show<String>(
       context: context,
-      position: position,
+      buttonKey: _shareButtonKey,
       items: [
-        PopupMenuItem(
-          value: 'saveImage',
-          child: Row(
-            children: [
-              Icon(
-                Icons.file_download_outlined,
-                color: theme,
-              ),
-              const SizedBox(width: 12),
-              const Text('下载封面'),
-            ],
-          ),
-        ),
-        PopupMenuItem(
-          value: 'copyLink',
-          child: Row(
-            children: [
-              Icon(Icons.copy_all,color: theme),
-              const SizedBox(width: 12),
-              const Text('复制网址'),
-            ],
-          ),
-        ),
-        PopupMenuItem(
+        ReusableDropdownMenu.createIconItem(
           value: 'goToWebsite',
-          child: Row(
-            children: [
-              Icon(Icons.link, color: theme),
-              const SizedBox(width: 12),
-              Text('浏览器查看'),
-            ],
-          ),
+          icon: Icons.open_in_browser_rounded,
+          text: '浏览器查看',
+          iconColor: theme,
+        ),
+        ReusableDropdownMenu.createIconItem(
+          value: 'saveImage',
+          icon: Icons.file_download_outlined,
+          text: '下载封面',
+          iconColor: theme,
+        ),
+        ReusableDropdownMenu.createIconItem(
+          value: 'copyLink',
+          icon: Icons.copy_all,
+          text: '复制网址',
+          iconColor: theme,
         ),
       ],
-    ).then((value) {
-      if (value != null) {
-        _handleShareOption(value);
-      }
-    });
-  }
+    );
 
-  /// 处理选项
-  void _handleShareOption(String option) {
-    switch (option) {
-      case 'saveImage':
-        CommonUtil.saveImage(widget.images.bestUrl, widget.title);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('成功保持封面')));
-        break;
-      case 'copyLink':
-        CommonUtil.copyLink('${CommonApi.bgmTv}/subject/${widget.id}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                Text('已复制:'),
-                Text(
-                  '${CommonApi.bgmTv}/subject/${widget.id}',
-                  style: TextStyle(color: Colors.cyanAccent),
-                ),
-              ],
-            ),
-          ),
-        );
-        break;
-      case 'goToWebsite':
-        CommonUtil.toLaunchUrl('${CommonApi.bgmTv}/subject/${widget.id}');
-        break;
+    //选项处理
+    if (result != null && context.mounted) {
+      AnimeHeadService.handleShareOption(
+        context,
+        result,
+        widget.images.bestUrl,
+        widget.title,
+        widget.id,
+      );
     }
   }
 }
