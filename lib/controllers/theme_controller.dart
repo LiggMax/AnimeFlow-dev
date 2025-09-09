@@ -36,11 +36,11 @@ class ThemeController extends ChangeNotifier {
         statusBarIconBrightness: Brightness.dark, // 浅色主题下状态栏图标为深色
         statusBarBrightness: Brightness.light,
 
-        /// 确保浅色主题下系统导航条透明
+        ///浅色主题下系统导航条透明
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarDividerColor: Colors.transparent,
       ),
-      scrolledUnderElevation: 0,
+      // scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
     ),
   );
@@ -58,11 +58,11 @@ class ThemeController extends ChangeNotifier {
         statusBarIconBrightness: Brightness.light, // 深色主题下状态栏图标为浅色
         statusBarBrightness: Brightness.dark,
 
-        /// 确保深色主题下系统导航条透明
+        ///深色主题下系统导航条透明
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarDividerColor: Colors.transparent,
       ),
-      scrolledUnderElevation: 0,
+      // scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
     ),
   );
