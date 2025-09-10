@@ -60,7 +60,9 @@ jobs:
           flutter-version-file: pubspec.yaml
 
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          flutter --version
+          flutter pub get
 
       - name: Build android
         run: |
