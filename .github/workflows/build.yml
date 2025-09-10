@@ -61,11 +61,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          flutter --version
           flutter pub get
 
       - name: Build android
         run: |
+          flutter --version
           flutter build apk
           echo "Android build completed"
 
