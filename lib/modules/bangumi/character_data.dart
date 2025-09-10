@@ -52,6 +52,9 @@ class CharacterItem {
     required this.order,
   });
 
+  /// 获取角色类型名称
+  String get roleName => CharacterRole.fromValue(type).label;
+
   factory CharacterItem.fromJson(Map<String, dynamic> json) {
     return CharacterItem(
       character: Character.fromJson(json['character']),
@@ -96,8 +99,6 @@ class Character {
     required this.images,
   });
 
-  /// 获取角色类型名称
-  String get roleName => CharacterRole.fromValue(role).label;
 
   /// 获取角色显示名称（优先使用中文名）
   String get characterDisplayName => nameCN.isNotEmpty ? nameCN : name;

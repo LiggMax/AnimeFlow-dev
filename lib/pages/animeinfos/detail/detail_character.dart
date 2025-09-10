@@ -7,6 +7,7 @@ import 'package:AnimeFlow/modules/bangumi/character_data.dart';
 import 'package:flutter/material.dart';
 import 'detail_info.dart';
 
+///条目角色
 class AnimeCharacter extends StatefulWidget {
   final int animeId;
 
@@ -48,7 +49,7 @@ class _AnimeCharacterState extends State<AnimeCharacter> {
   List<CharacterItem> get _mainCharacters {
     if (_characterData == null) return [];
     return _characterData!.data
-        .where((item) => item.character.role == 1) // 主角
+        .where((item) => item.type == 1) // 主角
         .toList();
   }
 
@@ -86,7 +87,7 @@ class _AnimeCharacterState extends State<AnimeCharacter> {
             crossAxisSpacing: 8,
             mainAxisSpacing: 8,
           ),
-          itemCount: _mainCharacters.length > 4 ? 4 : _mainCharacters.length,
+          itemCount: _mainCharacters.length,
           itemBuilder: (context, index) {
             final character = _mainCharacters[index];
             return _buildCharacterCard(character);
@@ -144,7 +145,7 @@ class _AnimeCharacterState extends State<AnimeCharacter> {
               ),
               const SizedBox(height: 4),
               Text(
-                '${characterItem.character.roleName}·${characterItem.actors.isNotEmpty ? characterItem.actors.first.actorDisplayName : ''}',
+                '${characterItem.roleName}·${characterItem.actors.isNotEmpty ? characterItem.actors.first.actorDisplayName : ''}',
                 style: TextStyle(
                   fontSize: 12,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -282,7 +283,7 @@ class _AnimeCharacterState extends State<AnimeCharacter> {
               ),
               const SizedBox(height: 4),
               Text(
-                '${characterItem.character.roleName}·${characterItem.actors.isNotEmpty ? characterItem.actors.first.actorDisplayName : ''}',
+                '${characterItem.roleName}·${characterItem.actors.isNotEmpty ? characterItem.actors.first.actorDisplayName : ''}',
                 style: TextStyle(
                   fontSize: 12,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
