@@ -307,62 +307,6 @@ jobs:
           path: "${{ needs.get-app-info.outputs.app_name_version }}-ios.ipa"
           if-no-files-found: error
 
-  # 创建GitHub Release
-  create-release:
-    needs: [ get-version, get-app-info, build-android, build-linux, build-windows, build-macos, build-ios ]
-    if: ${{ github.event.inputs.create_release != 'false' && github.event_name == 'workflow_dispatch' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-
-      - name: List downloaded artifacts
-        run: |
-          echo "=== Downloaded artifacts structure ==="
-          find artifacts -type f -name "*" | head -20
-          echo "=== End of artifacts list ==="
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ needs.get-version.outputs.version }}
-          name: ${{ needs.get-app-info.outputs.app_name }} ${{ needs.get-version.outputs.version_name }}
-          body: |
-            ## 🎉 Release ${{ needs.get-version.outputs.version_name }}
-            
-            ### 发布版本${{ needs.get-version.outputs.version }}
-            ### 📱 支持的平台
-            - Android (apk)
-            - iOS (ipa)
-            - macOS ( dmg)
-            - Windows (exe)
-            - Linux (tar.gz, deb)
-            
-            ### 📦 下载
-            请从下方附件中下载对应平台的安装包。
-            
-            ### 🔄 更新内容
-            - 初步实现番剧信息展示，番剧播放
-          files: |
-            artifacts/**/*.apk
-            artifacts/**/*.ipa
-            artifacts/**/*.dmg
-            artifacts/**/*.zip
-            artifacts/**/*.tar.gz
-            artifacts/**/*.deb
-            artifacts/**/*
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   # 自动创建Release（当推送tag时）
   auto-create-release:
     needs: [ get-version, get-app-info, build-android, build-linux, build-windows, build-macos, build-ios ]
@@ -406,7 +350,8 @@ jobs:
             
             ### 🔄 更新内容
             - ${{ needs.get-version.outputs.version }}版本正式发布
-            - 修复桌面端窗口缩放严重卡顿问题
+            - 添加番剧详情页网页阅览、封面下载功能
+            - 修复角色类型展示错误问题
           files: |
             artifacts/${{ needs.get-app-info.outputs.app_name_version }}-android/*.apk
             artifacts/${{ needs.get-app-info.outputs.app_name_version }}-ios/*.ipa
