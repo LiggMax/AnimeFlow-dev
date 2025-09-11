@@ -10,10 +10,10 @@ class AnimeHeadService {
   static void handleShareOption(BuildContext context,String option,String imageUrl,String title,int id) {
     switch (option) {
       case 'saveImage':
-        CommonUtil.saveImage(imageUrl, title);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('成功保持封面')));
+         CommonUtil.saveImage(imageUrl, title);
+         ScaffoldMessenger.of(
+           context,
+         ).showSnackBar(const SnackBar(content: Text('成功保持封面')));
         break;
       case 'copyLink':
         CommonUtil.copyLink('${CommonApi.bgmTv}/subject/$id');

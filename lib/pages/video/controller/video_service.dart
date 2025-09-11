@@ -70,7 +70,7 @@ class VideoControllerService {
 
   double get playbackSpeed => _playbackSpeed;
 
-  /// 时间格式化方法
+  /// 时间格式化
   String formatTime(Duration duration) {
     final minutes = duration.inMinutes;
     final seconds = duration.inSeconds % 60;

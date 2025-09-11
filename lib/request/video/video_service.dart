@@ -12,8 +12,8 @@ import 'package:AnimeFlow/modules/video/episode_source.dart';
 class VideoService {
   static final Logger _log = Logger('VideoService');
 
-  static const String websiteUrl = 'https://dm1.xfdm.pro';
-  static const String searchUrl = 'https://dm1.xfdm.pro/search.html?wd=';
+  static const String websiteUrl = 'https://dm.xifanacg.com';
+  static const String searchUrl = 'https://dm.xifanacg.com/search.html?wd=';
   static const int requestInterval = 1;
 
   ///  获取剧集源
@@ -26,7 +26,10 @@ class VideoService {
         searchUrl + keyword,
         options: Options(headers: {'User-Agent': CommonApi.userAgent}),
       );
-
+      if (response.statusCode != 200) {
+        _log.warning('请求异常,状态码:${response.statusCode}');
+        return null;
+      }
       if (response.data != null) {
         // 解析条目名称列表和条目链接列表
         final parseResult = VideoAnalysis.parseSearchResults(

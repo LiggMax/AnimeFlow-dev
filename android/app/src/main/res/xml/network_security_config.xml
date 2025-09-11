@@ -8,7 +8,7 @@
         <domain includeSubdomains="true">bgm.tv</domain>
     </domain-config>
 
-    <!-- 运行的http地址 -->
+    <!-- 允许的http地址 -->
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">http://129.204.224.233:1024</domain>
     </domain-config>
