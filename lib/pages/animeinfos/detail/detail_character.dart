@@ -45,12 +45,39 @@ class _AnimeCharacterState extends State<AnimeCharacter> {
     }
   }
 
-  // 获取主角列表
+  // 获取主角列表，如果主角数量不足4个，则补充其他角色
   List<CharacterItem> get _mainCharacters {
     if (_characterData == null) return [];
-    return _characterData!.data
+
+    // 获取所有主角
+    final mainCharacters = _characterData!.data
         .where((item) => item.type == 1) // 主角
         .toList();
+
+    // 如果主角数量小于4个，需要补充其他角色
+    if (mainCharacters.length < 4) {
+      // 获取非主角角色，按类型和顺序排序
+      final otherCharacters = _characterData!.data
+          .where((item) => item.type != 1)
+          .toList()
+        ..sort((a, b) {
+          // 首先按类型排序（配角优先于客串）
+          if (a.type != b.type) {
+            return a.type.compareTo(b.type);
+          }
+          // 然后按顺序排序
+          return a.order.compareTo(b.order);
+        });
+
+      // 补充角色直到达到4个或没有更多角色
+      final needed = 4 - mainCharacters.length;
+      final additionalCharacters = otherCharacters.take(needed).toList();
+
+      // 合并主角和补充的角色
+      return [...mainCharacters, ...additionalCharacters];
+    }
+
+    return mainCharacters;
   }
 
   // 获取所有角色列表

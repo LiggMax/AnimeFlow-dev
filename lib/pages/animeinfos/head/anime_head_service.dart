@@ -24,7 +24,7 @@ class AnimeHeadService {
                 Text('已复制:'),
                 Text(
                   '${CommonApi.bgmTv}/subject/$id',
-                  style: TextStyle(color: Colors.cyanAccent),
+                  style: TextStyle(color: Colors.blue),
                 ),
               ],
             ),
