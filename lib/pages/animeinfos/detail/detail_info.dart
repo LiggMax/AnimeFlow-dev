@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:AnimeFlow/modules/bangumi/data.dart';
+import 'package:animeFlow/modules/bangumi/data.dart';
 import 'detail_related.dart';
 import 'detail_summary.dart';
 import 'detail_tags.dart';

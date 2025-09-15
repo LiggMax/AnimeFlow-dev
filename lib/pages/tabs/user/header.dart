@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:AnimeFlow/modules/bangumi/user_info.dart';
+import 'package:animeFlow/modules/bangumi/user_info.dart';
 
 class UserHeader extends StatefulWidget {
   const UserHeader({super.key, required this.userInfo, this.height});

@@ -4,7 +4,7 @@
 ///简介页面
 library;
 
-import 'package:AnimeFlow/pages/player/detail/introduction/video_resources.dart';
+import 'package:animeFlow/pages/player/detail/introduction/video_resources.dart';
 import 'package:flutter/material.dart';
 import 'episode.dart';
 

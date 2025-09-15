@@ -2,7 +2,7 @@
 ///@Time 2025/9/8
 library;
 
-import 'package:AnimeFlow/pages/animeinfos/head/anime_head_service.dart';
+import 'package:animeFlow/pages/animeinfos/head/anime_head_service.dart';
 import 'package:flutter/material.dart';
 import 'drop_down_menu.dart';
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:AnimeFlow/router/router_config.dart';
+import 'package:animeFlow/router/router_config.dart';
 import 'recommend.dart';
 import 'ranking.dart';
 import 'package:provider/provider.dart';
-import 'package:AnimeFlow/controllers/theme_controller.dart';
-import 'package:AnimeFlow/utils/theme_extensions.dart';
+import 'package:animeFlow/controllers/theme_controller.dart';
+import 'package:animeFlow/utils/theme_extensions.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

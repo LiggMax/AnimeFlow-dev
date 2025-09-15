@@ -125,7 +125,7 @@ class ImageViewer extends StatelessWidget {
                   ),
                 ),
               ),
-              // 底部信息栏（可选）
+              // 底部信息栏
               Positioned(
                 bottom: MediaQuery.of(context).padding.bottom + 16,
                 left: 16,

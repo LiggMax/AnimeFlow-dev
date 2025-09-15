@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:AnimeFlow/request/bangumi/bangumi.dart';
-import 'package:AnimeFlow/modules/bangumi/comments.dart';
+import 'package:animeFlow/request/bangumi/bangumi.dart';
+import 'package:animeFlow/modules/bangumi/comments.dart';
 
 /// 讨论内容组件
 class AnimeCommentsContent extends StatefulWidget {

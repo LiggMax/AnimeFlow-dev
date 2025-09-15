@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:screen_brightness_platform_interface/screen_brightness_platform_interface.dart';
-import 'package:AnimeFlow/utils/fullscreen_utils.dart';
+import 'package:animeFlow/utils/fullscreen_utils.dart';
 import 'package:intl/intl.dart';
 
 /// 视频控制器服务类，负责处理播放器的各种业务逻辑

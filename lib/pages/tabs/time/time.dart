@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'package:AnimeFlow/router/router_config.dart';
+import 'package:animeFlow/router/router_config.dart';
 import 'package:flutter/material.dart';
-import 'package:AnimeFlow/request/bangumi/bangumi.dart';
+import 'package:animeFlow/request/bangumi/bangumi.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../utils/fullscreen_utils.dart';

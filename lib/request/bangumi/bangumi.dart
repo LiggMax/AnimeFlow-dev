@@ -1,17 +1,17 @@
-import 'package:AnimeFlow/modules/bangumi/character_data.dart';
-import 'package:AnimeFlow/modules/bangumi/rank.dart';
+import 'package:animeFlow/modules/bangumi/character_data.dart';
+import 'package:animeFlow/modules/bangumi/rank.dart';
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
-import 'package:AnimeFlow/modules/bangumi/data.dart';
-import 'package:AnimeFlow/modules/bangumi/episodes.dart';
-import 'package:AnimeFlow/modules/bangumi/search_data.dart';
-import 'package:AnimeFlow/request/request.dart';
-import 'package:AnimeFlow/request/api/bangumi/v0_api.dart';
-import 'package:AnimeFlow/modules/bangumi/comments.dart';
-import 'package:AnimeFlow/modules/bangumi/related.dart';
-import 'package:AnimeFlow/request/api/common_api.dart';
-import 'package:AnimeFlow/request/api/bangumi/p1_api.dart';
-import 'package:AnimeFlow/modules/bangumi/episodes_comments.dart';
+import 'package:animeFlow/modules/bangumi/data.dart';
+import 'package:animeFlow/modules/bangumi/episodes.dart';
+import 'package:animeFlow/modules/bangumi/search_data.dart';
+import 'package:animeFlow/request/request.dart';
+import 'package:animeFlow/request/api/bangumi/v0_api.dart';
+import 'package:animeFlow/modules/bangumi/comments.dart';
+import 'package:animeFlow/modules/bangumi/related.dart';
+import 'package:animeFlow/request/api/common_api.dart';
+import 'package:animeFlow/request/api/bangumi/p1_api.dart';
+import 'package:animeFlow/modules/bangumi/episodes_comments.dart';
 
 class BangumiService {
   static final Logger _log = Logger('BangumiService');

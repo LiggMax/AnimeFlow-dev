@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:AnimeFlow/router/router_config.dart';
+import 'package:animeFlow/router/router_config.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import './controllers/theme_controller.dart';
-import 'package:AnimeFlow/request/bangumi/bangumi_oauth.dart';
+import 'package:animeFlow/request/bangumi/bangumi_oauth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

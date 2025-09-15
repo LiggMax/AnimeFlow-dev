@@ -1,10 +1,10 @@
-import 'package:AnimeFlow/modules/bangumi/rank.dart';
-import 'package:AnimeFlow/request/bangumi/bangumi.dart';
+import 'package:animeFlow/modules/bangumi/rank.dart';
+import 'package:animeFlow/request/bangumi/bangumi.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:AnimeFlow/utils/fullscreen_utils.dart';
+import 'package:animeFlow/utils/fullscreen_utils.dart';
 import 'package:go_router/go_router.dart';
-import 'package:AnimeFlow/router/router_config.dart';
+import 'package:animeFlow/router/router_config.dart';
 import 'package:lottie/lottie.dart';
 
 class RankingPage extends StatefulWidget {

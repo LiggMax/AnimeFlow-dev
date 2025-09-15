@@ -11,8 +11,8 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:AnimeFlow/utils/bgm_icon.dart';
-import 'package:AnimeFlow/utils/image_viewer.dart';
+import 'package:animeFlow/utils/bgm_icon.dart';
+import 'package:animeFlow/utils/image_viewer.dart';
 
 /// 内容元素类型
 enum ContentElementType { text, image, colorText, emoji }
