@@ -1,11 +1,11 @@
 ///@Author Ligg
 ///@Time 2025/8/7
 library;
-import 'package:animeFlow/modules/bangumi/collections.dart';
-import 'package:animeFlow/modules/bangumi/user_info.dart';
-import 'package:animeFlow/request/request.dart';
+import 'package:anime_flow/modules/bangumi/collections.dart';
+import 'package:anime_flow/modules/bangumi/user_info.dart';
+import 'package:anime_flow/request/request.dart';
 import 'package:dio/dio.dart';
-import 'package:animeFlow/modules/bangumi/token.dart';
+import 'package:anime_flow/modules/bangumi/token.dart';
 import '../api/bangumi/p1_api.dart';
 import '../api/common_api.dart';
 

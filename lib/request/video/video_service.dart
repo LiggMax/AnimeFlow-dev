@@ -5,9 +5,9 @@
 import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
 import '../request.dart';
-import 'package:animeFlow/utils/analysis.dart';
+import 'package:anime_flow/utils/analysis.dart';
 import '../api/common_api.dart';
-import 'package:animeFlow/modules/video/episode_source.dart';
+import 'package:anime_flow/modules/video/episode_source.dart';
 
 class VideoService {
   static final Logger _log = Logger('VideoService');

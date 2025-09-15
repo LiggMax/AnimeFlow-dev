@@ -1,7 +1,7 @@
 /// @Author Ligg
 ///@Time 2025/8/2
 library;
-import 'package:animeFlow/request/request.dart';
+import 'package:anime_flow/request/request.dart';
 import 'package:dio/dio.dart';
 import '../../utils/bangumi_analysis.dart';
 import '../api/common_api.dart';

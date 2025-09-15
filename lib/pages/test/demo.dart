@@ -1,4 +1,4 @@
-import 'package:animeFlow/main.dart';
+import 'package:anime_flow/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

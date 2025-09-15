@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:animeFlow/modules/bangumi/related.dart';
-import 'package:animeFlow/request/bangumi/bangumi.dart';
+import 'package:anime_flow/modules/bangumi/related.dart';
+import 'package:anime_flow/request/bangumi/bangumi.dart';
 import 'package:go_router/go_router.dart';
 import 'detail_info.dart';
-import 'package:animeFlow/utils/fullscreen_utils.dart';
+import 'package:anime_flow/utils/fullscreen_utils.dart';
 
 /// 相关条目展示组件
 class AnimeRelatedSection extends StatefulWidget {

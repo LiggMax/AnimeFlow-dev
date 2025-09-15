@@ -1,10 +1,10 @@
 import 'dart:ui';
-import 'package:animeFlow/pages/animeinfos/menu/menu.dart';
-import 'package:animeFlow/router/router_config.dart';
+import 'package:anime_flow/pages/animeinfos/menu/menu.dart';
+import 'package:anime_flow/router/router_config.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:animeFlow/modules/bangumi/data.dart';
+import 'package:anime_flow/modules/bangumi/data.dart';
 import '../skeleton/head_skeleton.dart';
 
 /// 自定义AppBar组件

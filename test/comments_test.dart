@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:animeFlow/modules/bangumi/episodes_comments.dart';
+import 'package:anime_flow/modules/bangumi/episodes_comments.dart';
 import 'dart:convert';
 
 void main() {

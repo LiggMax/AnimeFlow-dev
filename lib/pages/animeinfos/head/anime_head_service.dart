@@ -1,8 +1,8 @@
 ///@Author Ligg
 ///@Time 2025/9/8
 library;
-import 'package:animeFlow/request/api/common_api.dart';
-import 'package:animeFlow/utils/common_util.dart';
+import 'package:anime_flow/request/api/common_api.dart';
+import 'package:anime_flow/utils/common_util.dart';
 import 'package:flutter/material.dart';
 
 class AnimeHeadService {

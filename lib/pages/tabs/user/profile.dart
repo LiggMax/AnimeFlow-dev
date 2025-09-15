@@ -1,12 +1,12 @@
-import 'package:animeFlow/request/bangumi/bangumi_oauth.dart';
-import 'package:animeFlow/request/bangumi/bangumi_user.dart';
-import 'package:animeFlow/modules/bangumi/token.dart';
-import 'package:animeFlow/modules/bangumi/user_info.dart';
+import 'package:anime_flow/request/bangumi/bangumi_oauth.dart';
+import 'package:anime_flow/request/bangumi/bangumi_user.dart';
+import 'package:anime_flow/modules/bangumi/token.dart';
+import 'package:anime_flow/modules/bangumi/user_info.dart';
 import 'package:flutter/material.dart';
-import 'package:animeFlow/pages/tabs/user/header.dart';
-import 'package:animeFlow/pages/tabs/user/no_login.dart';
-import 'package:animeFlow/modules/bangumi/collections.dart';
-import 'package:animeFlow/pages/tabs/user/user_collection.dart';
+import 'package:anime_flow/pages/tabs/user/header.dart';
+import 'package:anime_flow/pages/tabs/user/no_login.dart';
+import 'package:anime_flow/modules/bangumi/collections.dart';
+import 'package:anime_flow/pages/tabs/user/user_collection.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});

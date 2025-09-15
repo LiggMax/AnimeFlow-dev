@@ -3,7 +3,7 @@
   @Time 2025/8/5
  */
 import 'dart:async';
-import 'package:animeFlow/modules/bangumi/token.dart';
+import 'package:anime_flow/modules/bangumi/token.dart';
 import '../api/bangumi/oauth.dart';
 import '../request.dart';
 import 'package:hive_flutter/hive_flutter.dart';

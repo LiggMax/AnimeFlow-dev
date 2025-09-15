@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:animeFlow/utils/bbcode_parser.dart';
+import 'package:anime_flow/utils/bbcode_parser.dart';
 import 'package:flutter/material.dart';
 
 void main() {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:animeFlow/request/bangumi/bangumi.dart';
-import 'package:animeFlow/modules/bangumi/data.dart';
+import 'package:anime_flow/request/bangumi/bangumi.dart';
+import 'package:anime_flow/modules/bangumi/data.dart';
 import 'head/anime_head.dart';
 import 'detail/detail_info.dart';
 import 'anime_comments.dart';

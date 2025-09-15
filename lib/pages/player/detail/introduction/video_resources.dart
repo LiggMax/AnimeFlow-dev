@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:animeFlow/request/video/video_service.dart';
-import 'package:animeFlow/modules/video/episode_source.dart';
+import 'package:anime_flow/request/video/video_service.dart';
+import 'package:anime_flow/modules/video/episode_source.dart';
 import 'package:lottie/lottie.dart';
 
 class Resources extends StatefulWidget {

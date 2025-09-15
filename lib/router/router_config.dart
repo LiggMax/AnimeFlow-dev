@@ -2,12 +2,12 @@
   @Author Ligg
   @Time 2025/8/11
  */
-import 'package:animeFlow/pages/player/play_info.dart';
+import 'package:anime_flow/pages/player/play_info.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:animeFlow/pages/animeinfos/anime_info.dart';
-import 'package:animeFlow/pages/search/search_page.dart';
-import 'package:animeFlow/pages/tabs/tabs.dart';
+import 'package:anime_flow/pages/animeinfos/anime_info.dart';
+import 'package:anime_flow/pages/search/search_page.dart';
+import 'package:anime_flow/pages/tabs/tabs.dart';
 
 class AppRouter {
   static const String home = '/';

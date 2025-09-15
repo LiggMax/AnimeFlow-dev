@@ -5,9 +5,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:animeFlow/request/api/bangumi/oauth.dart';
-import 'package:animeFlow/request/bangumi/bangumi_oauth.dart';
-import 'package:animeFlow/modules/bangumi/token.dart';
+import 'package:anime_flow/request/api/bangumi/oauth.dart';
+import 'package:anime_flow/request/bangumi/bangumi_oauth.dart';
+import 'package:anime_flow/modules/bangumi/token.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class NoLogin extends StatefulWidget {

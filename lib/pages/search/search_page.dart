@@ -1,10 +1,10 @@
-import 'package:animeFlow/router/router_config.dart';
-import 'package:animeFlow/utils/fullscreen_utils.dart';
+import 'package:anime_flow/router/router_config.dart';
+import 'package:anime_flow/utils/fullscreen_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:animeFlow/utils/theme_extensions.dart';
-import 'package:animeFlow/request/bangumi/bangumi.dart';
-import 'package:animeFlow/modules/bangumi/search_data.dart';
+import 'package:anime_flow/utils/theme_extensions.dart';
+import 'package:anime_flow/request/bangumi/bangumi.dart';
+import 'package:anime_flow/modules/bangumi/search_data.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';

@@ -2,11 +2,11 @@
 ///@Time 2025/8/30
 library;
 
-import 'package:animeFlow/router/router_config.dart';
+import 'package:anime_flow/router/router_config.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:animeFlow/modules/bangumi/collections.dart';
-import 'package:animeFlow/modules/bangumi/user_info.dart';
+import 'package:anime_flow/modules/bangumi/collections.dart';
+import 'package:anime_flow/modules/bangumi/user_info.dart';
 import 'package:go_router/go_router.dart';
 
 /// 根据tab名称获取对应的type值

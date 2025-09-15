@@ -1,5 +1,5 @@
-import 'package:animeFlow/pages/player/detail/details_info.dart';
-import 'package:animeFlow/pages/video/video_page.dart';
+import 'package:anime_flow/pages/player/detail/details_info.dart';
+import 'package:anime_flow/pages/video/video_page.dart';
 import 'package:flutter/material.dart';
 
 class PlayInfo extends StatefulWidget {

@@ -3,10 +3,10 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:animeFlow/modules/bangumi/episodes_comments.dart';
-import 'package:animeFlow/request/bangumi/bangumi.dart';
-import 'package:animeFlow/utils/bbcode_parser.dart';
-import 'package:animeFlow/utils/image_viewer.dart';
+import 'package:anime_flow/modules/bangumi/episodes_comments.dart';
+import 'package:anime_flow/request/bangumi/bangumi.dart';
+import 'package:anime_flow/utils/bbcode_parser.dart';
+import 'package:anime_flow/utils/image_viewer.dart';
 
 class CommentsPage extends StatefulWidget {
   final int? animeId;
