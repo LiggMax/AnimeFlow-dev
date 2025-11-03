@@ -11,7 +11,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import './controllers/theme_controller.dart';
 import 'package:anime_flow/request/bangumi/bangumi_oauth.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
 
@@ -19,7 +19,7 @@ void main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   // 初始化Hive
-  await Hive.initFlutter();
+  Hive.initFlutter();
   runApp(const MyApp());
 }
 
@@ -137,7 +137,6 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-
 // void main() {
 //   WidgetsFlutterBinding.ensureInitialized();
 //
@@ -188,4 +187,3 @@ class _MyAppState extends State<MyApp> {
 //     );
 //   }
 // }
-

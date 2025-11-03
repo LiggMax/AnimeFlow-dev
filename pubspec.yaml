@@ -35,8 +35,8 @@ flutter_launcher_icons:
   adaptive_icon_background: "#FFFFFF"
 
 environment:
-  sdk: ^3.8.1
-  flutter: 3.35.3
+  sdk: ^3.9.2
+  flutter: 3.35.7
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions

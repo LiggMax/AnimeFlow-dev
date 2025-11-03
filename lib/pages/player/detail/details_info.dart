@@ -49,38 +49,40 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TabBar(
-          tabAlignment: TabAlignment.start,
-          controller: _tabController,
-          isScrollable: true,
-          tabs: [
-            Tab(text: '简介'),
-            Tab(text: '评论'),
-          ],
-        ),
-        Expanded(
-          child: TabBarView(
+    return Scaffold(
+      body: Column(
+        children: [
+          TabBar(
+            tabAlignment: TabAlignment.start,
             controller: _tabController,
-            children: [
-              /// 简介内容
-              Introduction(
-                animeName: widget.animeName,
-                animeId: widget.animeId,
-                onVideoUrlReceived: widget.onVideoUrlReceived,
-                onEpisodeIdReceived: _handleEpisodeIdReceived,
-              ),
-
-              /// 评论内容
-              CommentsPage(
-                animeId: widget.animeId,
-                episodeId: _selectedEpisodeId,
-              ),
+            isScrollable: true,
+            tabs: [
+              Tab(text: '简介'),
+              Tab(text: '评论'),
             ],
           ),
-        ),
-      ],
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                /// 简介内容
+                Introduction(
+                  animeName: widget.animeName,
+                  animeId: widget.animeId,
+                  onVideoUrlReceived: widget.onVideoUrlReceived,
+                  onEpisodeIdReceived: _handleEpisodeIdReceived,
+                ),
+
+                /// 评论内容
+                CommentsPage(
+                  animeId: widget.animeId,
+                  episodeId: _selectedEpisodeId,
+                ),
+              ],
+            ),
+          ),
+        ],
+      )
     );
   }
 }
